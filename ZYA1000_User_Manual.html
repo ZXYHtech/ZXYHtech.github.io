@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZYA1000 上位机软件使用说明书</title>
+<style>
+  :root {
+    --red: #ee334e;
+    --red-light: #ffe8ec;
+    --text: #1d1f23;
+    --muted: #727780;
+    --border: #dfe2e7;
+    --bg: #f4f5f7;
+    --surface: #fff;
+    --success: #28a765;
+    --warning: #d58a12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    color: var(--text);
+    background: #fff;
+    line-height: 1.75;
+    font-size: 14px;
+  }
+
+  /* ===== COVER PAGE ===== */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    page-break-after: always;
+    background: linear-gradient(160deg, #fafbfc 0%, #eef0f3 40%, #e8eaef 100%);
+    text-align: center;
+    padding: 60px 40px;
+  }
+  .cover-logo {
+    width: 90px;
+    height: 90px;
+    display: grid;
+    place-items: center;
+    border-radius: 24px;
+    color: #fff;
+    background: linear-gradient(145deg, #ff5268, var(--red));
+    font-size: 48px;
+    font-weight: 850;
+    box-shadow: 0 14px 40px rgba(238,51,78,.28);
+    margin-bottom: 30px;
+  }
+  .cover h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  .cover .subtitle { font-size: 20px; color: var(--muted); margin-bottom: 8px; }
+  .cover .version { font-size: 14px; color: var(--muted); margin-bottom: 40px; }
+  .cover .meta { font-size: 13px; color: var(--muted); }
+  .cover .meta span { margin: 0 8px; }
+
+  /* ===== TOC ===== */
+  .toc-page {
+    padding: 50px 40px;
+    page-break-after: always;
+  }
+  .toc-page h2 { font-size: 28px; margin-bottom: 24px; }
+  .toc-list { list-style: none; }
+  .toc-list li { border-bottom: 1px solid #eee; }
+  .toc-list a {
+    display: flex; justify-content: space-between; padding: 12px 0;
+    text-decoration: none; color: var(--text); font-size: 15px;
+  }
+  .toc-list a:hover { color: var(--red); }
+  .toc-list .toc-num { color: var(--muted); font-weight: 600; min-width: 40px; }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content { max-width: 860px; margin: 0 auto; padding: 40px 30px 80px; }
+
+  h1 { font-size: 32px; margin-bottom: 12px; letter-spacing: -.5px; }
+  h2 { font-size: 24px; margin: 50px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--red-light); letter-spacing: -.3px; }
+  h3 { font-size: 18px; margin: 28px 0 10px; }
+  h4 { font-size: 15px; margin: 20px 0 8px; color: var(--muted); }
+
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 8px 0 16px 22px; }
+  li { margin-bottom: 5px; }
+
+  code {
+    padding: 2px 7px; border-radius: 5px; background: #f0f1f3;
+    font: 12.5px/1.5 "SF Mono", "Cascadia Code", "Consolas", "Menlo", monospace;
+    color: #d32f40;
+  }
+  pre {
+    margin: 14px 0; padding: 16px 18px; border-radius: 10px;
+    background: #f5f6f8; border: 1px solid var(--border);
+    font: 12.5px/1.65 "SF Mono", "Cascadia Code", "Consolas", "Menlo", monospace;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+  }
+  pre code { padding: 0; background: none; color: #30353e; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { padding: 10px 14px; border: 1px solid #e4e7ec; text-align: left; }
+  th { background: #f7f8fa; font-weight: 700; }
+  tr:nth-child(even) { background: #fafbfc; }
+
+  .note {
+    margin: 16px 0; padding: 14px 18px; border-left: 4px solid #4a90d9;
+    background: #f3f7fc; border-radius: 0 8px 8px 0; font-size: 13px;
+  }
+  .note strong { color: #2c6cb0; }
+  .warning {
+    margin: 16px 0; padding: 14px 18px; border-left: 4px solid var(--warning);
+    background: #fff9f0; border-radius: 0 8px 8px 0; font-size: 13px;
+  }
+  .warning strong { color: #b87a0a; }
+  .tip {
+    margin: 16px 0; padding: 14px 18px; border-left: 4px solid var(--success);
+    background: #f2faf6; border-radius: 0 8px 8px 0; font-size: 13px;
+  }
+  .tip strong { color: #1d7a49; }
+
+  /* ===== UI MOCKUPS ===== */
+  .ui-mockup {
+    margin: 20px 0; padding: 24px; border: 1.5px solid #d9dde3;
+    border-radius: 14px; background: #fafbfc;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+  }
+  .ui-mockup-title {
+    font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase;
+    letter-spacing: 1.2px; margin-bottom: 14px;
+  }
+
+  /* Sidebar mockup */
+  .mock-sidebar {
+    display: flex; gap: 18px;
+  }
+  .mock-sidebar-nav {
+    width: 200px; flex-shrink: 0; padding: 14px; background: #eef0f4;
+    border-radius: 10px; font-size: 12px;
+  }
+  .mock-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .mock-brand-icon {
+    width: 30px; height: 30px; display: grid; place-items: center;
+    border-radius: 8px; color: #fff; background: var(--red); font-weight: 800; font-size: 15px;
+  }
+  .mock-nav-btn {
+    display: block; width: 100%; padding: 7px 10px; margin-bottom: 4px;
+    border-radius: 7px; text-align: left; font-size: 11px; border: 0; cursor: default;
+  }
+  .mock-nav-btn.active { background: #fff; color: var(--red); font-weight: 700; }
+  .mock-nav-btn:not(.active) { background: transparent; color: #5a5e66; }
+  .mock-device-item {
+    display: flex; align-items: center; gap: 8px; padding: 7px 8px;
+    margin-bottom: 3px; border-radius: 7px; font-size: 11px;
+  }
+  .mock-device-item.online { background: #fff; }
+  .mock-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mock-dot.green { background: var(--success); }
+  .mock-dot.gray { background: #bbb; }
+
+  .mock-main {
+    flex: 1; min-width: 0; padding: 14px; background: #fff;
+    border-radius: 10px; border: 1px solid #e8eaee;
+  }
+  .mock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .mock-header h3 { font-size: 16px; margin: 0; padding: 0; border: 0; }
+  .mock-btns { display: flex; gap: 6px; }
+  .mock-btn {
+    padding: 5px 11px; border-radius: 6px; font-size: 10px; border: 1px solid #d5d8dd;
+    background: #f0f2f5; cursor: default;
+  }
+  .mock-btn.primary { background: var(--red); color: #fff; border-color: var(--red); }
+  .mock-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mock-card {
+    padding: 12px; border: 1px solid #e6e9ee; border-radius: 10px; font-size: 11px;
+  }
+  .mock-card h4 { font-size: 13px; margin: 0 0 6px; padding: 0; border: 0; color: var(--text); }
+  .mock-slider {
+    height: 5px; border-radius: 99px; background: #e5e8ed; margin: 8px 0;
+    position: relative;
+  }
+  .mock-slider::after {
+    content: ""; position: absolute; left: 40%; top: -3px;
+    width: 14px; height: 14px; border-radius: 50%; background: var(--red);
+  }
+  .mock-big-num { font-size: 32px; font-weight: 760; color: var(--text); }
+  .mock-big-num::before { content: "-"; }
+  .mock-unit { font-size: 13px; color: var(--muted); margin-left: 3px; }
+  .mock-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 99px;
+    font-size: 10px; font-weight: 700;
+  }
+  .mock-tag.red { background: #d33232; color: #fff; }
+  .mock-tag.green { background: #25a156; color: #fff; }
+  .mock-log-area {
+    height: 60px; margin-top: 8px; border-radius: 6px; background: #f4f5f7;
+    padding: 8px; font-family: monospace; font-size: 9px; color: #666;
+    overflow: hidden;
+  }
+
+  /* Tester mockup */
+  .mock-tester { margin-top: 12px; }
+  .mock-tester h4 { font-size: 13px; margin: 0 0 8px; }
+  .mock-tester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mock-tester-card {
+    padding: 10px; border: 1px solid #e6e9ee; border-radius: 8px; font-size: 10px;
+  }
+  .mock-step {
+    display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+    border: 1px solid #e6e9ee; border-radius: 6px; margin-bottom: 4px; font-size: 10px;
+  }
+  .mock-step-num {
+    width: 20px; height: 20px; display: grid; place-items: center;
+    border-radius: 99px; background: var(--red); color: #fff; font-size: 10px; font-weight: 800;
+  }
+
+  /* Key indicator */
+  .key-box {
+    display: inline-block; min-width: 50px; padding: 4px 10px;
+    border: 1px solid #c8ccd2; border-radius: 6px; background: #fff;
+    font: 11px/1.5 monospace; text-align: center; margin: 0 2px;
+  }
+
+  /* Page break */
+  .page-break { page-break-before: always; }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding: 30px; color: var(--muted);
+    font-size: 12px; border-top: 1px solid #eee; margin-top: 60px;
+  }
+
+  /* Print styles */
+  @media print {
+    body { font-size: 12px; line-height: 1.6; }
+    .cover { min-height: 100vh; }
+    h2 { break-after: avoid; }
+    h3 { break-after: avoid; }
+    .ui-mockup { break-inside: avoid; }
+    pre { break-inside: avoid; white-space: pre-wrap; }
+    table { break-inside: avoid; }
+    .note, .warning, .tip { break-inside: avoid; }
+    a { color: var(--text); text-decoration: none; }
+  }
+
+  @media screen and (max-width: 700px) {
+    .main-content { padding: 20px 16px; }
+    .mock-sidebar { flex-direction: column; }
+    .mock-sidebar-nav { width: 100%; }
+    .mock-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== COVER ========== -->
+<section class="cover">
+  <div class="cover-logo">Z</div>
+  <h1>ZYA1000 上位机软件</h1>
+  <p class="subtitle">使用说明书</p>
+  <p class="version">版本 1.4.1</p>
+  <p class="meta">
+    <span>适用产品：ZYC100 射频控制器</span>
+    <span>·</span>
+    <span>文档版本：V1.0</span>
+  </p>
+</section>
+
+<!-- ========== TABLE OF CONTENTS ========== -->
+<section class="toc-page">
+  <h2>目录</h2>
+  <ol class="toc-list">
+    <li><a href="#ch1"><span class="toc-num">1.</span> 产品概述</a></li>
+    <li><a href="#ch2"><span class="toc-num">2.</span> 安装与启动</a></li>
+    <li><a href="#ch3"><span class="toc-num">3.</span> 主界面概览</a></li>
+    <li><a href="#ch4"><span class="toc-num">4.</span> 设备连接</a></li>
+    <li><a href="#ch5"><span class="toc-num">5.</span> 衰减控制</a></li>
+    <li><a href="#ch6"><span class="toc-num">6.</span> RF 开关与输出使能</a></li>
+    <li><a href="#ch7"><span class="toc-num">7.</span> 电池与设备信息</a></li>
+    <li><a href="#ch8"><span class="toc-num">8.</span> 多设备管理</a></li>
+    <li><a href="#ch9"><span class="toc-num">9.</span> 插入损耗补偿</a></li>
+    <li><a href="#ch10"><span class="toc-num">10.</span> 通信日志</a></li>
+    <li><a href="#ch11"><span class="toc-num">11.</span> 外部控制桥 (TCP Bridge)</a></li>
+    <li><a href="#ch12"><span class="toc-num">12.</span> 自动化测试工具</a></li>
+    <li><a href="#ch13"><span class="toc-num">13.</span> 快捷键设置</a></li>
+    <li><a href="#ch14"><span class="toc-num">14.</span> 常见问题与排错</a></li>
+    <li><a href="#ch15"><span class="toc-num">15.</span> AT 指令参考</a></li>
+  </ol>
+</section>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+
+<!-- Chapter 1 -->
+<h2 id="ch1">1. 产品概述</h2>
+
+<p>ZYA1000 是专为 <strong>ZYC100 射频控制器</strong>设计的新一代轻量桌面控制软件，基于 Rust + Tauri 构建，运行于 macOS 和 Windows 平台。它通过 USB CDC 或 UART 串口与设备通信，提供直观的图形化操作界面，支持设备发现、衰减控制、RF 开关、多设备管理、插入损耗补偿、自动化测试以及外部程序控制桥接等完整功能。</p>
+
+<h3>1.1 核心功能一览</h3>
+<table>
+  <tr><th>功能模块</th><th>说明</th></tr>
+  <tr><td>设备自动发现</td><td>自动扫描并连接 VID 0x0483 / PID 0x5740 的 USB CDC 设备</td></tr>
+  <tr><td>手动 UART</td><td>支持手动选择串口，固定 115200 波特率，UART 默认禁用 RF 开关</td></tr>
+  <tr><td>衰减控制</td><td>范围 0.00–31.75 dB，0.25 dB 步进量化，支持滑条/滚轮/直接输入</td></tr>
+  <tr><td>RF 控制</td><td>RF1/RF2 通道切换、输出使能开关、同步控制</td></tr>
+  <tr><td>多设备管理</td><td>平铺视图、设备别名、右键操作、拖动排序、批量删除</td></tr>
+  <tr><td>插入损耗补偿</td><td>支持 CSV 查找表、多项式公式、Touchstone S2P 文件导入，REL/TRU 模式切换</td></tr>
+  <tr><td>通信日志</td><td>带时间戳的完整通信记录，自动覆盖、本地保存</td></tr>
+  <tr><td>外部控制桥</td><td>TCP 127.0.0.1:19100，支持 AT 指令透传和 JSONL 协议</td></tr>
+  <tr><td>自动化测试</td><td>独立窗口，时间线流程、循环、变量、高速扫描、多配置管理</td></tr>
+</table>
+
+<h3>1.2 系统要求</h3>
+<table>
+  <tr><th>平台</th><th>要求</th></tr>
+  <tr><td>macOS</td><td>macOS 11 (Big Sur) 及以上，Apple Silicon 或 Intel 处理器</td></tr>
+  <tr><td>Windows</td><td>Windows 10/11 x64，需安装 WebView2 Runtime（通常系统已内置）</td></tr>
+  <tr><td>USB 驱动</td><td>macOS 免驱；Windows 需安装 STM32 Virtual COM Port 驱动</td></tr>
+</table>
+
+<!-- Chapter 2 -->
+<h2 id="ch2">2. 安装与启动</h2>
+
+<h3>2.1 macOS 安装</h3>
+<ol>
+  <li>从发布页面下载 <code>ZYA1000.dmg</code> 磁盘映像文件。</li>
+  <li>双击打开 DMG，将 <strong>ZYA1000</strong> 图标拖入 <strong>Applications</strong> 文件夹。</li>
+  <li>首次打开时，若系统提示"无法验证开发者"，请前往 <strong>系统设置 → 隐私与安全性</strong>，点击"仍要打开"。</li>
+  <li>启动后，macOS 菜单栏将显示完整的"设备 / 视图 / 工具 / 帮助"菜单。</li>
+</ol>
+
+<h3>2.2 Windows 安装</h3>
+<ol>
+  <li>下载 <code>ZYA1000_Setup.exe</code> 安装程序或可携式 <code>ZYA1000.zip</code>。</li>
+  <li>运行安装程序，按照向导完成安装。</li>
+  <li>如果使用可携式版本，解压后直接运行 <code>ZYA1000.exe</code> 即可。</li>
+  <li>首次运行前确保 ZYC100 设备已通过 USB 连接，且驱动已正确安装。</li>
+</ol>
+
+<div class="tip"><strong>提示：</strong>如果 Windows 下设备未被识别，请安装 <a href="https://www.st.com/en/development-tools/stsw-stm32102.html" target="_blank">STM32 VCP 驱动</a>。</div>
+
+<!-- Chapter 3 -->
+<h2 id="ch3">3. 主界面概览</h2>
+
+<p>ZYA1000 主界面采用经典的双栏布局：左侧为设备侧边栏，右侧为主内容区。</p>
+
+<div class="ui-mockup">
+  <div class="ui-mockup-title">主界面布局示意</div>
+  <div class="mock-sidebar">
+    <!-- Sidebar -->
+    <div class="mock-sidebar-nav">
+      <div class="mock-brand">
+        <div class="mock-brand-icon">Z</div>
+        <div><strong>ZYA1000</strong><br><small style="color:#888">RF CONTROL</small></div>
+      </div>
+      <div class="mock-nav-btn active">⌁ 设备控制</div>
+      <div class="mock-nav-btn">▦ 多设备平铺</div>
+      <div style="color:#888;font-size:10px;margin:10px 0 4px;font-weight:700;">设备</div>
+      <div class="mock-device-item online">
+        <div class="mock-dot green"></div>
+        <div><strong>ZYC100-0001</strong><br><small style="color:#888">USB</small></div>
+      </div>
+      <div class="mock-device-item">
+        <div class="mock-dot gray"></div>
+        <div><span style="color:#888">ZYC100-0002</span><br><small style="color:#aaa">离线</small></div>
+      </div>
+      <div style="margin-top:auto;padding-top:12px;">
+        <div class="mock-btn" style="width:100%;text-align:center;">＋ 添加 UART</div>
+        <div style="font-size:9px;color:#aaa;text-align:center;margin:6px 0;">正在扫描 USB…</div>
+      </div>
+    </div>
+    <!-- Main -->
+    <div class="mock-main">
+      <div class="mock-header">
+        <h3>ZYC100-0001</h3>
+        <div class="mock-btns">
+          <div class="mock-btn">连接</div>
+          <div class="mock-btn">同步已关闭</div>
+        </div>
+      </div>
+      <div class="mock-cards">
+        <div class="mock-card">
+          <h4>衰减控制</h4>
+          <div style="display:flex;align-items:baseline;gap:4px;margin:8px 0;">
+            <span class="mock-big-num">10.25</span><span class="mock-unit">dB</span>
+          </div>
+          <div style="display:flex;gap:4px;margin-bottom:6px;">
+            <span class="mock-tag red">REL</span>
+            <span style="font-size:10px;color:#888;">@ 2.400 GHz</span>
+          </div>
+          <div class="mock-slider"></div>
+          <div style="display:flex;gap:6px;justify-content:space-between;">
+            <div class="mock-btn" style="flex:1;text-align:center;">−</div>
+            <div style="font-size:10px;color:#888;padding-top:5px;">步进 0.25</div>
+            <div class="mock-btn" style="flex:1;text-align:center;">+</div>
+          </div>
+        </div>
+        <div class="mock-card">
+          <h4>电池</h4>
+          <div style="font-size:24px;font-weight:700;">85%</div>
+          <div style="font-size:10px;color:var(--success);">充电中</div>
+          <div style="height:6px;background:#e5e8ed;border-radius:99px;margin:6px 0;"><div style="width:85%;height:100%;background:var(--success);border-radius:99px;"></div></div>
+          <div style="font-size:10px;color:#888;">电压 4.10 V</div>
+        </div>
+      </div>
+      <div class="mock-cards" style="margin-top:10px;">
+        <div class="mock-card">
+          <h4>RF 开关</h4>
+          <div style="display:flex;gap:6px;">
+            <div class="mock-btn primary">RF1</div>
+            <div class="mock-btn">RF2</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <div class="mock-btn primary" style="width:60px;">启用</div>
+            <span style="font-size:10px;color:var(--success);">输出已开启</span>
+          </div>
+        </div>
+        <div class="mock-card">
+          <h4>通信日志</h4>
+          <div class="mock-log-area">
+            <div>10:23:15 > at+GetAttenuationVal?</div>
+            <div>10:23:15 < +ATTENUATION:10.25</div>
+            <div>10:23:30 > at+GetBattery?</div>
+            <div>10:23:30 < +BATTERY:85,4.10,1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p>界面主要区域说明：</p>
+<ul>
+  <li><strong>品牌区：</strong>左上角显示 ZYA1000 标识和版本号。</li>
+  <li><strong>视图切换：</strong>"设备控制"显示当前选中设备的详细控制页；"多设备平铺"以卡片形式展示全部在线设备。</li>
+  <li><strong>设备列表：</strong>列出所有已连接和离线设备，绿色圆点表示在线，灰色表示离线。点击切换设备。</li>
+  <li><strong>底部操作：</strong>可手动添加 UART 设备，查看扫描状态，进入快捷键和帮助页面。</li>
+  <li><strong>主内容区：</strong>显示当前设备的衰减控制、电池、RF 开关、设备信息和通信日志等卡片。卡片可拖动标题栏交换位置，也可折叠。</li>
+</ul>
+
+<!-- Chapter 4 -->
+<h2 id="ch4" class="page-break">4. 设备连接</h2>
+
+<h3>4.1 USB 自动发现</h3>
+<p>ZYA1000 启动后自动扫描 VID <code>0x0483</code> / PID <code>0x5740</code> 的 USB CDC 设备。检测到 ZYC100 设备后会自动加入设备列表，无需手动操作。</p>
+<p>侧边栏底部显示扫描状态，点击刷新按钮 <strong>↻</strong> 可手动触发重新扫描。</p>
+
+<h3>4.2 手动添加 UART 设备</h3>
+<ol>
+  <li>点击侧边栏底部的 <strong>＋ 添加 UART</strong> 按钮。</li>
+  <li>在弹出的对话框中选择对应的串口（macOS 下如 <code>/dev/tty.usbmodem*</code>，Windows 下如 <code>COM3</code>）。</li>
+  <li>点击 <strong>连接</strong>，ZYA1000 将自动验证设备身份。</li>
+</ol>
+
+<div class="warning">
+  <strong>注意：</strong>UART 模式下默认禁用 RF 开关功能，避免切换模式时串口异常退出。如需使用 RF 开关，请通过 USB CDC 连接设备。
+</div>
+
+<h3>4.3 连接与断开</h3>
+<p>在设备列表中右键点击设备名称，选择"连接 / 断开"可在连接状态间切换。也可通过快捷键（macOS: <span class="key-box">⌘D</span>，Windows: <span class="key-box">Ctrl+D</span>）快速操作。</p>
+
+<h3>4.4 设备别名</h3>
+<p>右键设备选择"重命名"，或点击设备标题旁的铅笔图标 ✏️，可为设备设置别名。别名保存在本地，便于多设备场景下区分。留空保存可恢复默认名称。</p>
+
+<!-- Chapter 5 -->
+<h2 id="ch5">5. 衰减控制</h2>
+
+<h3>5.1 基本操作</h3>
+<p>衰减控制卡片提供三种调节方式：</p>
+<ul>
+  <li><strong>滑条拖动：</strong>拖动滑块快速调整衰减值，实时生效。</li>
+  <li><strong>滚轮调节：</strong>鼠标悬停在衰减数值上，使用滚轮以当前步进值增减。</li>
+  <li><strong>直接输入：</strong>点击衰减数值进入编辑模式，输入目标值后按回车确认。</li>
+  <li><strong>步进按钮：</strong>点击 <strong>− / +</strong> 按钮按当前步进值增减衰减。</li>
+</ul>
+
+<p>衰减范围 <strong>0.00 – 31.75 dB</strong>，所有输入自动按 <strong>0.25 dB</strong> 量化取整。</p>
+
+<h3>5.2 步进值设置</h3>
+<p>步进值默认为 <strong>0.25 dB</strong>，可在步进输入框中修改。有效范围 0.25 – 31.75 dB，修改后自动量化。此设置会通过快捷键同步影响衰减增减操作。</p>
+
+<h3>5.3 REL / TRU 模式</h3>
+<p>衰减控制支持两种工作模式：</p>
+<table>
+  <tr><th>模式</th><th>标识</th><th>说明</th></tr>
+  <tr><td>REL（相对衰减）</td><td><span class="mock-tag red">REL</span></td><td>直接设置衰减器的衰减值，不附加任何补偿。</td></tr>
+  <tr><td>TRU（真实衰减）</td><td><span class="mock-tag green">TRU</span></td><td>在主衰减值基础上加入设备插入损耗补偿，使实际输出达到目标真值。需要先导入补偿数据。</td></tr>
+</table>
+
+<p>点击 REL/TRU 标签可在两种模式间切换。切换到 TRU 模式时会弹出确认框，显示当前补偿数据来源和补偿值。</p>
+
+<div class="note">
+  <strong>频率关联：</strong>REL/TRU 标签旁显示 <code>@ X.XXX GHz</code>，表示当前用于补偿计算的频率点。TRU 模式下，频率值影响插入损耗补偿的计算结果。
+</div>
+
+<!-- Chapter 6 -->
+<h2 id="ch6">6. RF 开关与输出使能</h2>
+
+<h3>6.1 通道选择</h3>
+<p>RF 开关卡片提供 <strong>RF1</strong> 和 <strong>RF2</strong> 两个通道按钮。当前选中通道高亮显示为红色。切换通道时，新通道即刻生效。</p>
+
+<p>快捷键：macOS <span class="key-box">⌘1</span>/<span class="key-box">⌘2</span>，Windows <span class="key-box">Ctrl+1</span>/<span class="key-box">Ctrl+2</span>。</p>
+
+<h3>6.2 输出使能</h3>
+<p>输出使能开关控制 RF 信号的输出状态：</p>
+<ul>
+  <li><strong>开启（绿色）：</strong>RF 信号正常输出。</li>
+  <li><strong>关闭（灰色）：</strong>RF 输出被禁用。</li>
+</ul>
+
+<p>快捷键：macOS <span class="key-box">⌘E</span>，Windows <span class="key-box">Ctrl+E</span>。</p>
+
+<h3>6.3 同步控制</h3>
+<p>开启同步控制后，衰减和 RF 操作会同步应用到所有在线设备。此功能适用于需要多设备保持一致状态的场景。</p>
+
+<p>快捷键：macOS <span class="key-box">⌘⇧S</span>，Windows <span class="key-box">Ctrl+Shift+S</span>。</p>
+
+<!-- Chapter 7 -->
+<h2 id="ch7">7. 电池与设备信息</h2>
+
+<h3>7.1 电池状态</h3>
+<p>电池卡片显示：</p>
+<ul>
+  <li><strong>电量百分比：</strong>大号数字显示剩余电量。</li>
+  <li><strong>电池条：</strong>可视化电量进度条，绿色渐变填充。</li>
+  <li><strong>电压值：</strong>当前电池电压（V）。</li>
+  <li><strong>充电状态：</strong>充电中 / 已充满 / 放电中。</li>
+</ul>
+
+<div class="warning">
+  <strong>低电量提醒：</strong>当电量低于设定阈值时，界面会显示低电量警告。请及时为设备充电以保证正常工作。
+</div>
+
+<h3>7.2 设备信息</h3>
+<p>设备信息卡片展示当前连接设备的详细参数：</p>
+<ul>
+  <li>硬件版本、固件版本</li>
+  <li>设备序列号</li>
+  <li>连接方式（USB / UART）</li>
+  <li>端口名称</li>
+</ul>
+
+<!-- Chapter 8 -->
+<h2 id="ch8">8. 多设备管理</h2>
+
+<h3>8.1 多设备平铺视图</h3>
+<p>点击侧边栏的 <strong>▦ 多设备平铺</strong> 切换到平铺视图。所有在线设备以卡片形式排列（每行最多 3 列），每张卡片独立显示衰减值、RF 通道和输出状态。</p>
+
+<p>平铺模式下支持：</p>
+<ul>
+  <li>独立调节每个设备的衰减值（直接输入或滚轮）</li>
+  <li>每个设备独立切换 REL/TRU 模式和频率设定</li>
+  <li>RF 通道和输出使能快速切换</li>
+</ul>
+
+<p>快捷键：macOS <span class="key-box">⌘T</span>，Windows <span class="key-box">Ctrl+T</span>。</p>
+
+<h3>8.2 设备管理</h3>
+<p>右键点击设备列表中的设备，弹出上下文菜单：</p>
+<ul>
+  <li><strong>重命名：</strong>设置设备别名</li>
+  <li><strong>连接 / 断开：</strong>切换连接状态</li>
+  <li><strong>向上移动 / 向下移动：</strong>调整设备在列表中的顺序</li>
+  <li><strong>添加 UART…：</strong>手动添加串口设备</li>
+  <li><strong>设备管理…：</strong>打开设备管理对话框，可批量选择并删除已断开/离线设备（在线设备不可删除）</li>
+</ul>
+
+<h3>8.3 拖动排序</h3>
+<p>在设备列表中直接拖动设备项可调整顺序。排序结果会自动保存。</p>
+
+<!-- Chapter 9 -->
+<h2 id="ch9" class="page-break">9. 插入损耗补偿</h2>
+
+<p>插入损耗补偿功能允许将测试线缆、转接头等器件的 S 参数纳入衰减控制，实现 <strong>真实衰减值 (TRU)</strong> 输出。补偿数据按设备序列号独立保存。</p>
+
+<h3>9.1 导入补偿数据</h3>
+<ol>
+  <li>在衰减控制卡片中，点击 REL/TRU 标签旁的区域，打开补偿导入对话框。</li>
+  <li>选择补偿数据类型：</li>
+</ol>
+
+<table>
+  <tr><th>类型</th><th>说明</th></tr>
+  <tr><td><strong>查找表 CSV</strong></td><td>导入两列 CSV 文件（频率 GHz, 插入损耗 dB），按频点线性插值。适合从矢量网络分析仪导出的离散数据。</td></tr>
+  <tr><td><strong>公式</strong></td><td>输入多项式公式，如 <code>S_{21}=-1.17217-0.30125f-0.01049f^2</code>，其中 f 为频率（GHz），结果作为 S21 插入损耗。</td></tr>
+  <tr><td><strong>Touchstone S2P</strong></td><td>导入标准 Touchstone S2P 文件，自动提取 S21 参数并按频率线性插值。支持 DB、MA 和 RI 格式。</td></tr>
+</table>
+
+<div class="note">
+  <strong>覆盖警告：</strong>如果当前设备已有补偿数据，重新导入前会显示覆盖警告。覆盖后原配置无法自动恢复。
+</div>
+
+<h3>9.2 切换到 TRU 模式</h3>
+<p>导入补偿数据后，点击 REL 标签切换到 TRU 模式。系统弹出确认框，显示：</p>
+<ul>
+  <li>数据来源（CSV / S2P / 公式）</li>
+  <li>配置文件路径</li>
+  <li>当前频率</li>
+  <li>补偿值</li>
+</ul>
+<p>确认后，主衰减显示将切换为 TRU 模式（绿色标识），设备通过双参数 AT 指令同步控制衰减值和真实值。</p>
+
+<!-- Chapter 10 -->
+<h2 id="ch10">10. 通信日志</h2>
+
+<h3>10.1 日志查看</h3>
+<p>通信日志卡片实时显示与设备的 AT 指令交互记录：</p>
+<ul>
+  <li><strong>发送指令：</strong>以 <code>></code> 前缀显示</li>
+  <li><strong>接收回复：</strong>以 <code><</code> 前缀显示</li>
+  <li>每条日志附带本地时间戳</li>
+  <li>自动滚动到最新记录</li>
+</ul>
+
+<h3>10.2 日志保留设置</h3>
+<p>日志保留时长可设置为 <strong>5分钟 / 15分钟 / 1小时 / 24小时</strong>，超过设定时长的日志自动清理。适合长时间运行场景下控制内存使用。</p>
+
+<h3>10.3 保存日志</h3>
+<p>点击日志卡片底部的 <strong>保存</strong> 按钮，通过系统另存为对话框选择保存位置和文件名。默认目录为 <code>Documents/ZYA1000/logs</code>。</p>
+
+<h3>10.4 自动刷新</h3>
+<p>每个设备可独立配置自动刷新开关和刷新间隔。开启后，ZYA1000 按设定间隔自动查询设备状态（电池等），更新界面显示。关闭后不再后台查询，减少串口通信负载。</p>
+
+<!-- Chapter 11 -->
+<h2 id="ch11">11. 外部控制桥 (TCP Bridge)</h2>
+
+<p>ZYA1000 启动后自动在本机开启 TCP 控制桥服务，监听 <code>127.0.0.1:19100</code>。第三方程序（如 LabVIEW、Python 脚本、自动化测试框架）可通过此端口控制 ZYC100 设备。</p>
+
+<h3>11.1 AT 指令透传</h3>
+<p>直接发送公开 AT 指令行，未指定设备时默认使用第一台在线设备：</p>
+
+<pre><code>at+Connect?
+at+SetAttenuationVal=`10.25`
+at+GetBattery?</code></pre>
+
+<h3>11.2 多设备寻址</h3>
+<p>支持多种设备选择器语法，精确指定目标设备：</p>
+
+<pre><code># ZYA1000 内部 key
+zya:dev=SERIAL;at+GetBattery?
+
+# 指定端口名
+zya:send=usb:SERIAL;at+SetAttenuationVal=`10.25`
+
+# SCPI 风格
+ZYA1000::SERIAL::INSTR at+Connect?
+
+# 短后缀（不冲突时可用）
+ZY:SERIAL at+GetAttenuationVal?</code></pre>
+
+<h3>11.3 JSONL 协议</h3>
+<p>每行一个 JSON 请求，支持结构化交互：</p>
+
+<pre><code>{"cmd":"hello"}
+{"cmd":"list"}
+{"cmd":"send","at":"at+Connect?"}
+{"cmd":"send","device":"SERIAL","at":"at+SetAttenuationVal=`10.25`"}</code></pre>
+
+<table>
+  <tr><th>命令</th><th>说明</th></tr>
+  <tr><td><code>hello</code></td><td>握手/连通性检测，返回版本信息</td></tr>
+  <tr><td><code>list</code></td><td>列出所有在线设备及其信息</td></tr>
+  <tr><td><code>status</code></td><td>查询指定设备状态</td></tr>
+  <tr><td><code>send</code></td><td>向指定设备发送 AT 指令</td></tr>
+</table>
+
+<div class="warning">
+  <strong>安全限制：</strong>控制桥默认拒绝内部维护类高风险 AT 指令，仅开放公开操作指令，降低商业集成中的误操作风险。桥接服务仅绑定 127.0.0.1，不可从外部网络访问。
+</div>
+
+<div class="tip">
+  <strong>虚拟串口扩展：</strong>如需在系统设备管理器中出现 COM/tty 虚拟串口，可在 TCP 桥外层使用 com0com（Windows）、socat（Linux/macOS）或专用驱动进行桥接。
+</div>
+
+<!-- Chapter 12 -->
+<h2 id="ch12" class="page-break">12. 自动化测试工具</h2>
+
+<p>菜单 <strong>工具 → 自动化测试工具…</strong> 打开独立窗口，提供完整的自动化测试能力，适用于调试、集成验证和产线前置检查。</p>
+
+<div class="ui-mockup">
+  <div class="ui-mockup-title">自动化测试工具界面示意</div>
+  <div class="mock-tester">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div class="mock-brand-icon" style="width:28px;height:28px;font-size:13px;">Z</div>
+      <div><strong>自动化测试工具</strong><br><small style="font-size:10px;color:#888;">TCP / COM 快速验证、设备检测、指令下发与时间线自动化</small></div>
+    </div>
+    <div class="mock-tester-grid">
+      <div class="mock-tester-card">
+        <strong>连接目标</strong>
+        <div style="margin-top:5px;font-size:10px;">
+          <div>连接方式: TCP 控制桥</div>
+          <div>地址: 127.0.0.1:19100</div>
+          <div>设备选择器: name:ZYC100</div>
+        </div>
+      </div>
+      <div class="mock-tester-card">
+        <strong>快速测试</strong>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px;">
+          <div class="mock-btn" style="font-size:9px;">在线设备检测</div>
+          <div class="mock-btn" style="font-size:9px;">查询身份</div>
+          <div class="mock-btn" style="font-size:9px;">查询衰减</div>
+          <div class="mock-btn" style="font-size:9px;">查询电池</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <strong style="font-size:13px;">自动化时间线</strong>
+      <div style="margin-top:6px;">
+        <div class="mock-step">
+          <div class="mock-step-num">1</div>
+          <div>at+Connect?</div>
+          <div style="font-size:9px;color:#888;">延迟 1000ms</div>
+          <div style="font-size:9px;color:#888;">name:ZYC100</div>
+        </div>
+        <div class="mock-step">
+          <div class="mock-step-num">2</div>
+          <div>at+SetAttenuationVal=10.25</div>
+          <div style="font-size:9px;color:#888;">延迟 500ms</div>
+          <div style="font-size:9px;color:#888;">name:ZYC100</div>
+        </div>
+        <div class="mock-step" style="background:#fff8ed;border-color:#f1d6a5;">
+          <div class="mock-step-num">3</div>
+          <div>🔁 循环开始 (10次)</div>
+          <div style="font-size:9px;color:#888;">按次数</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <div class="mock-btn" style="font-size:9px;">运行自动化</div>
+        <div class="mock-btn" style="font-size:9px;">停止</div>
+        <span style="font-size:10px;color:#888;padding-top:5px;">未运行</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>12.1 连接方式</h3>
+<ul>
+  <li><strong>TCP 控制桥：</strong>通过 ZYA1000 内置桥接服务（127.0.0.1:19100）通信，支持多设备寻址。</li>
+  <li><strong>COM / 串口：</strong>直接连接物理串口，适合验证单台设备协议，固定 115200 波特率。</li>
+</ul>
+
+<h3>12.2 快速测试</h3>
+<p>提供一键测试按钮：</p>
+<ul>
+  <li><strong>在线设备检测：</strong>通过控制桥列出当前在线设备。</li>
+  <li><strong>查询身份：</strong>发送 <code>at+Connect?</code> 获取设备信息。</li>
+  <li><strong>查询衰减：</strong>读取当前衰减值。</li>
+  <li><strong>查询电池：</strong>读取电池状态。</li>
+</ul>
+<p>也可在快速指令框中手动输入任意 AT 指令并发送。</p>
+
+<h3>12.3 自动化时间线</h3>
+<p>时间线按行组织测试步骤，支持以下行类型：</p>
+
+<table>
+  <tr><th>行类型</th><th>说明</th></tr>
+  <tr><td><strong>命令 (Command)</strong></td><td>发送 AT 指令，可配置延迟（正数=发送后等待，负数=发送前等待）、设备选择器、条件和确认模式。</td></tr>
+  <tr><td><strong>波形 (Waveform)</strong></td><td>高精度衰减扫描/波形输出，按绝对时间轴执行采样点，支持同名多设备并行、dryRun 频率估算。</td></tr>
+  <tr><td><strong>循环开始 (Loop Start)</strong></td><td>定义循环条件：按次数、按持续时间或按指定回复结束。支持嵌套。</td></tr>
+  <tr><td><strong>循环结束 (Loop End)</strong></td><td>标记循环范围结束。</td></tr>
+</table>
+
+<h3>12.4 条件判断</h3>
+<p>命令可附加条件判断：根据设备回复内容决定是继续执行下一条还是跳转到指定行。条件支持：</p>
+<ul>
+  <li>包含 / 正则匹配 / 取反</li>
+  <li><code>&&</code> 和 <code>||</code> 多条件组合</li>
+</ul>
+
+<h3>12.5 变量</h3>
+<p>变量板块可定义变量名、变量值和中文注释。在命令中通过 <code>${变量名}</code> 或 <code>{{变量名}}</code> 引用，运行时自动替换为实际值。</p>
+
+<h3>12.6 配置管理</h3>
+<ul>
+  <li><strong>保存配置：</strong>将当前连接方式、变量和时间线一起保存，默认目录 <code>Documents/ZYA1000/configs</code>。</li>
+  <li><strong>调用配置：</strong>从下拉框选择已保存的配置快速切换测试流程。</li>
+  <li><strong>导入配置：</strong>导入 JSON 配置文件。</li>
+  <li><strong>代码编辑器：</strong>以 JSON 格式直接编辑变量和时间线，支持格式化、紧凑格式切换和 AI 提示词复制。</li>
+</ul>
+
+<h3>12.7 高速衰减扫描 (Waveform)</h3>
+<p>波形行专为高速衰减扫描设计：</p>
+<ul>
+  <li>采用 <code>performance.now()</code> 绝对时间轴调度</li>
+  <li>按 <code>start + n * intervalMs</code> 计算采样点</li>
+  <li>自动扣除通信耗时，减少时序抖动</li>
+  <li>支持同名多设备在同一采样点并行发送</li>
+  <li>dryRun 模式可估算理论频率</li>
+  <li>执行后输出时序统计：平均间隔、抖动、deadline miss、实际频率</li>
+</ul>
+
+<!-- Chapter 13 -->
+<h2 id="ch13">13. 快捷键设置</h2>
+
+<p>ZYA1000 支持自定义键盘快捷键，提高操作效率。</p>
+
+<h3>13.1 打开快捷键设置</h3>
+<p>点击侧边栏底部的 <strong>快捷键</strong> 按钮，或通过菜单 <strong>视图 → 快捷键…</strong> 打开设置对话框。</p>
+
+<h3>13.2 默认快捷键</h3>
+<table>
+  <tr><th>功能</th><th>macOS</th><th>Windows</th></tr>
+  <tr><td>衰减增加</td><td><span class="key-box">⌘↑</span></td><td><span class="key-box">Ctrl+↑</span></td></tr>
+  <tr><td>衰减减少</td><td><span class="key-box">⌘↓</span></td><td><span class="key-box">Ctrl+↓</span></td></tr>
+  <tr><td>刷新设备</td><td><span class="key-box">⌘R</span></td><td><span class="key-box">Ctrl+R</span></td></tr>
+  <tr><td>连接/断开</td><td><span class="key-box">⌘D</span></td><td><span class="key-box">Ctrl+D</span></td></tr>
+  <tr><td>同步控制</td><td><span class="key-box">⌘⇧S</span></td><td><span class="key-box">Ctrl+Shift+S</span></td></tr>
+  <tr><td>多设备平铺</td><td><span class="key-box">⌘T</span></td><td><span class="key-box">Ctrl+T</span></td></tr>
+  <tr><td>选择 RF1</td><td><span class="key-box">⌘1</span></td><td><span class="key-box">Ctrl+1</span></td></tr>
+  <tr><td>选择 RF2</td><td><span class="key-box">⌘2</span></td><td><span class="key-box">Ctrl+2</span></td></tr>
+  <tr><td>输出使能</td><td><span class="key-box">⌘E</span></td><td><span class="key-box">Ctrl+E</span></td></tr>
+</table>
+
+<h3>13.3 自定义快捷键</h3>
+<p>在快捷键对话框中点击任意快捷键框，然后直接按下目标组合键即可重新绑定。点击 <strong>恢复默认</strong> 可重置所有快捷键。</p>
+
+<div class="tip">
+  <strong>提示：</strong>快捷键仅在 ZYA1000 窗口位于前台时生效。快捷键设置保存在系统 WebView 的本地存储中，不会因软件升级而丢失。
+</div>
+
+<!-- Chapter 14 -->
+<h2 id="ch14">14. 常见问题与排错</h2>
+
+<h3>14.1 设备未被识别</h3>
+<ul>
+  <li>检查 USB 线缆是否正常连接，ZYC100 设备是否已上电。</li>
+  <li>Windows 用户请确认已安装 STM32 Virtual COM Port 驱动。</li>
+  <li>macOS 用户请检查 <strong>系统信息 → USB</strong> 中是否能看到 STM32 设备。</li>
+  <li>尝试点击侧边栏的刷新按钮 <strong>↻</strong> 手动扫描。</li>
+  <li>如果 USB 始终无法识别，尝试通过 <strong>添加 UART</strong> 手动连接。</li>
+</ul>
+
+<h3>14.2 衰减值无法设置</h3>
+<ul>
+  <li>确认设备处于在线状态（设备名前绿色圆点）。</li>
+  <li>确认输入值在 0.00–31.75 dB 范围内。</li>
+  <li>检查通信日志中是否有错误回包。</li>
+  <li>UART 模式下部分 RF 功能受限，建议切换到 USB CDC 连接。</li>
+</ul>
+
+<h3>14.3 补偿数据不生效</h3>
+<ul>
+  <li>确认已成功导入补偿数据（CSV/S2P/公式）。</li>
+  <li>确认已切换到 TRU 模式（标识为绿色）。</li>
+  <li>检查频率值是否在补偿数据的有效范围内。</li>
+  <li>CSV 文件确认格式为"频率(GHz), 插入损耗(dB)"两列。</li>
+</ul>
+
+<h3>14.4 外部控制桥连接失败</h3>
+<ul>
+  <li>确认 ZYA1000 正在运行，且至少有一台设备在线。</li>
+  <li>确认连接地址为 <code>127.0.0.1:19100</code>。</li>
+  <li>检查防火墙是否拦截了本地回环通信。</li>
+  <li>对于高风险维护指令，控制桥会主动拒绝，请使用公开 AT 指令。</li>
+</ul>
+
+<h3>14.5 自动化测试工具无响应</h3>
+<ul>
+  <li>确认连接方式与设备选择器配置正确。</li>
+  <li>TCP 模式下确认主程序正在运行且设备在线。</li>
+  <li>COM 模式下确认串口号和波特率（115200）正确。</li>
+  <li>点击 <strong>刷新设备</strong> 按钮重新读取在线设备列表。</li>
+</ul>
+
+<!-- Chapter 15 -->
+<h2 id="ch15">15. AT 指令参考</h2>
+
+<p>以下是 ZYC100 设备支持的公开 AT 指令列表，可通过 ZYA1000 界面或外部控制桥发送。</p>
+
+<h3>15.1 查询类指令</h3>
+<table>
+  <tr><th>指令</th><th>说明</th><th>回复示例</th></tr>
+  <tr><td><code>at+Connect?</code></td><td>查询设备身份信息</td><td><code>+CONNECT:ZYC100,V3.87,SN:0001</code></td></tr>
+  <tr><td><code>at+GetAttenuationVal?</code></td><td>查询当前衰减值</td><td><code>+ATTENUATION:10.25</code></td></tr>
+  <tr><td><code>at+GetBattery?</code></td><td>查询电池状态</td><td><code>+BATTERY:85,4.10,1</code></td></tr>
+  <tr><td><code>at+SW:PATH?</code></td><td>查询当前 RF 通道</td><td><code>+SW:PATH:1</code></td></tr>
+  <tr><td><code>at+SW:EN?</code></td><td>查询输出使能状态</td><td><code>+SW:EN:1</code></td></tr>
+</table>
+
+<h3>15.2 设置类指令</h3>
+<table>
+  <tr><th>指令</th><th>说明</th></tr>
+  <tr><td><code>at+SetAttenuationVal=`10.25`</code></td><td>设置衰减值为 10.25 dB（REL 模式）</td></tr>
+  <tr><td><code>at+SetTrueAttenuationVal=10.25,11.42</code></td><td>设置真实衰减值为 10.25 dB，补偿值 11.42 dB（TRU 模式）</td></tr>
+  <tr><td><code>at+SW:PATH=1</code></td><td>切换到 RF1 通道</td></tr>
+  <tr><td><code>at+SW:PATH=2</code></td><td>切换到 RF2 通道</td></tr>
+  <tr><td><code>at+SW:EN=1</code></td><td>开启 RF 输出</td></tr>
+  <tr><td><code>at+SW:EN=0</code></td><td>关闭 RF 输出</td></tr>
+</table>
+
+<div class="note">
+  <strong>参数说明：</strong>
+  <ul>
+    <li>电池回复格式：<code>+BATTERY:电量百分比,电压(V),充电状态</code>（充电状态：0=放电, 1=充电中, 2=已充满）</li>
+    <li>衰减值始终按 0.25 dB 量化，超出范围的值会被自动截断。</li>
+    <li>TRU 模式下，设备内部会自动计算并应用补偿后的衰减值。</li>
+  </ul>
+</div>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <p>ZXYH · ZYA1000 上位机软件使用说明书 · 版本 V1.0</p>
+  <p>适用软件版本：ZYA1000 v1.4.1 | 适用固件版本：ZYC100 V3.87+</p>
+</footer>
+
+</body>
+</html>

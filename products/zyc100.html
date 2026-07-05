@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZYC100 控制器</title>
+  <meta name="description" content="ZYC100 射频测试控制器，支持 OLED、本机操作、USB CDC、USART1 AT 指令、ZYE660 与 ZSW100 生态适配。">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="../index.html">
+        <div class="mark" aria-hidden="true">Z</div>
+        <span>ZYC100 控制器</span>
+      </a>
+      <div class="nav-links">
+        <a href="zyc100.html">ZYC100</a>
+        <a href="zye660.html">ZYE660</a>
+        <a href="../software/zya1000.html">ZYA1000</a>
+        <a href="../downloads.html">下载</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="page-hero">
+    <p class="eyebrow">Controller</p>
+    <h1>ZYC100 射频测试控制器</h1>
+    <p class="lead">ZYC100 面向射频模块控制、手动调试和自动化测试，可独立操作，也可通过 ZYA1000 上位机统一控制。它适配 ZYE660 衰减模块，并按 1+N 生态持续兼容 ZSW100 等后续设备。</p>
+  </section>
+
+  <main>
+    <section aria-labelledby="interface-title">
+      <h2 id="interface-title">接口与本机功能</h2>
+      <div class="grid three">
+        <article class="card">
+          <h3>通信接口</h3>
+          <ul class="list">
+            <li>USB CDC。</li>
+            <li>USART1 AT 指令。</li>
+            <li>可由上位机或第三方程序接入。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>本机界面</h3>
+          <ul class="list">
+            <li>OLED 显示衰减值、步进和工作状态。</li>
+            <li>支持 REL/TRU 状态显示。</li>
+            <li>按键本机操作，适合脱机调试。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>连接与供电</h3>
+          <ul class="list">
+            <li>ZYC100 控制器本体不含电池。</li>
+            <li>通过连接线与模块或上位机配合使用。</li>
+            <li>适合固定测试台和模块化系统集成。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="eco-title">
+      <h2 id="eco-title">生态适配</h2>
+      <div class="grid three">
+        <article class="card">
+          <span class="tag">ZYE660</span>
+          <h3>衰减模块</h3>
+          <p>ZYC100 可控制 ZYE660 的 PE43711 数字衰减通道，实现 0.25 dB 步进和自动化衰减扫描。</p>
+        </article>
+        <article class="card">
+          <span class="tag">ZSW100</span>
+          <h3>后续扩展</h3>
+          <p>ZSW100 作为 1+N 生态中的扩展设备，可与 ZYC100 控制器形成更多测试组合；具体规格以后续产品资料为准。</p>
+        </article>
+        <article class="card">
+          <span class="tag">ZYA1000</span>
+          <h3>上位机软件</h3>
+          <p>通过桌面软件完成设备发现、衰减控制、多设备管理、日志记录、补偿数据和自动化测试。</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="params-title">
+      <h2 id="params-title">核心参数</h2>
+      <div class="grid two">
+        <article class="card">
+          <h3>硬件</h3>
+          <ul class="list">
+            <li>主控：STM32F103CBTx。</li>
+            <li>显示：OLED。</li>
+            <li>供电：控制器本体不含电池，按实际组合方案供电。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>控制</h3>
+          <ul class="list">
+            <li>USB CDC / USART1 AT 指令。</li>
+            <li>支持本机按键操作。</li>
+            <li>支持 ZYA1000 上位机和第三方自动化接入。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <img class="footer-logo" src="../assets/zxyh-logo.png" alt="ZXYH">
+    <div class="footer-brand">智行远航科技出品</div>
+    <div class="footer-links">
+      <a href="../index.html">首页</a>
+      <a href="zye660.html">ZYE660</a>
+      <a href="../software/zya1000.html">ZYA1000</a>
+      <a href="../downloads.html">下载中心</a>
+    </div>
+  </footer>
+</body>
+</html>
