@@ -36,8 +36,8 @@
 
   /* TOC */
   .toc-page { max-width: 860px; margin: 0 auto; padding: 50px 40px; page-break-after: always; }
-  .toc-page h2 { font-size: 28px; margin-bottom: 24px; }
-  .toc-list { list-style: none; }
+  .toc-page h2 { font-size: 28px; margin-bottom: 24px; text-align: center; }
+  .toc-list { list-style: none; width: min(100%, 620px); margin: 0 auto; padding: 0; }
   .toc-list li { border-bottom: 1px solid #eee; }
   .toc-list a { display: block; padding: 11px 0; text-decoration: none; color: var(--text); font-size: 14px; }
   .toc-list a:hover { color: var(--red); }
@@ -77,6 +77,17 @@
   .warning strong { color: #b87a0a; }
   .tip { border-left: 4px solid var(--success); background: #f2faf6; }
   .tip strong { color: #1d7a49; }
+
+  .screenshot {
+    margin: 18px 0 22px; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.07);
+    break-inside: avoid;
+  }
+  .screenshot img { display: block; width: 100%; height: auto; }
+  .screenshot figcaption {
+    padding: 9px 12px; color: var(--muted); background: #fafbfc;
+    border-top: 1px solid var(--border); font-size: 12px;
+  }
 
   .quick-points {
     display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -466,6 +477,11 @@
 <h3>8.3 主界面布局</h3>
 
 <p>初次使用时，建议先关注左侧设备列表和右侧衰减控制卡片；确认通信正常后，再使用多设备平铺、补偿和自动化测试功能。</p>
+
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/设备控制页.png" alt="ZYA1000 设备控制页">
+  <figcaption>ZYA1000 设备控制页：用于连接 ZYC100 并完成衰减、RF、设备信息和通信日志等日常操作。</figcaption>
+</figure>
 
 <h3>8.4 REL/TRU 与插入损耗补偿</h3>
 <p>REL 表示相对衰减，直接设置衰减器衰减值。TRU 表示真实衰减，上位机根据插入损耗补偿数据计算补偿后的控制值，使实际链路接近目标真实衰减。</p>
