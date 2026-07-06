@@ -35,11 +35,11 @@
   .cover .meta span { margin: 0 8px; }
 
   /* TOC */
-  .toc-page { padding: 50px 40px; page-break-after: always; }
+  .toc-page { max-width: 860px; margin: 0 auto; padding: 50px 40px; page-break-after: always; }
   .toc-page h2 { font-size: 28px; margin-bottom: 24px; }
   .toc-list { list-style: none; }
   .toc-list li { border-bottom: 1px solid #eee; }
-  .toc-list a { display: flex; justify-content: space-between; padding: 11px 0; text-decoration: none; color: var(--text); font-size: 14px; }
+  .toc-list a { display: block; padding: 11px 0; text-decoration: none; color: var(--text); font-size: 14px; }
   .toc-list a:hover { color: var(--red); }
 
   /* Main */
@@ -77,6 +77,17 @@
   .warning strong { color: #b87a0a; }
   .tip { border-left: 4px solid var(--success); background: #f2faf6; }
   .tip strong { color: #1d7a49; }
+
+  .quick-points {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px; margin: 16px 0;
+  }
+  .quick-point {
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: #fafbfc;
+  }
+  .quick-point strong { display: block; margin-bottom: 4px; color: var(--text); }
+  .quick-point span { color: var(--muted); font-size: 13px; }
 
   /* UI Mockups */
   .ui-mockup {
@@ -155,6 +166,7 @@
   @media screen and (max-width: 700px) {
     .main-content { padding: 20px 16px; }
     .device-diagram { flex-direction: column; }
+    .quick-points { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -200,6 +212,12 @@
 <h2 id="ch1">1. 版本 5.0 更新说明</h2>
 
 <p>V5.0 说明书根据当前产品命名、硬件形态和 ZYA1000 上位机 v1.4.1 的最新功能重新整理。相比旧版 V4.0，本版重点强调 ZYC100 控制器、ZYE660 衰减模块和 ZYA1000 软件之间的模块化关系。</p>
+
+<div class="quick-points">
+  <div class="quick-point"><strong>先认清角色</strong><span>ZYC100 是控制器，ZYE660 是射频衰减模块，ZYA1000 是电脑端控制软件。</span></div>
+  <div class="quick-point"><strong>先完成连接</strong><span>装配和供电确认后，再进行本机操作、上位机连接或自动化控制。</span></div>
+  <div class="quick-point"><strong>先低速验证</strong><span>自动化扫描或批量测试前，先用单台设备验证衰减、RF 通道和通信日志。</span></div>
+</div>
 
 <table>
   <tr><th style="width:100px">项目</th><th>V5.0 说明</th></tr>
@@ -284,6 +302,12 @@
 <h3>4.1 电源模式设定（安装前必读）</h3>
 <p>控制器背面配备电源模式切换开关 (MODE SET)，分两种工作模式：</p>
 
+<div class="quick-points">
+  <div class="quick-point"><strong>无电池模式</strong><span>ZYC100 控制器本体按无电池设备理解，由 USB 或外部组合方案供电。</span></div>
+  <div class="quick-point"><strong>有电池模式</strong><span>仅用于接入支持电池的模块或版本，例如 ZYE660 离线版（升级版）。</span></div>
+  <div class="quick-point"><strong>先设模式再装配</strong><span>安装模块前确认 MODE SET、VCC SET 和模块拨码开关位置。</span></div>
+</div>
+
 <table>
   <tr><th style="width:130px">模式</th><th>开关位置</th><th>说明</th></tr>
   <tr>
@@ -342,6 +366,8 @@
 </table>
 
 <h3>5.2 衰减器控制操作（仅 ATT 模式）</h3>
+
+<p>ATT 模式用于控制数字衰减模块。日常只需要理解三个动作：调衰减值、改步进、进入菜单保存设置。</p>
 
 <div class="ui-mockup">
   <div class="ui-mockup-title">OLED 显示示意（ATT 模式）</div>
@@ -410,6 +436,12 @@
 
 <p>ZYA1000 是 ZYC100 系列的桌面控制软件，基于 Rust + Tauri 构建，运行于 Windows 和 macOS。当前说明基于 ZYA1000 v1.4.1 的功能整理。</p>
 
+<div class="quick-points">
+  <div class="quick-point"><strong>连接设备</strong><span>自动发现 USB CDC 设备，也可手动添加 UART 串口设备。</span></div>
+  <div class="quick-point"><strong>日常控制</strong><span>设置衰减、RF 通道、输出使能、设备别名和日志保留时间。</span></div>
+  <div class="quick-point"><strong>测试扩展</strong><span>支持多设备平铺、插入损耗补偿、TCP Bridge 和自动化时间线。</span></div>
+</div>
+
 <h3>8.1 核心功能一览</h3>
 <table>
   <tr><th style="width:100px">功能</th><th>说明</th></tr>
@@ -433,55 +465,7 @@
 
 <h3>8.3 主界面布局</h3>
 
-<div class="ui-mockup">
-  <div class="ui-mockup-title">ZYA1000 主界面示意</div>
-  <table style="margin:0;">
-    <tr><td style="width:160px;vertical-align:top;background:#eef0f4;border-radius:8px;padding:10px;font-size:11px;">
-      <strong>ZYA1000</strong><br>
-      <small style="color:#888;">v1.4.1 RF CONTROL</small><br><br>
-      <span style="color:var(--red);font-weight:700;">⌁ 设备控制</span><br>
-      ▦ 多设备平铺<br><br>
-      <small style="color:#888;">设备</small><br>
-      🟢 ZYC100-0001<br>
-      <small style="color:#888;">&nbsp;&nbsp;&nbsp;USB | 在线</small><br>
-      ⚫ ZYC100-0002<br>
-      <small style="color:#aaa;">&nbsp;&nbsp;&nbsp;离线</small><br><br>
-      ＋ 添加 UART<br>
-      快捷键 | 帮助
-    </td><td style="vertical-align:top;padding:10px;font-size:11px;">
-      <strong>ZYC100-0001</strong><br><br>
-      <table style="margin:0;font-size:10px;">
-        <tr>
-          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;width:50%;">
-            <strong>衰减控制</strong><br>
-            -<span style="font-size:20px;font-weight:700;">10.25</span> dB<br>
-            <span class="mock-tag red">REL</span> @ 2.400 GHz<br>
-            ━━━●━━━━<br>
-            − &nbsp; 步进 0.25 &nbsp; +
-          </td>
-          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;width:50%;">
-            <strong>电池</strong><br>
-            <span style="font-size:18px;font-weight:700;">85%</span><br>
-            <small style="color:var(--success);">充电中</small><br>
-            ████████░░ 4.10V
-          </td>
-        </tr>
-        <tr>
-          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;">
-            <strong>RF 开关</strong><br>
-            <span class="mock-tag red">RF1</span> RF2<br>
-            <span class="mock-tag green">启用</span> 输出已开启
-          </td>
-          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;">
-            <strong>通信日志</strong><br>
-            <small style="color:#666;">10:23:15 > at+GetAtt...?<br>
-            10:23:15 < +ATTENUATION:10.25</small>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>
-</div>
+<p>初次使用时，建议先关注左侧设备列表和右侧衰减控制卡片；确认通信正常后，再使用多设备平铺、补偿和自动化测试功能。</p>
 
 <h3>8.4 REL/TRU 与插入损耗补偿</h3>
 <p>REL 表示相对衰减，直接设置衰减器衰减值。TRU 表示真实衰减，上位机根据插入损耗补偿数据计算补偿后的控制值，使实际链路接近目标真实衰减。</p>
