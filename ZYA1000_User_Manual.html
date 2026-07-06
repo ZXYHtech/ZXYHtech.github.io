@@ -119,100 +119,56 @@
   }
   .tip strong { color: #1d7a49; }
 
-  /* ===== UI MOCKUPS ===== */
-  .ui-mockup {
-    margin: 20px 0; padding: 24px; border: 1.5px solid #d9dde3;
-    border-radius: 14px; background: #fafbfc;
-    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+  .quick-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 16px 0;
   }
-  .ui-mockup-title {
-    font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase;
-    letter-spacing: 1.2px; margin-bottom: 14px;
+  .quick-point {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fafbfc;
+  }
+  .quick-point strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .quick-point span {
+    color: var(--muted);
+    font-size: 13px;
   }
 
-  /* Sidebar mockup */
-  .mock-sidebar {
-    display: flex; gap: 18px;
+  .screenshot {
+    margin: 18px 0 22px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.07);
+    break-inside: avoid;
   }
-  .mock-sidebar-nav {
-    width: 200px; flex-shrink: 0; padding: 14px; background: #eef0f4;
-    border-radius: 10px; font-size: 12px;
+  .screenshot img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
-  .mock-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .mock-brand-icon {
-    width: 30px; height: 30px; display: grid; place-items: center;
-    border-radius: 8px; color: #fff; background: var(--red); font-weight: 800; font-size: 15px;
+  .screenshot figcaption {
+    padding: 9px 12px;
+    color: var(--muted);
+    background: #fafbfc;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
   }
-  .mock-nav-btn {
-    display: block; width: 100%; padding: 7px 10px; margin-bottom: 4px;
-    border-radius: 7px; text-align: left; font-size: 11px; border: 0; cursor: default;
-  }
-  .mock-nav-btn.active { background: #fff; color: var(--red); font-weight: 700; }
-  .mock-nav-btn:not(.active) { background: transparent; color: #5a5e66; }
-  .mock-device-item {
-    display: flex; align-items: center; gap: 8px; padding: 7px 8px;
-    margin-bottom: 3px; border-radius: 7px; font-size: 11px;
-  }
-  .mock-device-item.online { background: #fff; }
-  .mock-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .mock-dot.green { background: var(--success); }
-  .mock-dot.gray { background: #bbb; }
 
-  .mock-main {
-    flex: 1; min-width: 0; padding: 14px; background: #fff;
-    border-radius: 10px; border: 1px solid #e8eaee;
-  }
-  .mock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .mock-header h3 { font-size: 16px; margin: 0; padding: 0; border: 0; }
-  .mock-btns { display: flex; gap: 6px; }
-  .mock-btn {
-    padding: 5px 11px; border-radius: 6px; font-size: 10px; border: 1px solid #d5d8dd;
-    background: #f0f2f5; cursor: default;
-  }
-  .mock-btn.primary { background: var(--red); color: #fff; border-color: var(--red); }
-  .mock-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .mock-card {
-    padding: 12px; border: 1px solid #e6e9ee; border-radius: 10px; font-size: 11px;
-  }
-  .mock-card h4 { font-size: 13px; margin: 0 0 6px; padding: 0; border: 0; color: var(--text); }
-  .mock-slider {
-    height: 5px; border-radius: 99px; background: #e5e8ed; margin: 8px 0;
-    position: relative;
-  }
-  .mock-slider::after {
-    content: ""; position: absolute; left: 40%; top: -3px;
-    width: 14px; height: 14px; border-radius: 50%; background: var(--red);
-  }
-  .mock-big-num { font-size: 32px; font-weight: 760; color: var(--text); }
-  .mock-big-num::before { content: "-"; }
-  .mock-unit { font-size: 13px; color: var(--muted); margin-left: 3px; }
   .mock-tag {
     display: inline-block; padding: 2px 8px; border-radius: 99px;
     font-size: 10px; font-weight: 700;
   }
   .mock-tag.red { background: #d33232; color: #fff; }
   .mock-tag.green { background: #25a156; color: #fff; }
-  .mock-log-area {
-    height: 60px; margin-top: 8px; border-radius: 6px; background: #f4f5f7;
-    padding: 8px; font-family: monospace; font-size: 9px; color: #666;
-    overflow: hidden;
-  }
-
-  /* Tester mockup */
-  .mock-tester { margin-top: 12px; }
-  .mock-tester h4 { font-size: 13px; margin: 0 0 8px; }
-  .mock-tester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .mock-tester-card {
-    padding: 10px; border: 1px solid #e6e9ee; border-radius: 8px; font-size: 10px;
-  }
-  .mock-step {
-    display: flex; align-items: center; gap: 8px; padding: 6px 8px;
-    border: 1px solid #e6e9ee; border-radius: 6px; margin-bottom: 4px; font-size: 10px;
-  }
-  .mock-step-num {
-    width: 20px; height: 20px; display: grid; place-items: center;
-    border-radius: 99px; background: var(--red); color: #fff; font-size: 10px; font-weight: 800;
-  }
 
   /* Key indicator */
   .key-box {
@@ -236,7 +192,6 @@
     .cover { min-height: 100vh; }
     h2 { break-after: avoid; }
     h3 { break-after: avoid; }
-    .ui-mockup { break-inside: avoid; }
     pre { break-inside: avoid; white-space: pre-wrap; }
     table { break-inside: avoid; }
     .note, .warning, .tip { break-inside: avoid; }
@@ -245,9 +200,7 @@
 
   @media screen and (max-width: 700px) {
     .main-content { padding: 20px 16px; }
-    .mock-sidebar { flex-direction: column; }
-    .mock-sidebar-nav { width: 100%; }
-    .mock-cards { grid-template-columns: 1fr; }
+    .quick-points { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -260,9 +213,9 @@
   <p class="subtitle">使用说明书</p>
   <p class="version">版本 1.4.1</p>
   <p class="meta">
-    <span>适用产品：ZYC100 射频控制器</span>
+    <span>适用产品：ZYC100 控制器 / ZYE660 衰减模块</span>
     <span>·</span>
-    <span>文档版本：V1.0</span>
+    <span>文档版本：V2.0</span>
   </p>
 </section>
 
@@ -294,7 +247,13 @@
 <!-- Chapter 1 -->
 <h2 id="ch1">1. 产品概述</h2>
 
-<p>ZYA1000 是专为 <strong>ZYC100 射频控制器</strong>设计的新一代轻量桌面控制软件，基于 Rust + Tauri 构建，运行于 macOS 和 Windows 平台。它通过 USB CDC 或 UART 串口与设备通信，提供直观的图形化操作界面，支持设备发现、衰减控制、RF 开关、多设备管理、插入损耗补偿、自动化测试以及外部程序控制桥接等完整功能。</p>
+<p>ZYA1000 是用于 <strong>ZYC100 控制器</strong> 的桌面上位机软件，配合 ZYE660 衰减模块可完成日常衰减控制、批量设备管理、插入损耗补偿和自动化测试。软件基于 Rust + Tauri 构建，支持 macOS 和 Windows，通过 USB CDC 或 UART 串口与设备通信。</p>
+
+<div class="quick-points">
+  <div class="quick-point"><strong>日常控制</strong><span>连接设备后直接设置衰减、RF 通道、输出使能和设备别名。</span></div>
+  <div class="quick-point"><strong>测试提效</strong><span>支持多设备平铺、同步控制、通信日志和补偿数据管理。</span></div>
+  <div class="quick-point"><strong>自动化集成</strong><span>提供 TCP 控制桥、JSONL 协议、时间线流程和高速波形扫描。</span></div>
+</div>
 
 <h3>1.1 核心功能一览</h3>
 <table>
@@ -310,6 +269,11 @@
   <tr><td>自动化测试</td><td>独立窗口，时间线流程、循环、变量、高速扫描、多配置管理</td></tr>
 </table>
 
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/启动页.png" alt="ZYA1000 启动页">
+  <figcaption>启动页：打开软件后可从这里进入设备控制、上位机功能和常用工具。</figcaption>
+</figure>
+
 <h3>1.2 系统要求</h3>
 <table>
   <tr><th>平台</th><th>要求</th></tr>
@@ -320,6 +284,8 @@
 
 <!-- Chapter 2 -->
 <h2 id="ch2">2. 安装与启动</h2>
+
+<p>安装完成后，建议先完成一次“启动软件 - 连接设备 - 查询身份 - 设置衰减”的基础流程。确认基础通信正常后，再使用补偿、同步控制和自动化测试功能。</p>
 
 <h3>2.1 macOS 安装</h3>
 <ol>
@@ -342,92 +308,12 @@
 <!-- Chapter 3 -->
 <h2 id="ch3">3. 主界面概览</h2>
 
-<p>ZYA1000 主界面采用经典的双栏布局：左侧为设备侧边栏，右侧为主内容区。</p>
+<p>ZYA1000 主界面采用双栏布局：左侧用于选择视图和管理设备，右侧显示当前设备的控制卡片。初次使用时，只需要关注左侧设备列表和右侧衰减控制卡片即可。</p>
 
-<div class="ui-mockup">
-  <div class="ui-mockup-title">主界面布局示意</div>
-  <div class="mock-sidebar">
-    <!-- Sidebar -->
-    <div class="mock-sidebar-nav">
-      <div class="mock-brand">
-        <div class="mock-brand-icon">Z</div>
-        <div><strong>ZYA1000</strong><br><small style="color:#888">RF CONTROL</small></div>
-      </div>
-      <div class="mock-nav-btn active">⌁ 设备控制</div>
-      <div class="mock-nav-btn">▦ 多设备平铺</div>
-      <div style="color:#888;font-size:10px;margin:10px 0 4px;font-weight:700;">设备</div>
-      <div class="mock-device-item online">
-        <div class="mock-dot green"></div>
-        <div><strong>ZYC100-0001</strong><br><small style="color:#888">USB</small></div>
-      </div>
-      <div class="mock-device-item">
-        <div class="mock-dot gray"></div>
-        <div><span style="color:#888">ZYC100-0002</span><br><small style="color:#aaa">离线</small></div>
-      </div>
-      <div style="margin-top:auto;padding-top:12px;">
-        <div class="mock-btn" style="width:100%;text-align:center;">＋ 添加 UART</div>
-        <div style="font-size:9px;color:#aaa;text-align:center;margin:6px 0;">正在扫描 USB…</div>
-      </div>
-    </div>
-    <!-- Main -->
-    <div class="mock-main">
-      <div class="mock-header">
-        <h3>ZYC100-0001</h3>
-        <div class="mock-btns">
-          <div class="mock-btn">连接</div>
-          <div class="mock-btn">同步已关闭</div>
-        </div>
-      </div>
-      <div class="mock-cards">
-        <div class="mock-card">
-          <h4>衰减控制</h4>
-          <div style="display:flex;align-items:baseline;gap:4px;margin:8px 0;">
-            <span class="mock-big-num">10.25</span><span class="mock-unit">dB</span>
-          </div>
-          <div style="display:flex;gap:4px;margin-bottom:6px;">
-            <span class="mock-tag red">REL</span>
-            <span style="font-size:10px;color:#888;">@ 2.400 GHz</span>
-          </div>
-          <div class="mock-slider"></div>
-          <div style="display:flex;gap:6px;justify-content:space-between;">
-            <div class="mock-btn" style="flex:1;text-align:center;">−</div>
-            <div style="font-size:10px;color:#888;padding-top:5px;">步进 0.25</div>
-            <div class="mock-btn" style="flex:1;text-align:center;">+</div>
-          </div>
-        </div>
-        <div class="mock-card">
-          <h4>电池</h4>
-          <div style="font-size:24px;font-weight:700;">85%</div>
-          <div style="font-size:10px;color:var(--success);">充电中</div>
-          <div style="height:6px;background:#e5e8ed;border-radius:99px;margin:6px 0;"><div style="width:85%;height:100%;background:var(--success);border-radius:99px;"></div></div>
-          <div style="font-size:10px;color:#888;">电压 4.10 V</div>
-        </div>
-      </div>
-      <div class="mock-cards" style="margin-top:10px;">
-        <div class="mock-card">
-          <h4>RF 开关</h4>
-          <div style="display:flex;gap:6px;">
-            <div class="mock-btn primary">RF1</div>
-            <div class="mock-btn">RF2</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
-            <div class="mock-btn primary" style="width:60px;">启用</div>
-            <span style="font-size:10px;color:var(--success);">输出已开启</span>
-          </div>
-        </div>
-        <div class="mock-card">
-          <h4>通信日志</h4>
-          <div class="mock-log-area">
-            <div>10:23:15 > at+GetAttenuationVal?</div>
-            <div>10:23:15 < +ATTENUATION:10.25</div>
-            <div>10:23:30 > at+GetBattery?</div>
-            <div>10:23:30 < +BATTERY:85,4.10,1</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/设备控制页.png" alt="ZYA1000 设备控制页">
+  <figcaption>设备控制页：右侧按卡片组织衰减、RF、设备信息、通信日志等内容。</figcaption>
+</figure>
 
 <p>界面主要区域说明：</p>
 <ul>
@@ -437,6 +323,10 @@
   <li><strong>底部操作：</strong>可手动添加 UART 设备，查看扫描状态，进入快捷键和帮助页面。</li>
   <li><strong>主内容区：</strong>显示当前设备的衰减控制、电池、RF 开关、设备信息和通信日志等卡片。卡片可拖动标题栏交换位置，也可折叠。</li>
 </ul>
+
+<div class="note">
+  <strong>阅读建议：</strong>如果只做单台设备控制，请重点阅读第 4、5、10 章；如果要批量测试，请继续阅读第 8、11、12 章。
+</div>
 
 <!-- Chapter 4 -->
 <h2 id="ch4" class="page-break">4. 设备连接</h2>
@@ -452,6 +342,11 @@
   <li>点击 <strong>连接</strong>，ZYA1000 将自动验证设备身份。</li>
 </ol>
 
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/添加串口设备.png" alt="添加串口设备对话框">
+  <figcaption>添加 UART：选择串口后点击连接，软件会自动验证是否为可控制设备。</figcaption>
+</figure>
+
 <div class="warning">
   <strong>注意：</strong>UART 模式下默认禁用 RF 开关功能，避免切换模式时串口异常退出。如需使用 RF 开关，请通过 USB CDC 连接设备。
 </div>
@@ -462,11 +357,16 @@
 <h3>4.4 设备别名</h3>
 <p>右键设备选择"重命名"，或点击设备标题旁的铅笔图标 ✏️，可为设备设置别名。别名保存在本地，便于多设备场景下区分。留空保存可恢复默认名称。</p>
 
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/重命名设备.png" alt="重命名设备界面">
+  <figcaption>设备别名：多台设备同时连接时，建议按位置或用途命名，例如 DUT-1、屏蔽箱-A。</figcaption>
+</figure>
+
 <!-- Chapter 5 -->
 <h2 id="ch5">5. 衰减控制</h2>
 
 <h3>5.1 基本操作</h3>
-<p>衰减控制卡片提供三种调节方式：</p>
+<p>衰减控制卡片是最常用的区域。目标值可以快速拖动，也可以精确输入。所有方式最终都会按设备支持的 0.25 dB 步进量化。</p>
 <ul>
   <li><strong>滑条拖动：</strong>拖动滑块快速调整衰减值，实时生效。</li>
   <li><strong>滚轮调节：</strong>鼠标悬停在衰减数值上，使用滚轮以当前步进值增减。</li>
@@ -475,6 +375,12 @@
 </ul>
 
 <p>衰减范围 <strong>0.00 – 31.75 dB</strong>，所有输入自动按 <strong>0.25 dB</strong> 量化取整。</p>
+
+<div class="quick-points">
+  <div class="quick-point"><strong>快调</strong><span>用滑条快速靠近目标衰减值。</span></div>
+  <div class="quick-point"><strong>微调</strong><span>用滚轮或 +/- 按钮按步进改变。</span></div>
+  <div class="quick-point"><strong>精确值</strong><span>点击数字直接输入，例如 10.25。</span></div>
+</div>
 
 <h3>5.2 步进值设置</h3>
 <p>步进值默认为 <strong>0.25 dB</strong>，可在步进输入框中修改。有效范围 0.25 – 31.75 dB，修改后自动量化。此设置会通过快捷键同步影响衰减增减操作。</p>
@@ -519,7 +425,8 @@
 <h2 id="ch7">7. 电池与设备信息</h2>
 
 <h3>7.1 电池状态</h3>
-<p>电池卡片显示：</p>
+<p>电池卡片显示当前连接设备或模块返回的电池信息。请注意：ZYC100 控制器本体不含电池；如果界面显示电池状态，通常来自支持电池查询的设备或模块，例如 ZYE660 离线版（升级版）。</p>
+<p>电池卡片通常显示：</p>
 <ul>
   <li><strong>电量百分比：</strong>大号数字显示剩余电量。</li>
   <li><strong>电池条：</strong>可视化电量进度条，绿色渐变填充。</li>
@@ -546,6 +453,11 @@
 <h3>8.1 多设备平铺视图</h3>
 <p>点击侧边栏的 <strong>▦ 多设备平铺</strong> 切换到平铺视图。所有在线设备以卡片形式排列（每行最多 3 列），每张卡片独立显示衰减值、RF 通道和输出状态。</p>
 
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/多设备平铺与同步控制.png" alt="多设备平铺与同步控制">
+  <figcaption>多设备平铺：适合同时观察多台设备，并配合同步控制执行批量设置。</figcaption>
+</figure>
+
 <p>平铺模式下支持：</p>
 <ul>
   <li>独立调节每个设备的衰减值（直接输入或滚轮）</li>
@@ -571,7 +483,13 @@
 <!-- Chapter 9 -->
 <h2 id="ch9" class="page-break">9. 插入损耗补偿</h2>
 
-<p>插入损耗补偿功能允许将测试线缆、转接头等器件的 S 参数纳入衰减控制，实现 <strong>真实衰减值 (TRU)</strong> 输出。补偿数据按设备序列号独立保存。</p>
+<p>插入损耗补偿用于把线缆、转接头、测试夹具等额外损耗计入控制结果。启用补偿后，用户设置的是目标真实衰减值，软件会计算需要下发给设备的控制衰减值。</p>
+
+<div class="quick-points">
+  <div class="quick-point"><strong>REL</strong><span>相对衰减，直接下发设定值。</span></div>
+  <div class="quick-point"><strong>TRU</strong><span>真实衰减，软件按补偿数据换算后下发。</span></div>
+  <div class="quick-point"><strong>按设备保存</strong><span>补偿数据按设备序列号独立保存。</span></div>
+</div>
 
 <h3>9.1 导入补偿数据</h3>
 <ol>
@@ -585,6 +503,11 @@
   <tr><td><strong>公式</strong></td><td>输入多项式公式，如 <code>S_{21}=-1.17217-0.30125f-0.01049f^2</code>，其中 f 为频率（GHz），结果作为 S21 插入损耗。</td></tr>
   <tr><td><strong>Touchstone S2P</strong></td><td>导入标准 Touchstone S2P 文件，自动提取 S21 参数并按频率线性插值。支持 DB、MA 和 RI 格式。</td></tr>
 </table>
+
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/衰减器补偿插损.png" alt="衰减器插入损耗补偿设置">
+  <figcaption>补偿设置：可导入 CSV、S2P 或输入公式，软件会按当前频率计算补偿值。</figcaption>
+</figure>
 
 <div class="note">
   <strong>覆盖警告：</strong>如果当前设备已有补偿数据，重新导入前会显示覆盖警告。覆盖后原配置无法自动恢复。
@@ -600,11 +523,16 @@
 </ul>
 <p>确认后，主衰减显示将切换为 TRU 模式（绿色标识），设备通过双参数 AT 指令同步控制衰减值和真实值。</p>
 
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/补偿插损后的显示.png" alt="补偿插损后的 TRU 显示">
+  <figcaption>TRU 显示：启用补偿后，界面会显示真实衰减目标和对应补偿状态。</figcaption>
+</figure>
+
 <!-- Chapter 10 -->
 <h2 id="ch10">10. 通信日志</h2>
 
 <h3>10.1 日志查看</h3>
-<p>通信日志卡片实时显示与设备的 AT 指令交互记录：</p>
+<p>通信日志用于排查连接和控制问题。每次点击按钮、修改衰减或自动刷新设备状态时，软件都会记录对应的 AT 指令和设备回复。</p>
 <ul>
   <li><strong>发送指令：</strong>以 <code>></code> 前缀显示</li>
   <li><strong>接收回复：</strong>以 <code><</code> 前缀显示</li>
@@ -675,63 +603,12 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 <!-- Chapter 12 -->
 <h2 id="ch12" class="page-break">12. 自动化测试工具</h2>
 
-<p>菜单 <strong>工具 → 自动化测试工具…</strong> 打开独立窗口，提供完整的自动化测试能力，适用于调试、集成验证和产线前置检查。</p>
+<p>菜单 <strong>工具 → 自动化测试工具…</strong> 打开独立窗口。这个工具适合做快速连通性验证、重复测试流程、产线前置检查，以及需要精确时间间隔的衰减扫描。</p>
 
-<div class="ui-mockup">
-  <div class="ui-mockup-title">自动化测试工具界面示意</div>
-  <div class="mock-tester">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-      <div class="mock-brand-icon" style="width:28px;height:28px;font-size:13px;">Z</div>
-      <div><strong>自动化测试工具</strong><br><small style="font-size:10px;color:#888;">TCP / COM 快速验证、设备检测、指令下发与时间线自动化</small></div>
-    </div>
-    <div class="mock-tester-grid">
-      <div class="mock-tester-card">
-        <strong>连接目标</strong>
-        <div style="margin-top:5px;font-size:10px;">
-          <div>连接方式: TCP 控制桥</div>
-          <div>地址: 127.0.0.1:19100</div>
-          <div>设备选择器: name:ZYC100</div>
-        </div>
-      </div>
-      <div class="mock-tester-card">
-        <strong>快速测试</strong>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px;">
-          <div class="mock-btn" style="font-size:9px;">在线设备检测</div>
-          <div class="mock-btn" style="font-size:9px;">查询身份</div>
-          <div class="mock-btn" style="font-size:9px;">查询衰减</div>
-          <div class="mock-btn" style="font-size:9px;">查询电池</div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:10px;">
-      <strong style="font-size:13px;">自动化时间线</strong>
-      <div style="margin-top:6px;">
-        <div class="mock-step">
-          <div class="mock-step-num">1</div>
-          <div>at+Connect?</div>
-          <div style="font-size:9px;color:#888;">延迟 1000ms</div>
-          <div style="font-size:9px;color:#888;">name:ZYC100</div>
-        </div>
-        <div class="mock-step">
-          <div class="mock-step-num">2</div>
-          <div>at+SetAttenuationVal=10.25</div>
-          <div style="font-size:9px;color:#888;">延迟 500ms</div>
-          <div style="font-size:9px;color:#888;">name:ZYC100</div>
-        </div>
-        <div class="mock-step" style="background:#fff8ed;border-color:#f1d6a5;">
-          <div class="mock-step-num">3</div>
-          <div>🔁 循环开始 (10次)</div>
-          <div style="font-size:9px;color:#888;">按次数</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:8px;">
-        <div class="mock-btn" style="font-size:9px;">运行自动化</div>
-        <div class="mock-btn" style="font-size:9px;">停止</div>
-        <span style="font-size:10px;color:#888;padding-top:5px;">未运行</span>
-      </div>
-    </div>
-  </div>
-</div>
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/自动化测试工具-快速配置与测试.png" alt="自动化测试工具快速配置与测试">
+  <figcaption>快速配置与测试：先确认连接目标，再用一键测试验证设备是否在线。</figcaption>
+</figure>
 
 <h3>12.1 连接方式</h3>
 <ul>
@@ -751,6 +628,11 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 
 <h3>12.3 自动化时间线</h3>
 <p>时间线按行组织测试步骤，支持以下行类型：</p>
+
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/自动化测试工具-时间线和变量.png" alt="自动化测试工具时间线和变量">
+  <figcaption>时间线与变量：把常用参数写成变量，可复用同一套测试流程。</figcaption>
+</figure>
 
 <table>
   <tr><th>行类型</th><th>说明</th></tr>
@@ -777,6 +659,11 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
   <li><strong>导入配置：</strong>导入 JSON 配置文件。</li>
   <li><strong>代码编辑器：</strong>以 JSON 格式直接编辑变量和时间线，支持格式化、紧凑格式切换和 AI 提示词复制。</li>
 </ul>
+
+<figure class="screenshot">
+  <img src="assets/zya1000-screenshots/时间线代码编辑器.png" alt="时间线代码编辑器">
+  <figcaption>代码编辑器：适合批量调整时间线、复制 AI 提示词或保存复杂测试配置。</figcaption>
+</figure>
 
 <h3>12.7 高速衰减扫描 (Waveform)</h3>
 <p>波形行专为高速衰减扫描设计：</p>
@@ -901,7 +788,7 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 
 <!-- ========== FOOTER ========== -->
 <footer class="footer">
-  <p>ZXYH · ZYA1000 上位机软件使用说明书 · 版本 V1.0</p>
+  <p>ZXYH · ZYA1000 上位机软件使用说明书 · 文档版本 V2.0</p>
   <p>适用软件版本：ZYA1000 v1.4.1 | 适用固件版本：ZYC100 V3.87+</p>
 </footer>
 

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZYC100 多功能控制器使用说明书 V5.0</title>
+<style>
+  :root {
+    --red: #ee334e; --red-light: #ffe8ec; --text: #1d1f23; --muted: #727780;
+    --border: #dfe2e7; --bg: #f4f5f7; --surface: #fff; --success: #28a765;
+    --warning: #d58a12; --blue: #4a90d9; --blue-bg: #f3f7fc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    color: var(--text); background: #fff; line-height: 1.75; font-size: 14px;
+  }
+  /* Cover */
+  .cover {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; page-break-after: always;
+    background: linear-gradient(160deg, #fafbfc 0%, #eef0f3 40%, #e8eaef 100%);
+    text-align: center; padding: 60px 40px;
+  }
+  .cover-logo {
+    width: 90px; height: 90px; display: grid; place-items: center; border-radius: 24px;
+    color: #fff; background: linear-gradient(145deg, #ff5268, var(--red));
+    font-size: 42px; font-weight: 850; box-shadow: 0 14px 40px rgba(238,51,78,.28);
+    margin-bottom: 30px;
+  }
+  .cover h1 { font-size: 38px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 18px; color: var(--muted); margin-bottom: 6px; }
+  .cover .version { font-size: 14px; color: var(--muted); margin-bottom: 30px; }
+  .cover .meta { font-size: 12px; color: var(--muted); }
+  .cover .meta span { margin: 0 8px; }
+
+  /* TOC */
+  .toc-page { padding: 50px 40px; page-break-after: always; }
+  .toc-page h2 { font-size: 28px; margin-bottom: 24px; }
+  .toc-list { list-style: none; }
+  .toc-list li { border-bottom: 1px solid #eee; }
+  .toc-list a { display: flex; justify-content: space-between; padding: 11px 0; text-decoration: none; color: var(--text); font-size: 14px; }
+  .toc-list a:hover { color: var(--red); }
+
+  /* Main */
+  .main-content { max-width: 860px; margin: 0 auto; padding: 40px 30px 80px; }
+  h1 { font-size: 32px; margin-bottom: 12px; letter-spacing: -.5px; }
+  h2 { font-size: 24px; margin: 46px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--red-light); letter-spacing: -.3px; }
+  h3 { font-size: 18px; margin: 26px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--muted); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 8px 0 16px 22px; }
+  li { margin-bottom: 5px; }
+  code {
+    padding: 2px 7px; border-radius: 5px; background: #f0f1f3;
+    font: 12.5px/1.5 "SF Mono", "Cascadia Code", "Consolas", monospace; color: #d32f40;
+  }
+  pre {
+    margin: 14px 0; padding: 16px 18px; border-radius: 10px;
+    background: #f5f6f8; border: 1px solid var(--border);
+    font: 12.5px/1.65 "SF Mono", "Cascadia Code", "Consolas", monospace;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+  }
+  pre code { padding: 0; background: none; color: #30353e; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { padding: 9px 13px; border: 1px solid #e4e7ec; text-align: left; }
+  th { background: #f7f8fa; font-weight: 700; }
+  tr:nth-child(even) { background: #fafbfc; }
+
+  .note, .warning, .tip {
+    margin: 16px 0; padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 13px;
+  }
+  .note { border-left: 4px solid var(--blue); background: #f3f7fc; }
+  .note strong { color: #2c6cb0; }
+  .warning { border-left: 4px solid var(--warning); background: #fff9f0; }
+  .warning strong { color: #b87a0a; }
+  .tip { border-left: 4px solid var(--success); background: #f2faf6; }
+  .tip strong { color: #1d7a49; }
+
+  /* UI Mockups */
+  .ui-mockup {
+    margin: 20px 0; padding: 20px; border: 1.5px solid #d9dde3;
+    border-radius: 14px; background: #fafbfc; box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    break-inside: avoid;
+  }
+  .ui-mockup-title {
+    font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase;
+    letter-spacing: 1.2px; margin-bottom: 12px;
+  }
+
+  .mock-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 99px;
+    font-size: 10px; font-weight: 700;
+  }
+  .mock-tag.red { background: #d33232; color: #fff; }
+  .mock-tag.green { background: #25a156; color: #fff; }
+
+  .key-box {
+    display: inline-block; min-width: 40px; padding: 3px 9px;
+    border: 1px solid #c8ccd2; border-radius: 6px; background: #fff;
+    font: 11px/1.5 monospace; text-align: center; margin: 0 2px;
+  }
+
+  .page-break { page-break-before: always; }
+
+  /* Device mockup */
+  .device-diagram {
+    display: flex; gap: 20px; align-items: center; justify-content: center;
+    flex-wrap: wrap; padding: 10px;
+  }
+  .device-block {
+    padding: 16px 22px; border: 2px solid #dde0e5; border-radius: 14px;
+    text-align: center; background: #fff; min-width: 120px;
+  }
+  .device-block.controller { border-color: var(--red); background: var(--red-light); }
+  .device-block.module { border-color: #3b82f6; background: #eff6ff; }
+  .device-block h4 { font-size: 14px; margin: 0 0 4px; color: var(--text); }
+  .device-block .spec { font-size: 10px; color: var(--muted); }
+  .arrow-connector { font-size: 24px; color: var(--muted); }
+
+  /* OLED mockup */
+  .oled-mock {
+    width: 200px; height: 80px; margin: 0 auto; border: 3px solid #333;
+    border-radius: 8px; background: #001a33; color: #00d4ff; font-family: monospace;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 8px; font-size: 13px; line-height: 1.6;
+  }
+
+  /* Eco diagram */
+  .eco-diagram {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 10px;
+  }
+  .eco-node {
+    padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 700;
+  }
+  .eco-node.center { background: var(--red); color: #fff; }
+  .eco-node.peripheral { background: #eef0f3; border: 1px solid var(--border); }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding: 30px; color: var(--muted);
+    font-size: 12px; border-top: 1px solid #eee; margin-top: 60px;
+  }
+
+  @media print {
+    body { font-size: 12px; line-height: 1.6; }
+    h2 { break-after: avoid; }
+    h3 { break-after: avoid; }
+    .ui-mockup { break-inside: avoid; }
+    pre, table { break-inside: avoid; }
+    .note, .warning, .tip { break-inside: avoid; }
+    a { color: var(--text); text-decoration: none; }
+  }
+  @media screen and (max-width: 700px) {
+    .main-content { padding: 20px 16px; }
+    .device-diagram { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== COVER ========== -->
+<section class="cover">
+  <div class="cover-logo">Z</div>
+  <h1>ZYC100 多功能控制器</h1>
+  <p class="subtitle">使用说明书</p>
+  <p class="version">兼容衰减器与射频开关模块 · 文档版本 V5.0</p>
+  <p class="meta">
+    <span>适用固件：ZYC100 V3.87+</span>
+    <span>·</span>
+    <span>适用软件：ZYA1000 v1.4.1+</span>
+  </p>
+</section>
+
+<!-- ========== TOC ========== -->
+<section class="toc-page">
+  <h2>目录</h2>
+  <ol class="toc-list">
+    <li><a href="#ch1">1. 版本 5.0 更新说明</a></li>
+    <li><a href="#ch2">2. 产品组成与适配关系</a></li>
+    <li><a href="#ch3">3. 安全与使用注意事项</a></li>
+    <li><a href="#ch4">4. 硬件装配指南</a></li>
+    <li><a href="#ch5">5. 面板操作指南</a></li>
+    <li><a href="#ch6">6. ZYC100 控制器技术参数</a></li>
+    <li><a href="#ch7">7. ZYE660 衰减模块</a></li>
+    <li><a href="#ch8">8. ZYA1000 上位机软件</a></li>
+    <li><a href="#ch9">9. 连接与日常操作</a></li>
+    <li><a href="#ch10">10. 自动化测试与外部控制</a></li>
+    <li><a href="#ch11">11. 远程控制协议 (AT 指令集)</a></li>
+    <li><a href="#ch12">12. 下载、升级与版本维护</a></li>
+    <li><a href="#ch13">13. 常见问题处理</a></li>
+  </ol>
+</section>
+
+<!-- ========== MAIN ========== -->
+<main class="main-content">
+
+<!-- ===== Ch1 ===== -->
+<h2 id="ch1">1. 版本 5.0 更新说明</h2>
+
+<p>V5.0 说明书根据当前产品命名、硬件形态和 ZYA1000 上位机 v1.4.1 的最新功能重新整理。相比旧版 V4.0，本版重点强调 ZYC100 控制器、ZYE660 衰减模块和 ZYA1000 软件之间的模块化关系。</p>
+
+<table>
+  <tr><th style="width:100px">项目</th><th>V5.0 说明</th></tr>
+  <tr><td><strong>产品关系</strong></td><td>ZYC100 是控制器；ZYE660 是 PE43711 衰减模块；二者采用积木式连接，可组合使用。</td></tr>
+  <tr><td><strong>电池说明</strong></td><td>ZYC100 控制器本体不含电池；ZYE660 离线版（升级版）内置电池。</td></tr>
+  <tr><td><strong>生态说明</strong></td><td>1+N：一个 ZYC100 控制器持续兼容多个设备和模块，包含 ZYE660、ZSW100 等扩展产品。</td></tr>
+  <tr><td><strong>软件能力</strong></td><td>补充 ZYA1000 v1.4.1 的设备发现、多设备管理、补偿、TCP 控制桥、自动化时间线和高速波形扫描。</td></tr>
+  <tr><td><strong>发布入口</strong></td><td>上位机和固件发布页已迁移到 Gitee Releases，客户二维码建议指向产品发布页面。</td></tr>
+</table>
+
+<!-- ===== Ch2 ===== -->
+<h2 id="ch2">2. 产品组成与适配关系</h2>
+
+<p>ZYC100 系列采用控制器与射频模块分离的产品结构。用户可根据实际测试场景选择控制器、衰减模块、开关模块和上位机软件。</p>
+
+<table>
+  <tr><th style="width:120px">产品</th><th style="width:120px">定位</th><th>说明</th></tr>
+  <tr>
+    <td><strong>ZYC100 控制器</strong></td>
+    <td>核心控制器</td>
+    <td>提供 OLED 本机界面、USB CDC、USART1 AT 指令和模块控制能力。控制器本体不含电池。</td>
+  </tr>
+  <tr>
+    <td><strong>ZYE660 单模块版</strong></td>
+    <td>PE43711 衰减模块</td>
+    <td>提供 9kHz-6GHz 数字程控衰减通道，适合二次集成、备件和与 ZYC100 组合使用。</td>
+  </tr>
+  <tr>
+    <td><strong>ZYE660 离线版（升级版）</strong></td>
+    <td>便携衰减模块</td>
+    <td>内置电池，适合脱机便携测试，也可与 ZYC100 组成程控衰减系统。</td>
+  </tr>
+  <tr>
+    <td><strong>ZSW100</strong></td>
+    <td>扩展设备</td>
+    <td>属于 1+N 生态中的后续扩展设备，具体接口和射频指标以后续资料为准。</td>
+  </tr>
+  <tr>
+    <td><strong>ZYA1000</strong></td>
+    <td>桌面上位机</td>
+    <td>用于 ZYC100 设备发现、衰减控制、多设备管理、补偿、日志和自动化测试。</td>
+  </tr>
+</table>
+
+<h3>2.1 积木式连接</h3>
+<p>ZYC100 与 ZYE660 不再按单一固定产品理解，而是按积木式连接使用：控制器负责显示、通信和控制逻辑，射频模块负责具体射频通道。后续新增模块时，可继续接入 ZYC100 生态。</p>
+
+<div class="ui-mockup">
+  <div class="ui-mockup-title">积木式连接示意</div>
+  <div class="eco-diagram">
+    <div class="eco-node center">ZYC100<br>控制器</div>
+    <span style="font-size:20px;padding-top:8px;">⇄</span>
+    <div class="eco-node peripheral">ZYE660<br>衰减模块</div>
+    <span style="font-size:20px;padding-top:8px;color:#aaa;">…</span>
+    <div class="eco-node peripheral">ZSW100<br>（后续扩展）</div>
+  </div>
+</div>
+
+<h3>2.2 1+N 生态</h3>
+<p>1+N 表示一个 ZYC100 控制器兼容多个设备和模块。当前重点适配 ZYE660，后续 ZSW100 等产品会持续更新。</p>
+
+<!-- ===== Ch3 ===== -->
+<h2 id="ch3" class="page-break">3. 安全与使用注意事项</h2>
+
+<div class="warning">
+  <strong>重要安全提示：</strong>请在使用设备前仔细阅读以下注意事项。
+</div>
+
+<ul>
+  <li>连接射频链路前，请确认信号源功率、频率范围和接头类型符合模块规格。</li>
+  <li>ZYE660 的 SMA 输入/输出应避免机械应力，安装和拆卸时建议使用合适扭矩。</li>
+  <li>ZYC100 控制器本体不含电池，不应按独立电池设备充电或拆解。</li>
+  <li>ZYE660 离线版（升级版）内置电池，长时间不用时建议定期补电并避免高温存放。</li>
+  <li><strong>请勿在通电状态下强行拔插衰减器模块或开关线缆</strong>，避免浪涌击穿损坏射频芯片！</li>
+  <li>升级固件或运行自动化测试时，请保持连接稳定，不要随意断开 USB、串口或模块连接线。</li>
+  <li>产线或批量测试前，请先在单台设备上验证衰减范围、RF 通道和自动化脚本。</li>
+</ul>
+
+<!-- ===== Ch4 ===== -->
+<h2 id="ch4">4. 硬件装配指南</h2>
+
+<h3>4.1 电源模式设定（安装前必读）</h3>
+<p>控制器背面配备电源模式切换开关 (MODE SET)，分两种工作模式：</p>
+
+<table>
+  <tr><th style="width:130px">模式</th><th>开关位置</th><th>说明</th></tr>
+  <tr>
+    <td><strong>无电池模式</strong></td>
+    <td>靠近 USB 接口一侧</td>
+    <td>系统由 USB 直接供电，屏幕不显示电量，以 ZXYH 标识替代。</td>
+  </tr>
+  <tr>
+    <td><strong>有电池模式</strong></td>
+    <td>远离 USB 接口一侧</td>
+    <td>支持内置电池循环充电，可便携使用。无电池版本需直接拔除 Type-C 线缆实现断电关机。</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>注意：</strong>有电池模式仅适用于使用 ZYE660 离线版（升级版）等内置电池模块的场景。ZYC100 控制器本体不含电池。
+</div>
+
+<h3>4.2 衰减器模块拼接步骤（仅限衰减器用户）</h3>
+<p>（成套购买已拼装好请忽略该章节）</p>
+<ol>
+  <li><strong>模式设置：</strong>安装前需将衰减器上的 PS 拨码开关设为 <code>1</code>，开启串行通信模式。</li>
+  <li><strong>电压设置：</strong>VCC 为电源，电压可通过控制器背面的 VCC SET 开关设置为 VBUS 或 3.3V（VBUS 为 USB 供电电压，通常为 5.0V-5.3V，请根据实际需求选择）。</li>
+  <li><strong>对准接口：</strong>对齐控制器与衰减器模块的排针接口，同时注意开机位置的键帽。</li>
+  <li><strong>缓慢按压：</strong>沿垂直方向缓慢拼接，确保排针完全插入且无歪斜。</li>
+  <li><strong>异常处理：</strong>电池版本若无法通过开关正常关机，多为开机键帽位置偏移，需轻轻分开模块，重新对齐键帽后再次拼接。</li>
+</ol>
+
+<h3>4.3 射频开关连接步骤（仅限射频开关用户）</h3>
+
+<div class="warning">
+  <strong>注意：</strong>射频开关模块不支持与控制器进行物理上下拼接！
+</div>
+
+<ol>
+  <li><strong>物理接线：</strong>请使用配套的 4Pin 专用线缆，一端连接控制器左上角的 PH2.0 4Pin UART 接口，另一端连接射频开关模块。线缆定义从上到下分别为：<strong>Ctrl、EN、VCC、GND</strong>。</li>
+  <li><strong>电压设置：</strong>VCC 为输出电源，电压可通过控制器背面的 VCC SET 开关设置为 VBUS 或 3.3V（射频开关最低需要 5V 供电，请设为 VBUS 模式）。</li>
+  <li><strong>模式切换：</strong>接线完成后，请进入控制器设置菜单，将工作模式（Mode）修改为 <code>SWITCH</code>。</li>
+</ol>
+
+<!-- ===== Ch5 ===== -->
+<h2 id="ch5" class="page-break">5. 面板操作指南</h2>
+
+<h3>5.1 设置菜单（通用）</h3>
+<p>通过垂直长按拨轮中心一秒钟可进入设置菜单，单按中心切换菜单项，左右拨动修改参数。修改完成后，再次长按拨轮中心一秒钟保存并退出。</p>
+
+<table>
+  <tr><th style="width:120px">菜单项</th><th>说明</th></tr>
+  <tr><td><strong>Step（默认步进）</strong></td><td>设置衰减模式下上电默认的衰减步进。</td></tr>
+  <tr><td><strong>Def Att（默认衰减值）</strong></td><td>设置衰减模式下上电默认的衰减值。</td></tr>
+  <tr><td><strong>Sleep（控制器休眠）</strong></td><td>设置电池供电时的自动休眠时间。到达时间屏幕关闭，低功耗运行。按任意键唤醒。（注：低电量、充电状态下休眠不生效；设为 0 为常亮）</td></tr>
+  <tr><td><strong>Charge（禁用充电）</strong></td><td>设为 OFF 禁用充电功能，此时插入充电器也不会对电池充电，电源纯净无杂散，不干扰高精度测量。</td></tr>
+  <tr><td><strong>Mode（控制模式）</strong></td><td>设为 ATT：驱动数字衰减器。设为 SWITCH：驱动 SPDT 射频开关。</td></tr>
+  <tr><td><strong>Mid Key（中键功能）</strong></td><td>仅在 SWITCH 模式下生效。设为 EN/DIS：主界面按下拨轮中心用于切换开关的使能/禁用。设为 CH 1/2：主界面按下拨轮中心用于快速切换 RF1/RF2 通道。</td></tr>
+  <tr><td><strong>About（关于）</strong></td><td>向右拨动进入设备详情页，查看硬件版本、UID、基本 AT 指令提示等。</td></tr>
+</table>
+
+<h3>5.2 衰减器控制操作（仅 ATT 模式）</h3>
+
+<div class="ui-mockup">
+  <div class="ui-mockup-title">OLED 显示示意（ATT 模式）</div>
+  <div class="oled-mock">
+    <div style="font-size:24px;font-weight:bold;">-10.25 dB</div>
+    <div style="font-size:10px;color:#0099cc;">Step: 0.25 | REL</div>
+  </div>
+</div>
+
+<ul>
+  <li><strong>快速调节：</strong>向右拨动拨轮增加衰减；向左拨动拨轮减小衰减。长按左/右进入快速连续步进模式。</li>
+  <li><strong>功能切换：</strong>短按拨轮中心。</li>
+  <li><strong>衰减调节：</strong>屏幕左上角显示<数值>，拨轮用于控制主衰减值。</li>
+  <li><strong>步进设置：</strong>左上角<数值>反显，拨轮用于调节步进大小（最小 0.25dB）。</li>
+</ul>
+
+<h3>5.3 射频开关控制操作（仅 SWITCH 模式）</h3>
+<p>主界面将显示 RF1/RF2 通道状态及 ENABLE 使能状态。选中的连通路径会以黑底白字反显。</p>
+<ul>
+  <li><strong>通道切换：</strong>向左拨动选择 RF1；向右拨动选择 RF2。</li>
+  <li><strong>中键功能：</strong>根据菜单中 Mid Key 的设置，短按拨轮中心可执行"开启/关闭使能"或"一键切换通道"。</li>
+  <li><strong>死锁唤醒：</strong>当设备处于 Disable（禁用）且画面为空心状态时，按任意键（左/中/右）将优先触发"开启使能"，设备瞬间恢复工作状态。</li>
+</ul>
+
+<!-- ===== Ch6 ===== -->
+<h2 id="ch6">6. ZYC100 控制器技术参数</h2>
+
+<table>
+  <tr><th style="width:100px">项目</th><th>说明</th></tr>
+  <tr><td><strong>主控</strong></td><td>STM32F103CBTx</td></tr>
+  <tr><td><strong>显示</strong></td><td>OLED 显示衰减值、步进、REL/TRU 状态、连接状态等信息</td></tr>
+  <tr><td><strong>接口</strong></td><td>USB CDC、USART1 AT 指令</td></tr>
+  <tr><td><strong>本机操作</strong></td><td>支持按键菜单、步进调整和模块控制</td></tr>
+  <tr><td><strong>供电</strong></td><td>控制器本体不含电池，按实际组合方案供电</td></tr>
+  <tr><td><strong>适配</strong></td><td>当前适配 ZYE660，后续持续兼容 ZSW100 等扩展设备</td></tr>
+  <tr><td><strong>通信接口</strong></td><td>USB CDC（推荐日常控制）、USART1 AT（适合嵌入式系统），默认波特率 115200</td></tr>
+</table>
+
+<div class="note">
+  <strong>说明：</strong>如果上位机界面显示电池信息，该信息来自当前连接设备或模块的能力；请勿理解为 ZYC100 控制器本体内置电池。
+</div>
+
+<!-- ===== Ch7 ===== -->
+<h2 id="ch7">7. ZYE660 衰减模块</h2>
+
+<p>ZYE660 是基于 PE43711 的数字程控射频衰减模块，负责射频衰减通道。它可作为单模块使用，也可与 ZYC100 控制器组成积木式测试系统。</p>
+
+<table>
+  <tr><th style="width:130px">参数</th><th>说明</th></tr>
+  <tr><td><strong>频率范围</strong></td><td>9 kHz – 6 GHz</td></tr>
+  <tr><td><strong>衰减范围</strong></td><td>0 至 31.75 dB</td></tr>
+  <tr><td><strong>衰减步进</strong></td><td>0.25 dB</td></tr>
+  <tr><td><strong>核心器件</strong></td><td>PE43711</td></tr>
+  <tr><td><strong>射频接口</strong></td><td>SMA 输入 / 输出</td></tr>
+  <tr><td><strong>版本形态</strong></td><td>单模块版；离线版（升级版，内置电池）</td></tr>
+</table>
+
+<h3>7.1 单模块版</h3>
+<p>单模块版适合二次集成、模块备件、方案验证和与 ZYC100 控制器组合使用。射频衰减通道由 ZYE660 提供，控制逻辑由 ZYC100 或外部系统完成。</p>
+
+<h3>7.2 离线版（升级版）</h3>
+<p>离线版（升级版）内置电池，适合现场便携测试和脱机使用，同时保留数字程控衰减能力。该版本可独立便携使用，也可接入 ZYC100 生态。</p>
+
+<!-- ===== Ch8 ===== -->
+<h2 id="ch8" class="page-break">8. ZYA1000 上位机软件</h2>
+
+<p>ZYA1000 是 ZYC100 系列的桌面控制软件，基于 Rust + Tauri 构建，运行于 Windows 和 macOS。当前说明基于 ZYA1000 v1.4.1 的功能整理。</p>
+
+<h3>8.1 核心功能一览</h3>
+<table>
+  <tr><th style="width:100px">功能</th><th>说明</th></tr>
+  <tr><td><strong>设备发现</strong></td><td>自动发现 USB CDC 设备（VID 0x0483/PID 0x5740），也支持手动添加 UART 设备（115200 波特率）。</td></tr>
+  <tr><td><strong>衰减控制</strong></td><td>范围 0.00–31.75 dB，0.25 dB 量化。支持滑条拖动、滚轮调节、直接输入和步进按钮四种操作方式。</td></tr>
+  <tr><td><strong>多设备管理</strong></td><td>设备列表、别名设置、右键操作、拖动排序、平铺视图、同步控制和离线设备批量删除。</td></tr>
+  <tr><td><strong>RF 控制</strong></td><td>RF1/RF2 通道切换、输出使能开关和全局同步控制。</td></tr>
+  <tr><td><strong>插入损耗补偿</strong></td><td>支持 CSV 查找表、多项式公式和 Touchstone S2P 文件导入，提供 REL/TRU 双模式切换。</td></tr>
+  <tr><td><strong>通信日志</strong></td><td>带本地时间戳的完整 AT 指令交互记录，可设置 5 分钟至 24 小时自动覆盖时长，支持另存为本地文件。</td></tr>
+  <tr><td><strong>外部控制桥</strong></td><td>TCP 127.0.0.1:19100，支持公开 AT 指令透传和 JSONL 结构化协议，方便第三方程序集成。</td></tr>
+  <tr><td><strong>自动化测试</strong></td><td>独立窗口提供快速测试、时间线流程、嵌套循环、变量替换、高速波形扫描和配置管理。</td></tr>
+</table>
+
+<h3>8.2 安装与启动</h3>
+<ol>
+  <li>访问产品发布页面或 Gitee Releases，下载对应系统的 ZYA1000 安装包。</li>
+  <li>macOS：下载 DMG 后拖入 Applications 文件夹；Windows：下载安装包或压缩包后运行。</li>
+  <li>连接 ZYC100 控制器，启动软件后等待自动发现设备。</li>
+  <li>如果 USB 设备无法识别，可尝试使用手动 UART 连接。</li>
+</ol>
+
+<h3>8.3 主界面布局</h3>
+
+<div class="ui-mockup">
+  <div class="ui-mockup-title">ZYA1000 主界面示意</div>
+  <table style="margin:0;">
+    <tr><td style="width:160px;vertical-align:top;background:#eef0f4;border-radius:8px;padding:10px;font-size:11px;">
+      <strong>ZYA1000</strong><br>
+      <small style="color:#888;">v1.4.1 RF CONTROL</small><br><br>
+      <span style="color:var(--red);font-weight:700;">⌁ 设备控制</span><br>
+      ▦ 多设备平铺<br><br>
+      <small style="color:#888;">设备</small><br>
+      🟢 ZYC100-0001<br>
+      <small style="color:#888;">&nbsp;&nbsp;&nbsp;USB | 在线</small><br>
+      ⚫ ZYC100-0002<br>
+      <small style="color:#aaa;">&nbsp;&nbsp;&nbsp;离线</small><br><br>
+      ＋ 添加 UART<br>
+      快捷键 | 帮助
+    </td><td style="vertical-align:top;padding:10px;font-size:11px;">
+      <strong>ZYC100-0001</strong><br><br>
+      <table style="margin:0;font-size:10px;">
+        <tr>
+          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;width:50%;">
+            <strong>衰减控制</strong><br>
+            -<span style="font-size:20px;font-weight:700;">10.25</span> dB<br>
+            <span class="mock-tag red">REL</span> @ 2.400 GHz<br>
+            ━━━●━━━━<br>
+            − &nbsp; 步进 0.25 &nbsp; +
+          </td>
+          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;width:50%;">
+            <strong>电池</strong><br>
+            <span style="font-size:18px;font-weight:700;">85%</span><br>
+            <small style="color:var(--success);">充电中</small><br>
+            ████████░░ 4.10V
+          </td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;">
+            <strong>RF 开关</strong><br>
+            <span class="mock-tag red">RF1</span> RF2<br>
+            <span class="mock-tag green">启用</span> 输出已开启
+          </td>
+          <td style="border:1px solid #e8eaee;border-radius:6px;padding:8px;">
+            <strong>通信日志</strong><br>
+            <small style="color:#666;">10:23:15 > at+GetAtt...?<br>
+            10:23:15 < +ATTENUATION:10.25</small>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</div>
+
+<h3>8.4 REL/TRU 与插入损耗补偿</h3>
+<p>REL 表示相对衰减，直接设置衰减器衰减值。TRU 表示真实衰减，上位机根据插入损耗补偿数据计算补偿后的控制值，使实际链路接近目标真实衰减。</p>
+<ul>
+  <li><strong>CSV 查找表：</strong>两列数据（频率 GHz, 插入损耗 dB），按频点线性插值。</li>
+  <li><strong>公式：</strong>例如 <code>S21 = -1.17217 - 0.30125f - 0.01049f²</code>，其中 f 为频率（GHz）。</li>
+  <li><strong>Touchstone S2P：</strong>自动读取 S21 并进行频率插值，支持 DB、MA 和 RI 格式。</li>
+</ul>
+
+<h3>8.5 快捷键</h3>
+<table>
+  <tr><th>功能</th><th>macOS</th><th>Windows</th></tr>
+  <tr><td>衰减增加/减少</td><td><span class="key-box">⌘↑</span> / <span class="key-box">⌘↓</span></td><td><span class="key-box">Ctrl+↑</span> / <span class="key-box">Ctrl+↓</span></td></tr>
+  <tr><td>刷新设备</td><td><span class="key-box">⌘R</span></td><td><span class="key-box">Ctrl+R</span></td></tr>
+  <tr><td>连接/断开</td><td><span class="key-box">⌘D</span></td><td><span class="key-box">Ctrl+D</span></td></tr>
+  <tr><td>同步控制</td><td><span class="key-box">⌘⇧S</span></td><td><span class="key-box">Ctrl+Shift+S</span></td></tr>
+  <tr><td>选择 RF1/RF2</td><td><span class="key-box">⌘1</span> / <span class="key-box">⌘2</span></td><td><span class="key-box">Ctrl+1</span> / <span class="key-box">Ctrl+2</span></td></tr>
+  <tr><td>输出使能</td><td><span class="key-box">⌘E</span></td><td><span class="key-box">Ctrl+E</span></td></tr>
+</table>
+
+<!-- ===== Ch9 ===== -->
+<h2 id="ch9" class="page-break">9. 连接与日常操作</h2>
+
+<h3>9.1 典型连接流程</h3>
+<ol>
+  <li>确认 ZYC100 控制器、ZYE660 模块和射频链路连接正确。</li>
+  <li>将 ZYC100 通过 USB 连接电脑，或通过 USART1 接入外部控制系统。</li>
+  <li>打开 ZYA1000，上位机会自动扫描 USB CDC 设备。</li>
+  <li>选择设备后设置衰减值、步进值、RF 通道或输出状态。</li>
+  <li>需要多设备一致动作时，开启同步控制后再操作。</li>
+</ol>
+
+<h3>9.2 衰减设置规范</h3>
+<ul>
+  <li>范围：0.00 至 31.75 dB。</li>
+  <li>步进：0.25 dB。</li>
+  <li>输入超出范围时，系统会按有效范围和量化规则自动处理。</li>
+  <li>自动化扫描建议先用较低速率验证链路和仪表响应，再提高速度。</li>
+</ul>
+
+<h3>9.3 本机操作 vs 上位机操作</h3>
+<table>
+  <tr><th style="width:130px">场景</th><th>推荐方式</th></tr>
+  <tr><td>现场快速调试</td><td>本机 OLED + 拨轮操作（ATT/SWITCH 模式）</td></tr>
+  <tr><td>多设备批量控制</td><td>ZYA1000 上位机（平铺视图 + 同步控制）</td></tr>
+  <tr><td>自动化重复测试</td><td>ZYA1000 自动化测试工具（时间线 + 波形扫描）</td></tr>
+  <tr><td>第三方系统集成</td><td>TCP 控制桥 127.0.0.1:19100 或 USART1 AT 指令</td></tr>
+  <tr><td>固件升级</td><td>固件升级工具（Y-Modem 或 ST-Link）</td></tr>
+</table>
+
+<!-- ===== Ch10 ===== -->
+<h2 id="ch10">10. 自动化测试与外部控制</h2>
+
+<h3>10.1 TCP 控制桥</h3>
+<p>ZYA1000 启动后在本机开启 TCP 控制桥，默认地址为 <code>127.0.0.1:19100</code>。第三方程序（LabVIEW、Python、自动化框架等）可通过该端口向在线设备发送公开 AT 指令：</p>
+
+<pre><code>at+Connect?
+at+GetAttenuationVal?
+at+SetAttenuationVal=`10.25`
+at+GetBattery?</code></pre>
+
+<p><strong>多设备寻址：</strong></p>
+<pre><code>zya:dev=SERIAL;at+GetBattery?
+zya:send=usb:SERIAL;at+SetAttenuationVal=`10.25`
+ZYA1000::SERIAL::INSTR at+Connect?</code></pre>
+
+<div class="warning">
+  <strong>安全限制：</strong>控制桥默认拒绝内部维护类高风险 AT 指令，仅开放公开操作指令。桥接服务仅绑定 127.0.0.1，不可从外部网络访问。
+</div>
+
+<h3>10.2 JSONL 协议示例</h3>
+<pre><code>{"cmd":"hello"}
+{"cmd":"list"}
+{"cmd":"send","at":"at+Connect?"}
+{"cmd":"send","device":"SERIAL","at":"at+SetAttenuationVal=`10.25`"}</code></pre>
+
+<h3>10.3 自动化时间线</h3>
+<p>菜单「工具 → 自动化测试工具…」打开独立窗口，提供以下能力：</p>
+<ul>
+  <li><strong>命令行：</strong>发送单条 AT 指令，可设置延迟、条件判断和设备选择器。</li>
+  <li><strong>循环：</strong>支持按次数、按持续时间或按回复条件结束，支持嵌套。</li>
+  <li><strong>变量：</strong>可在命令中使用 <code>${变量名}</code> 或 <code>{{变量名}}</code> 进行动态替换。</li>
+  <li><strong>波形扫描：</strong>按绝对时间轴执行高速衰减扫描，支持 dryRun 估算频率和时序统计。</li>
+  <li><strong>配置管理：</strong>可保存、导入和复用测试配置，默认目录为 <code>Documents/ZYA1000/configs</code>。</li>
+</ul>
+
+<!-- ===== Ch11 ===== -->
+<h2 id="ch11" class="page-break">11. 远程控制协议 (AT 指令集)</h2>
+
+<p>设备支持 Type-C (USB CDC) 和 UART (USART1) 接口同步控制，默认波特率为 <strong>115200 bps</strong>，所有指令必须以 <code>\r\n</code>（回车换行）作为结束符。</p>
+
+<h3>11.1 基础设备指令</h3>
+<table>
+  <tr><th style="width:200px">指令</th><th style="width:200px">响应</th><th>说明</th></tr>
+  <tr>
+    <td><code>at+Connect?</code></td>
+    <td><code>at+Connect=D1, hw3.31-B0001-D229AA08, sw2.3</code></td>
+    <td>确认设备连接状态，获取硬件/固件/UID 版本</td>
+  </tr>
+  <tr>
+    <td><code>at+GetBattery?</code></td>
+    <td><code>at+GetBattery=85, 3.95V, Charging, 450.5mA</code></td>
+    <td>返回电量百分比、电池电压、充电状态及电流</td>
+  </tr>
+</table>
+
+<h3>11.2 衰减器控制指令（ATT 模式下有效）</h3>
+<table>
+  <tr><th style="width:80px">操作类型</th><th style="width:200px">指令</th><th style="width:150px">响应</th><th>说明</th></tr>
+  <tr>
+    <td>查询</td><td><code>at+GetAttenuationVal?</code></td><td><code>at+GetAttenuationVal=10.25</code></td><td>获取当前衰减值</td>
+  </tr>
+  <tr>
+    <td>设置</td><td><code>at+SetAttenuationVal=10.25</code></td><td><code>ok / error: step</code></td><td>设置目标衰减值；步进错误会返回 error</td>
+  </tr>
+  <tr>
+    <td>TRU 设置</td><td><code>at+SetTrueAttenuationVal=10.25,11.42</code></td><td><code>ok</code></td><td>设置真实衰减目标值与补偿后控制值（TRU 模式）</td>
+  </tr>
+</table>
+
+<div class="tip">
+  <strong>提示：</strong>手动调节衰减拨轮时，设备会主动向串口推送实际衰减值指令。
+</div>
+
+<h3>11.3 射频开关控制指令（SWITCH 模式下有效）</h3>
+<table>
+  <tr><th style="width:80px">操作类型</th><th style="width:150px">指令</th><th style="width:150px">响应</th><th>说明</th></tr>
+  <tr>
+    <td>查询通道</td><td><code>at+SW:PATH?</code></td><td><code>at+SW:PATH=1</code> 或 <code>=2</code></td><td>查询当前导通的射频路径</td>
+  </tr>
+  <tr>
+    <td>设置通道</td><td><code>at+SW:PATH=1</code></td><td><code>ok</code></td><td>设为 RF1（输入 1），设为 2 则为 RF2</td>
+  </tr>
+  <tr>
+    <td>查询使能</td><td><code>at+SW:EN?</code></td><td><code>at+SW:EN=1</code> 或 <code>=0</code></td><td>查询当前射频开关是否使能</td>
+  </tr>
+  <tr>
+    <td>设置使能</td><td><code>at+SW:EN=0</code></td><td><code>ok</code></td><td>设为 0 断开使能，设为 1 开启使能</td>
+  </tr>
+</table>
+
+<div class="tip">
+  <strong>提示：</strong>通过物理按键操作开关时，设备会主动向串口推送最新的 PATH 或 EN 状态指令。
+</div>
+
+<h3>11.4 AT 指令通信示例</h3>
+
+<pre><code>// 请求连接协议
+[发] at+Connect?\r\n
+[收] at+Connect=D1, hw3.31-B0001-0229AA08, sw2.3\r\n
+
+// 设置并获取衰减值（仅 ATT 模式）
+[发] at+SetAttenuationVal=10.25\r\n
+[收] ok\r\n
+[发] at+GetAttenuationVal?\r\n
+[收] at+GetAttenuationVal=10.25\r\n
+
+// 控制射频开关（仅 SWITCH 模式）
+[发] at+SW:PATH=2\r\n
+[收] ok\r\n
+[发] at+SW:EN=1\r\n
+[收] ok\r\n
+
+// 查看电源信息
+[发] at+GetBattery?\r\n
+[收] at+GetBattery=100, 4.17V, NoBat, 0.0mA\r\n</code></pre>
+
+<h3>11.5 公开 AT 指令速查表</h3>
+<table>
+  <tr><th style="width:220px">指令</th><th>说明</th></tr>
+  <tr><td><code>at+Connect?</code></td><td>查询设备身份信息（硬件版本、固件版本、UID）</td></tr>
+  <tr><td><code>at+GetAttenuationVal?</code></td><td>查询当前衰减值</td></tr>
+  <tr><td><code>at+SetAttenuationVal=`10.25`</code></td><td>设置 REL 衰减值</td></tr>
+  <tr><td><code>at+SetTrueAttenuationVal=10.25,11.42</code></td><td>设置 TRU 目标值与补偿后控制值</td></tr>
+  <tr><td><code>at+GetBattery?</code></td><td>查询电池状态（仅适用于支持电池信息的设备或模块）</td></tr>
+  <tr><td><code>at+SW:PATH?</code></td><td>查询 RF 通道</td></tr>
+  <tr><td><code>at+SW:PATH=1</code> / <code>=2</code></td><td>切换 RF1 / RF2</td></tr>
+  <tr><td><code>at+SW:EN=1</code> / <code>=0</code></td><td>开启 / 关闭 RF 输出</td></tr>
+</table>
+
+<!-- ===== Ch12 ===== -->
+<h2 id="ch12">12. 下载、升级与版本维护</h2>
+
+<p>客户日常下载建议通过产品发布页面进入，页面会跳转到国内访问更顺畅的 Gitee Releases。二维码建议指向产品发布页，而不是直接指向某个安装包。</p>
+
+<table>
+  <tr><th style="width:180px">内容</th><th>入口</th></tr>
+  <tr><td><strong>ZYA1000 上位机</strong></td><td><code>https://gitee.com/ZXYHtech/zya1000/releases</code></td></tr>
+  <tr><td><strong>ZYC100 固件发布</strong></td><td><code>https://gitee.com/ZXYHtech/zyc100/releases</code></td></tr>
+</table>
+
+<p>客户页面不单独展示固件升级工具。售后维护或指定版本交付时，可由技术人员根据固件发布页和内部流程处理升级事宜。固件升级支持 Y-Modem 协议（通过 USB CDC/UART）和 ST-Link SWD 烧录两种方式。</p>
+
+<!-- ===== Ch13 ===== -->
+<h2 id="ch13">13. 常见问题处理</h2>
+
+<h3>13.1 上位机找不到设备</h3>
+<ul>
+  <li>确认 USB 线缆支持数据传输（非仅充电线）。</li>
+  <li>确认设备已上电并进入正常工作状态。</li>
+  <li>Windows 下确认 STM32 Virtual COM Port 驱动正常。</li>
+  <li>尝试重新插拔 USB，或在 ZYA1000 中点击刷新按钮手动扫描。</li>
+</ul>
+
+<h3>13.2 数值无变化（衰减器）</h3>
+<ul>
+  <li>检查衰减器 PS 拨码开关是否设置为 <code>1</code> 状态。</li>
+  <li>确认 Mode 菜单已设置为 ATT 模式。</li>
+  <li>检查通信日志中是否有错误回包。</li>
+</ul>
+
+<h3>13.3 开关无动作（射频开关）</h3>
+<ul>
+  <li>检查 4Pin 连接线是否插紧。</li>
+  <li>确保菜单中的 Mode 已设置为 SWITCH。</li>
+  <li>确认 VCC SET 开关已设为 VBUS 模式（5V 供电）。</li>
+</ul>
+
+<h3>13.4 通讯无回复</h3>
+<ul>
+  <li>在串口助手中勾选"发送新行"或"加回车换行"，确保指令携带 <code>\r\n</code> 结束符。</li>
+  <li>确认波特率设置为 115200。</li>
+</ul>
+
+<h3>13.5 刚上电按键无反应</h3>
+<ul>
+  <li>系统刚启动时会进行设备类型侦测，请等待屏幕出现主界面后再进行操作。</li>
+</ul>
+
+<h3>13.6 电池信息与设备不一致</h3>
+<p>ZYC100 控制器本体不含电池。电池信息来自当前连接设备或模块的能力，例如 ZYE660 离线版（升级版）。如果某些设备不支持电池查询，上位机可能显示不可用或无数据。</p>
+
+<h3>13.7 衰减值无法设置</h3>
+<ul>
+  <li>确认设备在线。</li>
+  <li>确认目标值在 0.00 至 31.75 dB 范围内。</li>
+  <li>检查通信日志是否出现错误回复。</li>
+  <li>如果使用 TRU 模式，确认补偿数据已导入且频率范围有效。</li>
+</ul>
+
+<h3>13.8 自动化测试不稳定</h3>
+<ul>
+  <li>先用快速测试确认连接方式和设备选择器正确。</li>
+  <li>降低扫描频率，确认仪表和链路响应正常。</li>
+  <li>使用 dryRun 检查理论频率和时间线配置。</li>
+  <li>多设备并行时，建议使用 USB CDC 并保持端口稳定。</li>
+</ul>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <p>ZXYH · ZYC100 多功能控制器使用说明书 · 版本 V5.0</p>
+  <p>适用固件：ZYC100 V3.87+ | 适用软件：ZYA1000 v1.4.1+ | 智行远航科技出品</p>
+</footer>
+
+</body>
+</html>
