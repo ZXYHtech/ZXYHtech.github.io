@@ -272,7 +272,7 @@
 </table>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/启动页.png" alt="ZYA1000 启动页">
+  <img src="assets/zya1000-screenshots/zya1000-start.png" alt="ZYA1000 启动页">
   <figcaption>启动页：打开软件后可从这里进入设备控制、上位机功能和常用工具。</figcaption>
 </figure>
 
@@ -313,7 +313,7 @@
 <p>ZYA1000 主界面采用双栏布局：左侧用于选择视图和管理设备，右侧显示当前设备的控制卡片。初次使用时，只需要关注左侧设备列表和右侧衰减控制卡片即可。</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/设备控制页.png" alt="ZYA1000 设备控制页">
+  <img src="assets/zya1000-screenshots/zya1000-device-control.png" alt="ZYA1000 设备控制页">
   <figcaption>设备控制页：右侧按卡片组织衰减、RF、设备信息、通信日志等内容。</figcaption>
 </figure>
 
@@ -345,7 +345,7 @@
 </ol>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/添加串口设备.png" alt="添加串口设备对话框">
+  <img src="assets/zya1000-screenshots/zya1000-add-uart.png" alt="添加串口设备对话框">
   <figcaption>添加 UART：选择串口后点击连接，软件会自动验证是否为可控制设备。</figcaption>
 </figure>
 
@@ -360,7 +360,7 @@
 <p>右键设备选择"重命名"，或点击设备标题旁的铅笔图标 ✏️，可为设备设置别名。别名保存在本地，便于多设备场景下区分。留空保存可恢复默认名称。</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/重命名设备.png" alt="重命名设备界面">
+  <img src="assets/zya1000-screenshots/zya1000-rename-device.png" alt="重命名设备界面">
   <figcaption>设备别名：多台设备同时连接时，建议按位置或用途命名，例如 DUT-1、屏蔽箱-A。</figcaption>
 </figure>
 
@@ -456,7 +456,7 @@
 <p>点击侧边栏的 <strong>▦ 多设备平铺</strong> 切换到平铺视图。所有在线设备以卡片形式排列（每行最多 3 列），每张卡片独立显示衰减值、RF 通道和输出状态。</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/多设备平铺与同步控制.png" alt="多设备平铺与同步控制">
+  <img src="assets/zya1000-screenshots/zya1000-multi-device-sync.png" alt="多设备平铺与同步控制">
   <figcaption>多设备平铺：适合同时观察多台设备，并配合同步控制执行批量设置。</figcaption>
 </figure>
 
@@ -507,7 +507,7 @@
 </table>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/衰减器补偿插损.png" alt="衰减器插入损耗补偿设置">
+  <img src="assets/zya1000-screenshots/zya1000-compensation-setup.png" alt="衰减器插入损耗补偿设置">
   <figcaption>补偿设置：可导入 CSV、S2P 或输入公式，软件会按当前频率计算补偿值。</figcaption>
 </figure>
 
@@ -526,7 +526,7 @@
 <p>确认后，主衰减显示将切换为 TRU 模式（绿色标识），设备通过双参数 AT 指令同步控制衰减值和真实值。</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/补偿插损后的显示.png" alt="补偿插损后的 TRU 显示">
+  <img src="assets/zya1000-screenshots/zya1000-compensation-display.png" alt="补偿插损后的 TRU 显示">
   <figcaption>TRU 显示：启用补偿后，界面会显示真实衰减目标和对应补偿状态。</figcaption>
 </figure>
 
@@ -608,7 +608,7 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 <p>菜单 <strong>工具 → 自动化测试工具…</strong> 打开独立窗口。这个工具适合做快速连通性验证、重复测试流程、产线前置检查，以及需要精确时间间隔的衰减扫描。</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/自动化测试工具-快速配置与测试.png" alt="自动化测试工具快速配置与测试">
+  <img src="assets/zya1000-screenshots/zya1000-auto-quick-test.png" alt="自动化测试工具快速配置与测试">
   <figcaption>快速配置与测试：先确认连接目标，再用一键测试验证设备是否在线。</figcaption>
 </figure>
 
@@ -632,7 +632,7 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 <p>时间线按行组织测试步骤，支持以下行类型：</p>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/自动化测试工具-时间线和变量.png" alt="自动化测试工具时间线和变量">
+  <img src="assets/zya1000-screenshots/zya1000-auto-timeline-vars.png" alt="自动化测试工具时间线和变量">
   <figcaption>时间线与变量：把常用参数写成变量，可复用同一套测试流程。</figcaption>
 </figure>
 
@@ -663,7 +663,7 @@ ZY:SERIAL at+GetAttenuationVal?</code></pre>
 </ul>
 
 <figure class="screenshot">
-  <img src="assets/zya1000-screenshots/时间线代码编辑器.png" alt="时间线代码编辑器">
+  <img src="assets/zya1000-screenshots/zya1000-timeline-code-editor.png" alt="时间线代码编辑器">
   <figcaption>代码编辑器：适合批量调整时间线、复制 AI 提示词或保存复杂测试配置。</figcaption>
 </figure>
 
