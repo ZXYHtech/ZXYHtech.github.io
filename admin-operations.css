@@ -138,11 +138,19 @@
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
-.admin-related-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
-.admin-related-choice { display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02); }
-.admin-related-choice input { width:auto!important; }
-.admin-related-choice span { display:grid;gap:2px; }
-.admin-related-choice small { color:var(--muted); }
+.admin-related-editor { display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:12px; }
+.admin-related-selected,.admin-related-available { min-width:0;padding:12px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.02); }
+.admin-related-selected > b { display:block;margin-bottom:10px; }
+.admin-related-available > label { display:grid;gap:6px;margin-bottom:10px;font-weight:700; }
+.admin-related-available > label input { font-weight:400; }
+.admin-related-selected > [data-related-selected],.admin-related-available > [data-related-available] { display:grid;gap:7px;max-height:300px;overflow:auto;overscroll-behavior:contain; }
+.admin-related-row,.admin-related-candidate { display:grid;align-items:center;gap:9px;padding:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel); }
+.admin-related-row { grid-template-columns:30px minmax(0,1fr) auto; }
+.admin-related-candidate { grid-template-columns:minmax(0,1fr) auto; }
+.admin-related-row > span { display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:color-mix(in srgb,var(--mint) 12%,transparent);color:var(--mint);font-size:11px;font-weight:900; }
+.admin-related-row > div,.admin-related-candidate > div { display:grid;min-width:0;gap:2px; }
+.admin-related-row small,.admin-related-candidate small { overflow:hidden;color:var(--muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap; }
+.admin-related-row > div:last-child { display:flex;flex-direction:row;gap:5px; }
 
 @media(max-width:900px) {
   .admin-action-strip,.system-health-grid,.pages-publish-meta { grid-template-columns:1fr 1fr; }
@@ -152,7 +160,9 @@
 }
 @media(max-width:720px) {
   .admin-action-strip,.admin-audit-filter,.admin-order-filter,.admin-order-summary,.system-health-grid,.system-backup-layout,.pages-publish-meta { grid-template-columns:1fr; }
-  .admin-related-grid { grid-template-columns:1fr; }
+  .admin-related-editor { grid-template-columns:1fr; }
+  .admin-related-row { grid-template-columns:30px minmax(0,1fr); }
+  .admin-related-row > div:last-child { grid-column:1/-1;justify-content:flex-end; }
   .pages-publish-panel dl div { grid-template-columns:1fr;gap:3px; }
   .pages-preflight.clean { display:grid; }
   .pages-excluded-list article { align-items:flex-start; }
