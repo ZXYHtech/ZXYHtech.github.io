@@ -55,6 +55,18 @@
 .pages-publish-panel dt { color:var(--muted); }
 .pages-publish-panel dd { margin:0;overflow-wrap:anywhere; }
 .pages-publish-panel code { color:var(--mint); }
+.pages-preflight { display:grid;gap:8px;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2); }
+.pages-preflight p,.pages-preflight span { margin:3px 0 0;color:var(--muted);font-size:12px; }
+.pages-preflight.warning { border-color:color-mix(in srgb,var(--orange) 48%,var(--line)); }
+.pages-preflight.clean { display:flex;align-items:center;justify-content:space-between;border-color:color-mix(in srgb,var(--mint) 42%,var(--line)); }
+.pages-excluded-list { display:grid;gap:6px; }
+.pages-excluded-list article { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-radius:9px;background:var(--panel); }
+.pages-excluded-list article span { display:grid;gap:2px; }
+.pages-excluded-list small { color:var(--muted); }
+.pages-history { display:grid;gap:6px;margin-top:14px; }
+.pages-history h4 { margin:0 0 3px; }
+.pages-history > div { display:grid;grid-template-columns:70px 150px 1fr 90px;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:9px;font-size:11px; }
+.pages-history code { overflow-wrap:anywhere; }
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
@@ -74,4 +86,7 @@
   .admin-action-strip,.admin-audit-filter,.admin-order-filter,.admin-order-summary,.system-health-grid,.system-backup-layout,.pages-publish-meta { grid-template-columns:1fr; }
   .admin-related-grid { grid-template-columns:1fr; }
   .pages-publish-panel dl div { grid-template-columns:1fr;gap:3px; }
+  .pages-preflight.clean { display:grid; }
+  .pages-excluded-list article { align-items:flex-start; }
+  .pages-history > div { grid-template-columns:70px 1fr; }
 }
