@@ -151,6 +151,12 @@
 .admin-related-row > div,.admin-related-candidate > div { display:grid;min-width:0;gap:2px; }
 .admin-related-row small,.admin-related-candidate small { overflow:hidden;color:var(--muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap; }
 .admin-related-row > div:last-child { display:flex;flex-direction:row;gap:5px; }
+.hotspot-action-editor { display:grid;gap:10px;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel2); }
+.hotspot-action-editor p { margin:3px 0 0;color:var(--muted);font-size:12px; }
+.hotspot-action-editor label[hidden] { display:none; }
+.hotspot-action-preview { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--mint) 35%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--mint) 6%,transparent); }
+.hotspot-action-preview span { color:var(--muted);font-size:11px; }
+.hotspot-action-preview b { color:var(--mint);font-size:12px; }
 
 @media(max-width:900px) {
   .admin-action-strip,.system-health-grid,.pages-publish-meta { grid-template-columns:1fr 1fr; }
