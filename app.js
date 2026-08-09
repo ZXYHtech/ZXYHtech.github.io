@@ -35,7 +35,7 @@ const apiPath = path => runtime.apiBaseUrl
   : path;
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.0'),{updateViaCache:'none'}).catch(()=>{}));
+  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.1'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -333,7 +333,7 @@ function ecosystemLinks(product){
   if(!isController&&!isAttenuator)return '';
   return `<section class="product-ecosystem" data-review-id="product.${escapeHtml(product.slug)}.ecosystem"><div class="section-head"><div><span class="eyebrow">PRODUCT ECOSYSTEM</span><h2>控制器、模块与上位机协同使用</h2></div><p>相关入口按实际组合关系连接</p></div><div class="ecosystem-grid">
     <a href="#product/${isController?'zya-dat-63':'zyc100-controller'}"><span>${isController?'RF MODULE':'CONTROLLER'}</span><b>${isController?'ZYE660 数字衰减模块':'ZYC100 射频测试控制器'}</b><p>${isController?'由 ZYC100 完成衰减设置、扫描和自动化控制。':'连接 ZYE660，实现本机操作与上位机统一控制。'}</p><i>查看产品 →</i></a>
-    <a href="${sitePath('zya1000-console.html?v=1.29.0')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
+    <a href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
     <a href="#downloads"><span>DOCUMENTS</span><b>说明书、固件与软件</b><p>资料由 Pages 静态站和 Gitee 发布页提供，按型号集中查找。</p><i>前往下载中心 →</i></a>
   </div></section>`;
 }
@@ -343,14 +343,21 @@ function controllerEntryHub(product){
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
     <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
-      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.0')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
-      <a href="${sitePath('zya1000-console.html?v=1.29.0&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
+      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
+      <a href="${sitePath('zya1000-console.html?v=1.29.1&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
       <a href="${sitePath('legacy/ZYC100_Manual_V5.0.html')}" target="_blank" rel="noopener"><span>CONTROLLER MANUAL</span><b>ZYC100 在线说明书</b><p>查看接口、按键、本机操作、AT 指令和模块连接方法。</p><i>查看控制器说明书 →</i></a>
       <a href="${sitePath('legacy/ZYA1000_User_Manual.html')}" target="_blank" rel="noopener"><span>SOFTWARE MANUAL</span><b>ZYA1000 使用说明</b><p>查看设备发现、补偿参数、多设备控制和自动化测试流程。</p><i>查看软件说明书 →</i></a>
       <a href="https://gitee.com/ZXYHtech/zyc100/releases" target="_blank" rel="noopener"><span>FIRMWARE</span><b>控制器固件发布</b><p>获取 ZYC100 固件、版本说明及升级文件。</p><i>前往 Gitee →</i></a>
       <a href="https://gitee.com/ZXYHtech/zya1000/releases" target="_blank" rel="noopener"><span>OFFLINE APP</span><b>下载离线版上位机</b><p>用于不支持 Web Serial 的浏览器或需要长期离线运行的电脑。</p><i>下载桌面软件 →</i></a>
     </div>
     <div class="controller-start-flow"><b>快速开始</b><ol><li>断电连接 ZYE660 等兼容模块</li><li>用 USB 数据线连接电脑</li><li>打开网页版上位机并授权串口</li><li>确认设备状态后开始控制</li></ol><a href="#product/zya-dat-63">查看配套 ZYE660 →</a></div>
+  </section>`;
+}
+function controllerConsoleEmbed(product){
+  if(product.slug!=='zyc100-controller')return '';
+  return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
+    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
+    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.1&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
   </section>`;
 }
 function productBrandFooter(product){
@@ -374,6 +381,7 @@ async function renderProduct(slug) {
       <div class="tab-row"><button class="active">关键参数</button><button onclick="document.querySelector('#tutorial-section').scrollIntoView()">快速指导</button>${publicResources.length?`<button onclick="document.querySelector('#document-section').scrollIntoView()">资料</button>`:''}</div>
       <table class="spec-table" data-review-id="product.${product.slug}.specs">${Object.entries(product.specs).map(([k,v])=>`<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join('')}</table>
     </section></div>
+    ${controllerConsoleEmbed(product)}
     ${controllerEntryHub(product)}
     ${product.attenuator ? attenuatorCalculator(product) : ''}
     ${product.model==='ZYE660'?zye660Essentials():''}
@@ -769,3 +777,4 @@ $('#review-toggle').onclick=()=>toggleReview();$('#review-exit').onclick=()=>tog
 $$('[data-review-export]').forEach(button=>button.onclick=()=>protectedDownload(`/api/annotations/export.${button.dataset.reviewExport}`,`agent-change-request.${button.dataset.reviewExport}`));
 addEventListener('resize',()=>state.review&&drawAnnotationMarks());addEventListener('scroll',()=>state.review&&drawAnnotationMarks(),{passive:true});
 addEventListener('hashchange',route);syncRoleUI();saveCart(); route();
+addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='zya1000-compact-height')return;const frame=$('iframe[data-zya-compact]');if(frame)frame.style.height=`${Math.max(250,Math.min(760,Number(event.data.height)||320))}px`});
