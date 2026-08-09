@@ -35,7 +35,7 @@ const apiPath = path => runtime.apiBaseUrl
   : path;
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.28.0'),{updateViaCache:'none'}).catch(()=>{}));
+  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.28.1'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();

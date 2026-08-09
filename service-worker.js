@@ -1,4 +1,4 @@
-const CACHE = 'zya-smart-manual-v1.28.0';
+const CACHE = 'zya-smart-manual-v1.28.1';
 const BASE = new URL('./', self.registration.scope);
 const SHELL = [
   '', 'styles.css?v=1.24.0', 'admin.css?v=1.24.0', 'admin-operations.css?v=1.24.0',
@@ -7,9 +7,9 @@ const SHELL = [
   'orders.css?v=1.24.0', 'selector.css?v=1.24.0', 'roles.css?v=1.24.0',
   'products.css?v=1.24.0', 'support.css?v=1.24.0', 'checkout.css?v=1.24.0',
   'attenuator.css?v=1.24.0', 'viewer.css?v=1.24.0', 'zye660.css?v=1.24.0',
-  'hybrid.css?v=1.28.0', 'web-serial.css?v=1.24.0', 'runtime-config.js?v=1.28.0',
-  'web-serial.js?v=1.28.0', 'app.js?v=1.28.0',
-  'zya1000-console.html', 'zya1000-console.css?v=1.28.0', 'zya1000-console.js?v=1.28.0',
+  'hybrid.css?v=1.28.1', 'web-serial.css?v=1.24.0', 'runtime-config.js?v=1.28.1',
+  'web-serial.js?v=1.28.1', 'app.js?v=1.28.1',
+  'zya1000-console.html?v=1.28.1', 'zya1000-console.css?v=1.28.1', 'zya1000-console.js?v=1.28.1',
   'assets/products/zye660-cutout-v1.png?v=1.7.5', 'assets/products/zyc100-cutout-v3.png?v=1.16.2',
   'legacy/assets/zya1000-screenshots/zya1000-start-cutout-v1.png',
   'legacy/assets/zya1000-screenshots/zya1000-device-control-cutout-v1.png',
