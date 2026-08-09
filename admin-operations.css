@@ -102,6 +102,9 @@
 .tutorial-step-fields textarea { min-height:80px;resize:vertical; }
 .tutorial-step-actions { display:flex;gap:5px; }
 .tutorial-step-actions button { min-width:36px; }
+.document-upload-editor { display:grid;grid-template-columns:1fr minmax(240px,.8fr);align-items:center;gap:14px;margin:12px 0;padding:13px;border:1px dashed color-mix(in srgb,var(--mint) 45%,var(--line));border-radius:13px;background:color-mix(in srgb,var(--mint) 5%,var(--panel2)); }
+.document-upload-editor p { margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5; }
+.document-upload-editor label { margin:0; }
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
@@ -134,4 +137,5 @@
   .tutorial-step-row { grid-template-columns:34px 1fr; }
   .tutorial-step-fields { grid-template-columns:1fr; }
   .tutorial-step-actions { grid-column:1/-1;justify-content:flex-end; }
+  .document-upload-editor { grid-template-columns:1fr; }
 }
