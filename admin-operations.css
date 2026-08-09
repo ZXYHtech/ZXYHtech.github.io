@@ -67,6 +67,20 @@
 .pages-history h4 { margin:0 0 3px; }
 .pages-history > div { display:grid;grid-template-columns:70px 150px 1fr 90px;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:9px;font-size:11px; }
 .pages-history code { overflow-wrap:anywhere; }
+.product-workspace { display:grid;gap:14px; }
+.product-workspace .modal-head p { margin:5px 0 0;color:var(--muted); }
+.workspace-status { display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2); }
+.workspace-status span { padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;background:color-mix(in srgb,var(--orange) 16%,transparent);color:var(--orange); }
+.workspace-status.ready { border-color:color-mix(in srgb,var(--mint) 40%,var(--line)); }
+.workspace-status.ready span { color:var(--mint);background:color-mix(in srgb,var(--mint) 14%,transparent); }
+.workspace-checklist { display:grid;gap:8px; }
+.workspace-checklist article { display:grid;grid-template-columns:34px minmax(180px,1fr) 60px auto;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel); }
+.workspace-checklist article > i { display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-style:normal;font-weight:900;background:color-mix(in srgb,var(--orange) 16%,transparent);color:var(--orange); }
+.workspace-checklist article.complete > i { background:color-mix(in srgb,var(--mint) 15%,transparent);color:var(--mint); }
+.workspace-checklist article > span { display:grid;gap:3px; }
+.workspace-checklist small { color:var(--muted);line-height:1.45; }
+.workspace-checklist em { color:var(--muted);font-style:normal;text-align:right; }
+.workspace-checklist article > div { display:flex;justify-content:flex-end;gap:6px; }
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
@@ -89,4 +103,9 @@
   .pages-preflight.clean { display:grid; }
   .pages-excluded-list article { align-items:flex-start; }
   .pages-history > div { grid-template-columns:70px 1fr; }
+  .workspace-status { display:grid; }
+  .workspace-checklist article { grid-template-columns:32px 1fr; }
+  .workspace-checklist article > em { text-align:left;padding-left:42px; }
+  .workspace-checklist article > div { grid-column:1/-1;justify-content:stretch; }
+  .workspace-checklist article > div .button { flex:1; }
 }
