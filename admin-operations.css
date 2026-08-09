@@ -119,6 +119,22 @@
 .product-advanced-editor summary { cursor:pointer;color:var(--text);font-weight:800; }
 .product-advanced-editor summary small { color:var(--muted);font-weight:400; }
 .product-advanced-editor label { margin:12px 0 0; }
+.attenuator-config-editor { display:grid;gap:12px;margin:12px 0;padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--panel2); }
+.attenuator-config-head { display:flex;align-items:center;justify-content:space-between;gap:14px; }
+.attenuator-config-head p,.attenuator-bits-toolbar p { margin:3px 0 0;color:var(--muted);font-size:12px; }
+.attenuator-enable { display:flex;align-items:center;gap:8px;margin:0;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800; }
+.attenuator-enable input { width:auto!important; }
+.attenuator-config-body { display:grid;gap:10px; }
+.attenuator-config-body[hidden] { display:none; }
+.attenuator-base-fields { grid-template-columns:repeat(3,1fr); }
+.attenuator-bits-toolbar { margin:2px 0 0; }
+.attenuator-bit-list { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+.attenuator-bit-row { display:grid;grid-template-columns:58px minmax(100px,1fr) auto;align-items:end;gap:8px;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel); }
+.attenuator-bit-row>span { align-self:center;color:var(--mint);font-weight:900; }
+.attenuator-bit-row label { margin:0; }
+.attenuator-bit-row>div { display:flex;gap:4px; }
+.attenuator-config-summary { padding:10px 12px;border:1px solid color-mix(in srgb,var(--mint) 38%,var(--line));border-radius:10px;color:var(--mint);background:color-mix(in srgb,var(--mint) 6%,transparent);font-size:12px;font-weight:700; }
+.attenuator-config-summary.invalid { border-color:color-mix(in srgb,var(--orange) 60%,var(--line));color:var(--orange);background:color-mix(in srgb,var(--orange) 7%,transparent); }
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
@@ -158,4 +174,8 @@
   .product-spec-row>div { grid-column:1/-1;justify-content:flex-end; }
   .product-capability-row { grid-template-columns:30px 1fr; }
   .product-capability-row>div { grid-column:1/-1;justify-content:flex-end; }
+  .attenuator-config-head { align-items:flex-start; }
+  .attenuator-base-fields,.attenuator-bit-list { grid-template-columns:1fr; }
+  .attenuator-bit-row { grid-template-columns:50px 1fr; }
+  .attenuator-bit-row>div { grid-column:1/-1;justify-content:flex-end; }
 }
