@@ -1,0 +1,56 @@
+.review-toolbar .review-state {
+  margin-right: 0;
+}
+
+.review-toolbar .review-modes {
+  display: flex;
+  gap: 4px;
+  margin-right: auto;
+}
+
+.review-toolbar .review-modes button {
+  padding: 7px 9px;
+}
+
+.review-toolbar .review-modes button.active {
+  background: #17382b;
+  color: var(--mint);
+  border-color: #17382b;
+}
+
+.selection-preview {
+  display: none;
+  margin: 0 0 15px;
+  padding: 11px 13px;
+  border-left: 3px solid var(--mint);
+  background: #07120f;
+  color: #c1d8cf;
+  font-size: 13px;
+  max-height: 120px;
+  overflow: auto;
+}
+
+.selection-preview.visible {
+  display: block;
+}
+
+.review-text-mode #app {
+  user-select: text;
+}
+
+.review-image-mode [data-review-image],
+.review-image-mode img {
+  cursor: crosshair;
+  outline: 1px dashed rgba(143,255,199,.35);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .review-toolbar .review-state small,
+  .review-toolbar > a {
+    display: none;
+  }
+  .review-toolbar .review-modes {
+    margin-right: 0;
+  }
+}

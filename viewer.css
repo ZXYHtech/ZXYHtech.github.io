@@ -1,0 +1,562 @@
+.interactive-viewer {
+  outline: none;
+}
+
+.interactive-viewer:focus-visible {
+  border-color: var(--mint);
+  box-shadow: var(--shadow), 0 0 0 3px rgba(143, 255, 199, .14);
+}
+
+.product-object-layer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  transition: transform .22s ease;
+  user-select: none;
+}
+
+.interactive-viewer .product-object-layer {
+  position: absolute;
+  inset: 58px 28px 84px;
+  width: auto;
+  height: auto;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.interactive-viewer .product-object-layer.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.product-object-layer .uploaded-product-image {
+  width: min(92%, 520px);
+  max-height: 100%;
+  pointer-events: none;
+}
+
+.viewer-controls {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 18px;
+  display: flex;
+  gap: 5px;
+  transform: translateX(-50%);
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(7, 18, 15, .88);
+  backdrop-filter: blur(10px);
+}
+
+.viewer-controls button {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.viewer-controls button:hover,
+.viewer-controls button:focus-visible {
+  background: var(--panel2);
+  color: var(--mint);
+}
+
+.viewer-status {
+  position: absolute;
+  z-index: 5;
+  top: 18px;
+  left: 18px;
+  display: flex;
+  gap: 6px;
+}
+
+.viewer-status span,
+.viewer-help {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(7, 18, 15, .82);
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.viewer-status span {
+  padding: 4px 8px;
+}
+
+.viewer-help {
+  position: absolute;
+  z-index: 5;
+  right: 18px;
+  bottom: 26px;
+  padding: 4px 9px;
+}
+
+@media (max-width: 620px) {
+  .product-object-layer {
+    inset: 54px 18px 76px;
+  }
+
+  .viewer-help {
+    display: none;
+  }
+
+  .viewer-controls {
+    bottom: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-object-layer {
+    transition: none;
+  }
+}
+
+/* ZYE660 uses a real, locally rendered WebGL scene rather than rotating a bitmap. */
+.true-3d-viewer {
+  min-height: 570px;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 72% 22%, color-mix(in srgb, var(--mint) 10%, transparent), transparent 34%),
+    linear-gradient(155deg, color-mix(in srgb, var(--panel2) 72%, #111820), color-mix(in srgb, var(--bg) 90%, #17201d));
+}
+
+.true-3d-viewer::before {
+  width: 440px;
+  height: 440px;
+  opacity: .42;
+  pointer-events: none;
+}
+
+.zye3d-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity .28s ease;
+}
+
+.model-ready .zye3d-canvas {
+  opacity: 1;
+}
+
+.zye3d-canvas.dragging {
+  cursor: grabbing;
+}
+
+.zye3d-loading {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.zye3d-loading i {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line);
+  border-top-color: var(--mint);
+  border-radius: 50%;
+  animation: zye3d-spin .8s linear infinite;
+}
+
+.model-ready .zye3d-loading,
+.webgl-failed .zye3d-loading {
+  display: none;
+}
+
+@keyframes zye3d-spin { to { transform: rotate(360deg); } }
+
+.zye3d-fallback {
+  position: absolute;
+  inset: 70px 35px 90px;
+  width: calc(100% - 70px);
+  height: calc(100% - 160px);
+  object-fit: contain;
+}
+
+.true-3d-viewer .viewer-status {
+  gap: 7px;
+}
+
+.true-3d-viewer .viewer-status span {
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+}
+
+.true-3d-viewer .viewer-status .true-3d-badge {
+  border-color: color-mix(in srgb, var(--mint) 55%, var(--line));
+  color: var(--mint);
+  font-weight: 800;
+}
+
+.true-3d-viewer .viewer-controls {
+  bottom: 18px;
+  max-width: calc(100% - 36px);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
+.true-3d-viewer .viewer-help {
+  right: 18px;
+  bottom: 67px;
+  color: color-mix(in srgb, var(--text) 72%, var(--muted));
+}
+
+.zye-part-guide {
+  position: absolute;
+  z-index: 5;
+  left: 16px;
+  top: 58px;
+  display: grid;
+  gap: 6px;
+  width: 88px;
+}
+
+.zye-part-guide button {
+  padding: 7px 9px;
+  border: 1px solid color-mix(in srgb, var(--line) 90%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--bg) 84%, transparent);
+  color: color-mix(in srgb, var(--text) 76%, var(--muted));
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.zye-part-guide button:hover,
+.zye-part-guide button.active {
+  border-color: var(--mint);
+  color: var(--mint);
+  transform: translateX(2px);
+}
+
+.true-3d-viewer .hotspot-detail {
+  left: auto;
+  right: 18px;
+  top: 58px;
+  bottom: auto;
+  width: min(285px, calc(100% - 140px));
+  border-color: color-mix(in srgb, var(--mint) 35%, var(--line));
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  box-shadow: 0 14px 34px rgba(0,0,0,.2);
+}
+
+@media (max-width: 720px) {
+  .true-3d-viewer {
+    min-height: 470px;
+  }
+  .zye-part-guide {
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 65px;
+    width: auto;
+    display: flex;
+    overflow-x: auto;
+  }
+  .zye-part-guide button {
+    white-space: nowrap;
+  }
+  .true-3d-viewer .hotspot-detail {
+    left: 12px;
+    right: 12px;
+    top: 54px;
+    width: auto;
+  }
+  .true-3d-viewer .viewer-help {
+    display: none;
+  }
+}
+
+/* iPhone-like product parallax: small-angle depth only, never a full rotation. */
+.pseudo3d-viewer {
+  --pseudo-x: 0;
+  --pseudo-y: 0;
+  --pseudo-rx: 0deg;
+  --pseudo-ry: 0deg;
+  min-height: 570px;
+  isolation: isolate;
+  perspective: 1100px;
+  background:
+    radial-gradient(circle at 50% 43%, color-mix(in srgb,var(--mint) 11%,transparent),transparent 42%),
+    linear-gradient(155deg,color-mix(in srgb,var(--panel2) 75%,#111820),color-mix(in srgb,var(--bg) 92%,#17201d));
+}
+
+.pseudo3d-viewer::before {
+  display: none;
+}
+
+.pseudo3d-hotspot-toggle {
+  position: absolute;
+  z-index: 8;
+  left: 16px;
+  top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid color-mix(in srgb,var(--line) 86%,transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb,var(--bg) 84%,transparent);
+  color: color-mix(in srgb,var(--text) 84%,var(--muted));
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.pseudo3d-hotspot-toggle span {
+  color: var(--mint);
+  font-size: 10px;
+}
+
+.pseudo3d-hotspot-toggle b { font-weight: 700; }
+
+.pseudo3d-hotspot-toggle:hover,
+.pseudo3d-hotspot-toggle:focus-visible {
+  border-color: var(--mint);
+  color: var(--mint);
+}
+
+.pseudo3d-viewer.hotspots-hidden .pseudo3d-features,
+.pseudo3d-viewer.hotspots-hidden .hotspot-detail {
+  display: none !important;
+}
+
+.pseudo3d-viewer.hotspots-hidden .pseudo3d-hotspot-toggle span {
+  color: var(--muted);
+}
+
+.pseudo3d-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pseudo3d-backdrop i {
+  position: absolute;
+  border: 1px solid color-mix(in srgb,var(--mint) 13%,transparent);
+  border-radius: 50%;
+  transform: translate3d(calc(var(--pseudo-x) * -7px),calc(var(--pseudo-y) * -5px),0);
+  transition: transform .18s ease-out;
+}
+
+.pseudo3d-backdrop i:nth-child(1) { width:430px;height:430px;left:50%;top:48%;transform:translate(-50%,-50%) translate3d(calc(var(--pseudo-x) * -7px),calc(var(--pseudo-y) * -5px),0); }
+.pseudo3d-backdrop i:nth-child(2) { width:330px;height:330px;left:50%;top:48%;transform:translate(-50%,-50%) translate3d(calc(var(--pseudo-x) * -11px),calc(var(--pseudo-y) * -8px),0); }
+.pseudo3d-backdrop i:nth-child(3) { width:230px;height:230px;left:50%;top:48%;transform:translate(-50%,-50%) translate3d(calc(var(--pseudo-x) * -15px),calc(var(--pseudo-y) * -11px),0); }
+
+.pseudo3d-scene {
+  position: absolute;
+  z-index: 2;
+  inset: 58px 34px 78px;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--pseudo-rx)) rotateY(var(--pseudo-ry)) translate3d(calc(var(--pseudo-x) * 4px),calc(var(--pseudo-y) * 3px),0);
+  transition: transform .16s cubic-bezier(.22,.8,.3,1);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.pseudo3d-product {
+  position: relative;
+  width: min(96%,540px);
+  aspect-ratio: 1023 / 726;
+  transform: translateZ(40px) scale(1.025);
+  filter: drop-shadow(calc(var(--pseudo-x) * -13px) calc(24px + var(--pseudo-y) * 8px) 24px rgba(0,0,0,.34));
+  pointer-events: none;
+}
+
+.pseudo3d-subject {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.pseudo3d-shadow {
+  position: absolute;
+  z-index: 0;
+  left: 20%;
+  right: 20%;
+  bottom: 5%;
+  height: 19%;
+  border-radius: 50%;
+  background: rgba(0,0,0,.28);
+  filter: blur(22px);
+  transform: translate3d(calc(var(--pseudo-x) * -12px),calc(var(--pseudo-y) * 7px),-30px) scale(.94);
+}
+
+.pseudo3d-glare {
+  position: absolute;
+  z-index: 3;
+  inset: 6% 9%;
+  border-radius: 38%;
+  background: radial-gradient(circle at calc(50% + var(--pseudo-x) * 18%) calc(38% + var(--pseudo-y) * 12%),rgba(255,255,255,.11),transparent 34%);
+  mix-blend-mode: screen;
+  transform: translateZ(58px);
+  opacity: .58;
+}
+
+.pseudo3d-features button {
+  position: absolute;
+  z-index: 6;
+  left: var(--hotspot-x);
+  top: var(--hotspot-y);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb,var(--bg) 80%,transparent);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transform: translate(-50%,-50%);
+  pointer-events: auto;
+  transition: transform .16s ease;
+}
+
+.pseudo3d-features button i {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 0 4px color-mix(in srgb,var(--mint) 18%,transparent),0 2px 10px rgba(0,0,0,.35);
+}
+
+.pseudo3d-features button span {
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb,var(--line) 82%,transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb,var(--bg) 88%,transparent);
+  color: color-mix(in srgb,var(--text) 88%,var(--muted));
+  font-size: 10px;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  opacity: .88;
+  backdrop-filter: blur(8px);
+}
+
+.pseudo3d-features button:hover,
+.pseudo3d-features button:focus-visible,
+.pseudo3d-features button.active {
+  transform: translate(-50%,-50%) scale(1.08);
+}
+
+.pseudo3d-features button:hover span,
+.pseudo3d-features button:focus-visible span,
+.pseudo3d-features button.active span {
+  border-color: var(--mint);
+  color: var(--mint);
+  opacity: 1;
+}
+
+.pseudo3d-viewer .hotspot-detail {
+  z-index: 7;
+  left: 16px;
+  right: 16px;
+  top: auto;
+  bottom: 16px;
+  width: auto;
+  border-color: color-mix(in srgb,var(--mint) 34%,var(--line));
+  background: color-mix(in srgb,var(--bg) 91%,transparent);
+  box-shadow: 0 14px 34px rgba(0,0,0,.2);
+  backdrop-filter: blur(12px);
+}
+
+.pseudo3d-viewer .viewer-status {
+  gap: 7px;
+}
+
+.pseudo3d-badge {
+  border-color: color-mix(in srgb,var(--mint) 55%,var(--line)) !important;
+  color: var(--mint) !important;
+  font-weight: 800;
+}
+
+.pseudo3d-controls {
+  position: absolute;
+  z-index: 6;
+  left: 18px;
+  bottom: 18px;
+  display: flex;
+  gap: 6px;
+}
+
+.pseudo3d-controls button {
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: color-mix(in srgb,var(--bg) 86%,transparent);
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.pseudo3d-controls button:hover,
+.pseudo3d-controls button.active {
+  border-color: var(--mint);
+  color: var(--mint);
+}
+
+.pseudo3d-viewer .viewer-help {
+  right: 18px;
+  bottom: 23px;
+  color: color-mix(in srgb,var(--text) 70%,var(--muted));
+}
+
+@media (max-width:720px) {
+  .pseudo3d-viewer { min-height:460px; }
+  .pseudo3d-scene { inset:54px 8px 92px; }
+  .pseudo3d-product { width:min(100%,520px); }
+  .pseudo3d-viewer .viewer-help { display:none; }
+  .pseudo3d-hotspot-toggle { left:12px;top:12px; }
+  .pseudo3d-features button span { display:none; }
+  .pseudo3d-features button.active span,
+  .pseudo3d-features button:focus-visible span { display:block; }
+  .pseudo3d-viewer .hotspot-detail {
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 12px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .pseudo3d-scene,
+  .pseudo3d-backdrop i { transition:none; }
+}

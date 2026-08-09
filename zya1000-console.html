@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f5f7">
+  <title>ZYA1000 网页上位机</title>
+  <link rel="icon" href="legacy/assets/zxyh-logo-cutout-v1.png">
+  <link rel="stylesheet" href="zya1000-console.css?v=1.28.0">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <a class="console-brand" href="./?v=1.28.0#zya1000" aria-label="返回 ZYA1000 产品页面">
+        <span class="brand-mark">Z</span><span><b>ZYA1000</b><small>RF CONTROL · WEB</small></span>
+      </a>
+      <nav class="console-nav" aria-label="上位机功能">
+        <button class="active" data-view="device"><span>↝</span>设备控制</button>
+        <button data-view="multi"><span>▦</span>多设备平铺</button>
+        <button data-view="automation"><span>▶</span>自动化测试</button>
+      </nav>
+      <div class="device-heading"><span>设备</span><button id="refresh-ports" title="刷新已授权设备">↻</button></div>
+      <div id="device-list" class="device-list"><div class="empty-device">尚未连接设备</div></div>
+      <div class="sidebar-bottom">
+        <button class="add-device" id="add-device">＋ 连接 USB 设备</button>
+        <div id="device-summary">USB 0 台 · 115200 Baud</div>
+        <div><a href="legacy/ZYA1000_User_Manual.html" target="_blank" rel="noopener">帮助</a><a href="./?v=1.28.0#zya1000">返回产品页</a></div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="mobile-console-head"><button id="mobile-menu" aria-label="展开设备栏">☰</button><b>ZYA1000</b><button id="mobile-connect">＋</button></header>
+      <section id="view-device" class="console-view active" data-console-view="device">
+        <div class="workspace-empty" id="workspace-empty">
+          <span class="empty-icon">↝</span><h1>连接 ZYC100 控制器</h1>
+          <p>通过浏览器直接连接 USB CDC 设备，无需安装执行文件。</p>
+          <button class="accent-button" data-connect-device>选择并连接设备</button>
+          <small>首次连接时，浏览器会要求你选择并授权串口。</small>
+        </div>
+        <div id="device-workspace" class="device-workspace" hidden>
+          <header class="workspace-head">
+            <div><div class="title-row"><h1 id="active-device-name">ZYC100</h1><button id="rename-device" title="修改设备别名">✎</button></div><p id="active-device-meta">等待设备信息</p></div>
+            <div class="workspace-actions"><button id="refresh-device">刷新状态</button><button id="import-compensation">导入 S 参数</button><label class="switch-label"><input type="checkbox" id="sync-control"><span></span>同步控制</label><button id="disconnect-device">断开连接</button></div>
+          </header>
+
+          <div class="control-grid">
+            <article class="control-card attenuation-card" data-card-id="attenuation">
+              <header><h2>衰减控制</h2><button class="collapse">−</button></header>
+              <div class="attenuation-readout"><input id="attenuation-value" type="number" min="0" max="63.5" step="0.01" placeholder="--" aria-label="衰减值"><span>dB</span><button id="mode-toggle" class="mode-tag">REL</button><span class="frequency">@ <input id="frequency-input" type="number" min="0.001" max="40" step="0.001" value="1"> GHz</span></div>
+              <input id="attenuation-slider" type="range" min="0" max="31.75" step="0.25" value="0" disabled>
+              <div class="step-controls"><button id="attenuation-down">− 1.00</button><button id="attenuation-up">＋ 1.00</button><label>步进<input id="attenuation-step" type="number" min="0.25" max="31.75" step="0.25" value="1.00"></label></div>
+              <p id="compensation-state">当前为相对衰减，未应用插入损耗补偿。</p>
+            </article>
+
+            <article class="control-card log-card" data-card-id="log">
+              <header><h2>通信日志</h2><button class="collapse">−</button></header>
+              <output id="console-log" aria-live="polite"><span class="sys"><time>--:--:--</time><code>等待连接设备</code></span></output>
+              <footer><label>保留<select id="log-limit"><option value="100">100 条</option><option value="300" selected>300 条</option><option value="1000">1000 条</option></select></label><button id="save-log">保存</button><button id="clear-log">清空</button></footer>
+            </article>
+
+            <article class="control-card info-card" data-card-id="info">
+              <header><h2>设备信息</h2><button class="collapse">−</button></header>
+              <dl><div><dt>软件版本</dt><dd id="info-firmware">--</dd></div><div><dt>硬件标识</dt><dd id="info-hardware">--</dd></div><div><dt>序列号</dt><dd id="info-serial">--</dd></div><div><dt>端口</dt><dd id="info-port">--</dd></div><div><dt>连接方式</dt><dd>Web Serial / USB CDC</dd></div><div><dt>波特率</dt><dd>115200</dd></div></dl>
+            </article>
+
+            <article class="control-card battery-card" data-card-id="battery">
+              <header><h2>电池状态</h2><button class="collapse">−</button></header>
+              <div class="battery-title"><strong id="battery-percent">--%</strong><span id="battery-charge">等待查询</span></div>
+              <div class="battery-bar"><i id="battery-bar"></i></div><div class="battery-details"><span>电压 <b id="battery-voltage">-- V</b></span><span>电流 <b id="battery-current">-- mA</b></span></div>
+            </article>
+
+            <article class="control-card rf-card" data-card-id="rf">
+              <header><h2>RF 开关</h2><button class="collapse">−</button></header>
+              <div class="output-row"><b>输出使能</b><button id="output-enable" data-enabled="false">关</button><span id="output-state">已关闭</span></div>
+              <div class="rf-buttons"><button id="rf1">RF 1</button><button id="rf2">RF 2</button></div>
+            </article>
+
+            <article class="control-card command-card" data-card-id="command">
+              <header><h2>快捷指令</h2><button class="collapse">−</button></header>
+              <div class="quick-command-grid"><button data-at="at+Connect?">查询身份</button><button data-at="at+GetAttenuationVal?">查询衰减</button><button data-at="at+GetBattery?">查询电池</button><button data-at="at+SW:PATH?">查询通道</button></div>
+              <form id="raw-command-form"><input id="raw-command" value="at+Connect?" maxlength="256"><button>发送</button></form>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-multi" class="console-view" data-console-view="multi">
+        <header class="page-head"><div><h1>多设备平铺</h1><p id="multi-summary">0 台在线 · 共 0 台设备</p></div><label class="switch-label"><input type="checkbox" id="multi-sync"><span></span>同步控制</label></header>
+        <div id="multi-grid" class="multi-grid"><div class="view-empty"><b>尚无在线设备</b><span>从左侧连接一个或多个 ZYC100 后，可在这里统一控制。</span></div></div>
+      </section>
+
+      <section id="view-automation" class="console-view" data-console-view="automation">
+        <header class="page-head"><div><h1>自动化测试工具</h1><p>使用 Web Serial 执行 AT 指令时间线</p></div><div><button id="automation-stop" disabled>停止</button><button class="accent-button" id="automation-run">运行时间线</button></div></header>
+        <div class="automation-top">
+          <article><h2>连接目标</h2><label>目标设备<select id="automation-device"><option value="active">当前设备</option><option value="all">全部在线设备</option></select></label><p>时间线只在当前网页保持打开时执行；切换标签页可能受浏览器节流影响。</p></article>
+          <article><h2>快速测试</h2><div class="quick-test-grid"><button data-auto-command="at+Connect?">在线设备检测</button><button data-auto-command="at+GetAttenuationVal?">查询衰减</button><button data-auto-command="at+GetBattery?">查询电池</button><button data-auto-command="at+SW:PATH?">查询 RF 通道</button></div></article>
+        </div>
+        <div class="timeline-layout">
+          <article class="timeline-panel"><header><h2>自动化时间线</h2><div><button id="timeline-add">添加命令</button><button id="timeline-save">保存配置</button><button id="timeline-clear">清空</button></div></header><div class="timeline-columns"><span>#</span><span>延迟 ms</span><span>AT 指令</span><span>备注</span><span>操作</span></div><div id="timeline-rows"></div></article>
+          <article class="automation-log-panel"><header><h2>执行日志</h2><button id="automation-log-clear">清空</button></header><output id="automation-log"><span>等待执行任务</span></output></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="rename-dialog">
+    <form method="dialog"><header><div><h2>设备重命名</h2><p>别名仅保存在当前浏览器，不会写入设备。</p></div><button value="cancel" aria-label="关闭">×</button></header><label>设备名称<input id="rename-input" maxlength="40" autocomplete="off" placeholder="例如：屏蔽箱-A"></label><p>名称留空并保存，可恢复为默认的 ZYC100 名称。</p><footer><button value="cancel">取消</button><button value="apply" class="accent-button" id="apply-rename">保存名称</button></footer></form>
+  </dialog>
+  <dialog id="compensation-dialog">
+    <form method="dialog"><header><div><h2>插入损耗补偿</h2><p>选择一种与桌面版兼容的数据格式</p></div><button value="cancel" aria-label="关闭">×</button></header><div class="compensation-types"><label><input type="radio" name="compensation-type" value="csv" checked><span>CSV 查找表<small>频率 GHz, 损耗 dB</small></span></label><label><input type="radio" name="compensation-type" value="formula"><span>多项式公式<small>以 f 表示 GHz</small></span></label><label><input type="radio" name="compensation-type" value="s2p"><span>Touchstone S2P<small>支持 DB / MA / RI</small></span></label></div><div data-compensation-panel="csv"><label>CSV 补偿表<input id="compensation-csv-file" type="file" accept=".csv,text/csv"></label></div><div data-compensation-panel="formula" hidden><label>S21 多项式公式<input id="compensation-formula" value="-1.17217-0.30125*f-0.01049*f^2" autocomplete="off"></label><p>输入 S21（dB），例如：-1.2-0.3*f-0.01*f^2，系统使用其绝对值作为插入损耗。</p></div><div data-compensation-panel="s2p" hidden><label>Touchstone 文件<input id="compensation-s2p-file" type="file" accept=".s2p,text/plain"></label><p>自动读取 S21，并按照文件头识别 GHz/MHz/Hz 与 DB、MA、RI 数据格式。</p></div><p id="compensation-preview">应用后会按当前频率线性插值。</p><footer><button value="cancel">取消</button><button value="apply" class="accent-button" id="apply-compensation">应用补偿</button></footer></form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="web-serial.js?v=1.28.0"></script>
+  <script src="zya1000-console.js?v=1.28.0"></script>
+</body>
+</html>
