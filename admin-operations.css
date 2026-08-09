@@ -1,3 +1,4 @@
+
 /* Operations dashboard, category management and audit history. */
 .admin-table { background:var(--panel); }
 .admin-table th { background:var(--panel2); }
@@ -44,13 +45,26 @@
 .system-counts { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
 .system-counts span { display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:10px; }
 .system-counts b { color:var(--text);font-size:13px; }
+.pages-publish-panel { margin-top:14px; }
+.pages-publish-panel .admin-toolbar { align-items:flex-start; }
+.pages-publish-meta { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:15px 0; }
+.pages-publish-meta span { display:grid;gap:3px;padding:11px;border:1px solid var(--line);border-radius:11px;color:var(--muted);font-size:10px;background:var(--panel2); }
+.pages-publish-meta b { color:var(--text);font-size:16px; }
+.pages-publish-panel dl { display:grid;gap:0;margin:0;border:1px solid var(--line);border-radius:11px;overflow:hidden; }
+.pages-publish-panel dl div { display:grid;grid-template-columns:130px 1fr;gap:12px;padding:9px 12px;border-bottom:1px solid var(--line); }
+.pages-publish-panel dl div:last-child { border-bottom:0; }
+.pages-publish-panel dt { color:var(--muted); }
+.pages-publish-panel dd { margin:0;overflow-wrap:anywhere; }
+.pages-publish-panel code { color:var(--mint); }
 
 @media(max-width:900px) {
-  .admin-action-strip,.system-health-grid { grid-template-columns:1fr 1fr; }
+  .admin-action-strip,.system-health-grid,.pages-publish-meta { grid-template-columns:1fr 1fr; }
   .admin-audit-filter { grid-template-columns:1fr 1fr; }
   .admin-order-filter { grid-template-columns:1fr 1fr; }
   .admin-audit-filter span { padding:0; }
 }
 @media(max-width:720px) {
-  .admin-action-strip,.admin-audit-filter,.admin-order-filter,.admin-order-summary,.system-health-grid,.system-backup-layout { grid-template-columns:1fr; }
+  .admin-action-strip,.admin-audit-filter,.admin-order-filter,.admin-order-summary,.system-health-grid,.system-backup-layout,.pages-publish-meta { grid-template-columns:1fr; }
+  .pages-publish-panel dl div { grid-template-columns:1fr;gap:3px; }
 }
+
