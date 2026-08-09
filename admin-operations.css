@@ -1,0 +1,56 @@
+/* Operations dashboard, category management and audit history. */
+.admin-table { background:var(--panel); }
+.admin-table th { background:var(--panel2); }
+.admin-table td { vertical-align:top; }
+.admin-table tr[hidden] { display:none; }
+.admin-table button:disabled { opacity:.38;cursor:not-allowed; }
+.admin-toolbar h2,.admin-toolbar p { margin:0; }
+.admin-toolbar p { color:var(--muted);font-size:12px;margin-top:3px; }
+.kpi small { display:block;color:var(--muted);font-size:10px;margin-top:4px; }
+.admin-action-strip { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px; }
+.admin-action-strip button { display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:var(--panel);color:var(--text);cursor:pointer; }
+.admin-action-strip button:hover { border-color:var(--mint); }
+.admin-action-strip button.has-alert { border-color:color-mix(in srgb,var(--orange) 70%,var(--line)); }
+.admin-action-strip b { font-size:20px;color:var(--mint); }
+.admin-action-strip .has-alert b { color:var(--orange); }
+.admin-action-strip span { font-size:11px;color:var(--muted); }
+.admin-audit-filter { display:grid;grid-template-columns:minmax(220px,1fr) 170px 170px auto;gap:10px;align-items:end;margin:0 0 14px; }
+.admin-audit-filter label { display:grid;gap:5px;color:var(--muted);font-size:11px; }
+.admin-audit-filter input,.admin-audit-filter select { height:40px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:0 11px; }
+.admin-audit-filter span { color:var(--muted);font-size:11px;padding-bottom:10px; }
+.audit-detail { min-width:125px; }
+.audit-detail summary { color:var(--mint);cursor:pointer; }
+.audit-detail b,.audit-detail code { display:block;margin-top:7px; }
+.audit-detail code { max-width:380px;max-height:120px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font-size:10px; }
+.admin-order-filter { display:grid;grid-template-columns:minmax(260px,1fr) 180px auto;gap:10px;align-items:end;margin:0 0 14px; }
+.admin-order-filter label { display:grid;gap:5px;color:var(--muted);font-size:11px; }
+.admin-order-filter input,.admin-order-filter select { height:40px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:0 11px; }
+.admin-order-filter span { color:var(--muted);font-size:11px;padding-bottom:10px; }
+.admin-order-summary { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px; }
+.admin-order-summary>div { display:grid;gap:2px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel2); }
+.admin-order-summary span,.admin-order-summary small { color:var(--muted);font-size:10px; }
+.admin-order-summary b { font-size:12px;overflow-wrap:anywhere; }
+.system-health-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0; }
+.system-health-card { display:grid;gap:4px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--panel); }
+.system-health-card span,.system-health-card small { color:var(--muted);font-size:10px; }
+.system-health-card b { font-size:20px; }
+.system-health-card.ok b { color:var(--mint); }
+.system-health-card.warn { border-color:var(--orange); }
+.system-health-card.warn b { color:var(--orange); }
+.system-backup-layout { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+.system-backup-layout h3 { margin:2px 0 12px; }
+.system-backup-layout p,.system-backup-layout li { color:var(--muted);font-size:12px; }
+.system-backup-layout code { display:block;margin:9px 0;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--mint);font-size:11px;overflow-wrap:anywhere; }
+.system-counts { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
+.system-counts span { display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:10px; }
+.system-counts b { color:var(--text);font-size:13px; }
+
+@media(max-width:900px) {
+  .admin-action-strip,.system-health-grid { grid-template-columns:1fr 1fr; }
+  .admin-audit-filter { grid-template-columns:1fr 1fr; }
+  .admin-order-filter { grid-template-columns:1fr 1fr; }
+  .admin-audit-filter span { padding:0; }
+}
+@media(max-width:720px) {
+  .admin-action-strip,.admin-audit-filter,.admin-order-filter,.admin-order-summary,.system-health-grid,.system-backup-layout { grid-template-columns:1fr; }
+}
