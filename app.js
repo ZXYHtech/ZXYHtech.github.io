@@ -36,7 +36,7 @@ const productDisplayImage = product => PRODUCT_DISPLAY_IMAGES[product?.slug]
   : resolveContentUrl(product?.image_url || '');
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.9'),{updateViaCache:'none'}).catch(()=>{}));
+addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.30.0'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -343,7 +343,7 @@ function ecosystemLinks(product){
   if(!isController&&!isAttenuator)return '';
   return `<section class="product-ecosystem" data-review-id="product.${escapeHtml(product.slug)}.ecosystem"><div class="section-head"><div><span class="eyebrow">PRODUCT ECOSYSTEM</span><h2>控制器、模块与上位机协同使用</h2></div><p>相关入口按实际组合关系连接</p></div><div class="ecosystem-grid">
     <a href="#product/${isController?'zya-dat-63':'zyc100-controller'}"><span>${isController?'RF MODULE':'CONTROLLER'}</span><b>${isController?'ZYE660 数字衰减模块':'ZYC100 射频测试控制器'}</b><p>${isController?'由 ZYC100 完成衰减设置、扫描和自动化控制。':'连接 ZYE660，实现本机操作与上位机统一控制。'}</p><i>查看产品 →</i></a>
-<a href="${sitePath('zya1000-console.html?v=1.29.9')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
+<a href="${sitePath('zya1000-console.html?v=1.30.0')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
     <a href="#downloads"><span>DOCUMENTS</span><b>说明书、固件与软件</b><p>资料由 Pages 静态站和 Gitee 发布页提供，按型号集中查找。</p><i>前往下载中心 →</i></a>
   </div></section>`;
 }
@@ -353,8 +353,8 @@ function controllerEntryHub(product){
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
     <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
-<a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.9')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
-<a href="${sitePath('zya1000-console.html?v=1.29.9&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
+<a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.30.0')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
+<a href="${sitePath('zya1000-console.html?v=1.30.0&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
       <a href="${sitePath('legacy/ZYC100_Manual_V5.0.html')}" target="_blank" rel="noopener"><span>CONTROLLER MANUAL</span><b>ZYC100 在线说明书</b><p>查看接口、按键、本机操作、AT 指令和模块连接方法。</p><i>查看控制器说明书 →</i></a>
       <a href="${sitePath('legacy/ZYA1000_User_Manual.html')}" target="_blank" rel="noopener"><span>SOFTWARE MANUAL</span><b>ZYA1000 使用说明</b><p>查看设备发现、补偿参数、多设备控制和自动化测试流程。</p><i>查看软件说明书 →</i></a>
       <a href="https://gitee.com/ZXYHtech/zyc100/releases" target="_blank" rel="noopener"><span>FIRMWARE</span><b>控制器固件发布</b><p>获取 ZYC100 固件、版本说明及升级文件。</p><i>前往 Gitee →</i></a>
@@ -366,8 +366,8 @@ function controllerEntryHub(product){
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
   return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
-<div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.9')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
-<iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.9&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
+<div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.30.0')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
+<iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.30.0&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
   </section>`;
 }
 function productBrandFooter(product){
@@ -586,7 +586,7 @@ function versionAtLeast(actual,required){const left=String(actual||'').split('.'
 function pagesPublishPanel(pages){
   const snapshot=pages.snapshot||{},preflight=pages.preflight||{},excluded=preflight.excluded||[],history=pages.history||[];
   const canPublish=Boolean(pages.publish_ready&&preflight.can_publish);
-  const readiness=excluded.length?`<div class="pages-preflight warning"><div><b>${excluded.length} 款启用商品本次不会公开</b><p>草稿记录仍会保留，不影响已经完整的商品发布。</p></div><div class="pages-excluded-list">${excluded.map(item=>`<article><span><strong>${escapeHtml(item.model)}</strong><small>缺少：${escapeHtml(item.missing.join('、'))}</small></span><button type="button" class="button ghost compact" data-pages-edit-product="${item.id}">去完善</button></article>`).join('')}</div></div>`:`<div class="pages-preflight clean"><b>发布预检通过</b><span>所有启用商品资料完整。</span></div>`;
+  const readiness=excluded.length?`<div class="pages-preflight warning"><div><b>${excluded.length} 款启用商品本次不会公开</b><p>草稿记录仍会保留，不影响已经完整的商品发布。</p></div><div class="pages-excluded-list">${excluded.map(item=>`<article><span><strong>${escapeHtml(item.model)}</strong><small>缺少：${escapeHtml(item.missing.join('、'))}</small></span><button type="button" class="button ghost compact" data-product-workspace="${item.id}">完善资料</button></article>`).join('')}</div></div>`:`<div class="pages-preflight clean"><b>发布预检通过</b><span>所有启用商品资料完整。</span></div>`;
   const historyHtml=history.length?`<div class="pages-history"><h4>最近发布记录</h4>${history.map(item=>`<div><span class="status-tag ${item.action==='publish'?'on':''}">${item.action==='publish'?'已发布':'预览'}</span><b>${escapeHtml(item.created_at||'')}</b><code>${escapeHtml((item.result?.sha256||'').slice(0,12))}</code><small>${escapeHtml(item.actor||'')}</small></div>`).join('')}</div>`:'<div class="admin-note">尚无 Pages 预览或发布记录。</div>';
   return `<section class="panel pages-publish-panel"><div class="admin-toolbar"><div><span class="eyebrow">PAGES CONTENT PUBLISHER</span><h3>发布商品目录静态快照</h3><p>仅公开资料完整商品，同时在快照中保留全部目录记录；访客联网时仍优先读取服务器。</p></div><span class="status-tag ${canPublish?'on':'warn'}">${canPublish?'可以发布':preflight.can_publish?'仅可预览':'无可发布商品'}</span></div><div class="pages-publish-meta"><span><b>${snapshot.products??0}</b> 款公开商品</span><span><b>${snapshot.archived_products??snapshot.products??0}</b> 条保留记录</span><span><b>${snapshot.documents??0}</b> 份公开文档</span><span><b>${snapshot.resources??0}</b> 个公开资源</span><span><b>${formatBytes(snapshot.bytes||0)}</b> 快照大小</span></div>${readiness}<dl><div><dt>目标仓库</dt><dd>${escapeHtml(pages.repository)}</dd></div><div><dt>分支与路径</dt><dd>${escapeHtml(pages.branch)} · ${escapeHtml(pages.path)}</dd></div><div><dt>预览指纹</dt><dd><code>${escapeHtml(snapshot.sha256||'')}</code></dd></div></dl><div class="modal-actions"><button type="button" class="button ghost" id="pages-publish-preview">重新生成预览</button><button type="button" class="button primary" id="pages-publish-confirm" ${canPublish?'':'disabled'}>确认发布到 Pages</button></div>${pages.publish_ready?'':'<div class="admin-note">实际发布默认关闭。服务器需同时配置 SMART_MANUAL_PAGES_PUBLISH_ENABLED=1 与 SMART_MANUAL_GITHUB_TOKEN；令牌不会返回网页或写入日志。</div>'}${historyHtml}</section>`
 }
@@ -606,7 +606,7 @@ async function renderAdmin() {
   const categoriesTable=adminRowsTable([{label:'分类代码',render:r=>`<strong>${escapeHtml(r.code)}</strong>`},{label:'名称',key:'name'},{label:'说明',key:'description'},{label:'商品数',key:'product_count'},{label:'排序',key:'sort_order'}],d.categories,r=>`<button class="button ghost compact" data-admin-edit="category" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="category" data-id="${r.id}" ${r.product_count?'disabled title="分类下仍有商品"':''}>删除</button>`);
   const productsTable=adminRowsTable([
     {label:'型号',render:r=>`<strong>${escapeHtml(r.model)}</strong><br>${escapeHtml(r.material_code)}`},{label:'名称',key:'name'},{label:'分类',key:'category_code'},{label:'售价',render:r=>money(r.price)},{label:'成本',render:r=>money(r.cost)},{label:'公开完整度',render:r=>r.readiness?.ready?'<span class="status-tag on">资料完整</span>':`<span class="status-tag warn">待完善</span><br><small>${escapeHtml((r.readiness?.missing||[]).join('、'))}</small>`},{label:'状态',render:r=>`<span class="status-tag ${r.enabled&&r.readiness?.ready?'on':'warn'}">${!r.enabled?'已下架':r.readiness?.ready?'已公开':'未公开'}</span>`}
-  ],d.products,r=>`<button class="button ghost compact" data-admin-edit="product" data-id="${r.id}">编辑</button>`);
+  ],d.products,r=>`<button class="button primary compact" data-product-workspace="${r.id}">资料工作台</button> <button class="button ghost compact" data-admin-edit="product" data-id="${r.id}">编辑参数</button>`);
   const docsTable=adminRowsTable([{label:'型号',key:'model'},{label:'类型',key:'doc_type'},{label:'文件名称',key:'title'},{label:'版本',key:'version'},{label:'语言',key:'language'}],d.documents,r=>`<button class="button ghost compact" data-admin-edit="document" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="document" data-id="${r.id}">删除</button>`);
   const tutorialsTable=adminRowsTable([{label:'型号',key:'model'},{label:'类型',key:'tutorial_type'},{label:'标题',key:'title'},{label:'时长',render:r=>`${r.duration_minutes} 分钟`},{label:'步骤',render:r=>String(r.steps.length)}],d.tutorials,r=>`<button class="button ghost compact" data-admin-edit="tutorial" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="tutorial" data-id="${r.id}">删除</button>`);
   const hotspotsTable=adminRowsTable([{label:'型号',key:'model'},{label:'标识',key:'hotspot_key'},{label:'名称',key:'label'},{label:'说明',key:'description'},{label:'位置',render:r=>`${r.position.x??0}% / ${r.position.y??0}%`}],d.hotspots,r=>`<button class="button ghost compact" data-admin-edit="hotspot" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="hotspot" data-id="${r.id}">删除</button>`);
@@ -639,6 +639,31 @@ async function renderAdmin() {
 }
 function productOptions(selected){return state.admin.products.map(p=>`<option value="${p.id}" ${Number(selected)===p.id?'selected':''}>${escapeHtml(p.model)} · ${escapeHtml(p.name)}</option>`).join('')}
 function relatedProductChoices(row={}){const selected=new Set(row.related_slugs||[]);return state.admin.products.filter(p=>p.slug!==row.slug).map(p=>`<label class="admin-related-choice"><input type="checkbox" name="related_slugs" value="${escapeHtml(p.slug)}" ${selected.has(p.slug)?'checked':''}><span><b>${escapeHtml(p.model)}</b><small>${escapeHtml(p.name)}</small></span></label>`).join('')||'<p class="muted">保存更多商品后即可配置关联推荐。</p>'}
+async function openAdminContentTab(tab,productId){
+  $('#admin-editor')?.close();state.adminTab=tab;await renderAdmin();
+  const pane=$(`[data-admin-pane="${tab}"]`);pane?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(tab==='assets'){
+    const product=$('#asset-upload-form [name="product_id"]'),type=$('#asset-upload-form [name="asset_type"]'),file=$('#asset-upload-form [name="file"]');
+    if(product)product.value=String(productId);if(type)type.value='image';file?.focus();
+  }
+}
+function showProductWorkspace(productId){
+  const product=state.admin.products.find(item=>item.id===Number(productId));if(!product)return;
+  const readiness=product.readiness||{ready:false,missing:[],counts:{}},counts=readiness.counts||{};
+  const items=[
+    {key:'images',label:'产品图片',description:'用于商品卡片、产品详情和互动热点底图。',tab:'assets'},
+    {key:'documents',label:'公开文档',description:'至少一个有效下载地址，不能使用“待上传”占位链接。',tab:'documents',editor:'document'},
+    {key:'tutorials',label:'使用教程',description:'提供可逐步执行的上手流程与操作说明。',tab:'tutorials',editor:'tutorial'},
+    {key:'hotspots',label:'功能热点',description:'在实物图上标注接口、开关和关键功能位置。',tab:'hotspots',editor:'hotspot'},
+  ];
+  const dialog=$('#admin-editor');
+  dialog.innerHTML=`<div class="product-workspace"><div class="modal-head"><div><span class="eyebrow">PRODUCT CONTENT WORKSPACE</span><h2>${escapeHtml(product.model)} 资料工作台</h2><p>${escapeHtml(product.name)}</p></div><button type="button" class="close-button" data-workspace-close>×</button></div><div class="workspace-status ${readiness.ready?'ready':'incomplete'}"><span>${readiness.ready?'可以公开':'暂未公开'}</span><b>${readiness.ready?'四项资料已经完整':`还需补齐 ${readiness.missing.length} 项资料`}</b></div><div class="workspace-checklist">${items.map(item=>{const complete=Number(counts[item.key]||0)>0;return `<article class="${complete?'complete':'missing'}"><i>${complete?'✓':'!'}</i><span><b>${item.label}</b><small>${item.description}</small></span><em>${complete?`${counts[item.key]} 项`:'缺失'}</em><div>${item.editor&&!complete?`<button type="button" class="button primary compact" data-workspace-add="${item.editor}">立即新增</button>`:''}<button type="button" class="button ghost compact" data-workspace-tab="${item.tab}">${complete?'查看管理':item.tab==='assets'?'上传图片':'进入列表'}</button></div></article>`}).join('')}</div><div class="modal-actions"><button type="button" class="button ghost" data-workspace-parameters>编辑商品参数</button><button type="button" class="button primary" data-workspace-close>完成</button></div></div>`;
+  $$('[data-workspace-close]',dialog).forEach(button=>button.onclick=()=>dialog.close());
+  $('[data-workspace-parameters]',dialog).onclick=()=>showAdminEditor('product',product);
+  $$('[data-workspace-tab]',dialog).forEach(button=>button.onclick=()=>openAdminContentTab(button.dataset.workspaceTab,product.id));
+  $$('[data-workspace-add]',dialog).forEach(button=>button.onclick=()=>showAdminEditor(button.dataset.workspaceAdd,{product_id:product.id}));
+  dialog.showModal();
+}
 function showAdminEditor(type,row={}) {
   const dialog=$('#admin-editor'); const isNew=!row.id; let fields='';
   if(type==='category') fields=`<div class="form-grid"><label>分类代码<input name="code" value="${escapeHtml(row.code||'')}" pattern="[a-z0-9][a-z0-9_\\-]{1,39}" ${isNew?'required':'readonly'}></label><label>分类名称<input name="name" value="${escapeHtml(row.name||'')}" required maxlength="80"></label><label>排序<input name="sort_order" type="number" value="${row.sort_order??0}"></label></div><label>分类说明<textarea name="description" rows="4" maxlength="500">${escapeHtml(row.description||'')}</textarea></label>${isNew?'':'<div class="admin-note">分类代码已作为商品和网址的稳定关联标识，编辑时不能修改。</div>'}`;
@@ -667,6 +692,7 @@ function bindAdmin(){
   $$('#app [data-admin-tab]').forEach(button=>button.onclick=()=>{state.adminTab=button.dataset.adminTab;activateTab(state.adminTab)});
   $$('#app [data-admin-jump]').forEach(button=>button.onclick=()=>{state.adminTab=button.dataset.adminJump;activateTab(state.adminTab);$('#app .admin-shell')?.scrollIntoView({behavior:'smooth',block:'start'})});
   $$('#app [data-admin-new]').forEach(button=>button.onclick=()=>showAdminEditor(button.dataset.adminNew));
+  $$('#app [data-product-workspace]').forEach(button=>button.onclick=()=>showProductWorkspace(button.dataset.productWorkspace));
   $$('#app [data-admin-edit]').forEach(button=>button.onclick=()=>{const type=button.dataset.adminEdit;const list={category:'categories',product:'products',document:'documents',tutorial:'tutorials',hotspot:'hotspots',order:'orders',contact:'contacts'}[type];showAdminEditor(type,state.admin[list].find(x=>x.id===Number(button.dataset.id)))});
   $$('#app [data-admin-delete]').forEach(button=>button.onclick=async()=>{if(button.disabled)return;const plural={category:'categories',document:'documents',tutorial:'tutorials',hotspot:'hotspots',asset:'assets'}[button.dataset.adminDelete];if(!confirm('确认删除这条记录？此操作会写入操作记录。'))return;await adminApi(`/api/admin/${plural}/${button.dataset.id}`,{method:'DELETE'});state.products=[];state.categories=[];toast('已删除');if(location.hash==='#admin')renderAdmin()});
   $$('#app [data-admin-status]').forEach(select=>select.onchange=async()=>{const plural=select.dataset.adminStatus==='order'?'orders':'contacts';await adminApi(`/api/admin/${plural}/${select.dataset.id}`,{method:'PATCH',body:JSON.stringify({status:select.value})});toast('状态已更新')});
@@ -677,7 +703,6 @@ function bindAdmin(){
   const backupButton=$('#download-full-backup');if(backupButton)backupButton.onclick=async()=>{backupButton.disabled=true;backupButton.textContent='正在生成一致性备份…';try{if(await protectedDownload('/api/admin/backup/download',`zya-smart-manual-backup-${new Date().toISOString().slice(0,10)}.zip`))toast('完整备份已生成并开始下载')}finally{backupButton.disabled=false;backupButton.textContent='下载完整备份 ZIP'}};
   const pagesPreview=$('#pages-publish-preview');if(pagesPreview)pagesPreview.onclick=async()=>{pagesPreview.disabled=true;pagesPreview.textContent='正在生成…';try{const result=await adminApi('/api/admin/pages/publish',{method:'POST',body:JSON.stringify({dry_run:true})});toast(`快照已生成：${result.snapshot.products} 个商品 · ${result.snapshot.sha256.slice(0,12)}`);if(location.hash==='#admin')renderAdmin()}catch(err){toast(err.message)}finally{pagesPreview.disabled=false;pagesPreview.textContent='重新生成预览'}};
   const pagesPublish=$('#pages-publish-confirm');if(pagesPublish)pagesPublish.onclick=async()=>{if(!confirm('确认发布当前预览中的完整商品与公开资料？未完善商品会保留为目录记录，但不会展示给访客。'))return;pagesPublish.disabled=true;pagesPublish.textContent='正在发布…';try{const result=await adminApi('/api/admin/pages/publish',{method:'POST',body:JSON.stringify({confirm:true,expected_sha256:state.admin.pagesStatus.snapshot.sha256,message:`content: publish catalog ${new Date().toISOString().slice(0,10)}`})});toast(`Pages 目录已发布 · ${result.commit_sha.slice(0,12)}`);if(location.hash==='#admin')renderAdmin()}catch(err){toast(err.message)}finally{pagesPublish.disabled=false;pagesPublish.textContent='确认发布到 Pages'}};
-  $$('[data-pages-edit-product]').forEach(button=>button.onclick=()=>{state.adminTab='products';activateTab('products');showAdminEditor('product',state.admin.products.find(item=>item.id===Number(button.dataset.pagesEditProduct)))});
   const orderSearch=$('#admin-order-search'),orderStatus=$('#admin-order-status');
   const filterOrders=()=>{const q=(orderSearch?.value||'').trim().toLowerCase(),status=orderStatus?.value||'',rows=$$('#admin-order-table-host tbody tr');let visible=0;rows.forEach((tr,index)=>{const item=state.admin.orders[index];if(!item)return;const haystack=`${item.order_no} ${item.customer_name} ${item.company} ${item.phone} ${item.email} ${item.shipping_carrier} ${item.tracking_no} ${(item.items||[]).map(x=>`${x.material_code} ${x.product_name}`).join(' ')}`.toLowerCase();const show=(!q||haystack.includes(q))&&(!status||item.status===status);tr.hidden=!show;if(show)visible++});const count=$('#admin-order-count');if(count)count.textContent=`${visible} 个订单`};
   [orderSearch,orderStatus].filter(Boolean).forEach(control=>control.addEventListener(control.tagName==='INPUT'?'input':'change',filterOrders));
