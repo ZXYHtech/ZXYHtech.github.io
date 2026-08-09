@@ -1,4 +1,4 @@
-const CACHE = 'zya-smart-manual-v1.29.1';
+const CACHE = 'zya-smart-manual-v1.29.3';
 const BASE = new URL('./', self.registration.scope);
 const SHELL = [
   '', 'styles.css?v=1.24.0', 'admin.css?v=1.24.0', 'admin-operations.css?v=1.24.0',
@@ -8,7 +8,7 @@ const SHELL = [
   'products.css?v=1.24.0', 'support.css?v=1.24.0', 'checkout.css?v=1.24.0',
   'attenuator.css?v=1.24.0', 'viewer.css?v=1.24.0', 'zye660.css?v=1.24.0',
   'hybrid.css?v=1.29.1', 'web-serial.css?v=1.24.0', 'runtime-config.js?v=1.29.0',
-  'web-serial.js?v=1.29.0', 'app.js?v=1.29.1',
+  'web-serial.js?v=1.29.0', 'app.js?v=1.29.3',
   'zya1000-console.html?v=1.29.1', 'zya1000-console.css?v=1.29.1', 'zya1000-console.js?v=1.29.1',
   'assets/products/zye660-cutout-v1.png?v=1.7.5', 'assets/products/zyc100-cutout-v3.png?v=1.16.2',
   'legacy/assets/zya1000-screenshots/zya1000-start-cutout-v1.png',
@@ -45,7 +45,12 @@ self.addEventListener('fetch', event => {
     event.respondWith(networkFirst(event.request, BASE.href));
     return;
   }
-  if (url.pathname.includes('/api/') || url.pathname.includes('/uploads/')) return;
+  if (url.pathname.includes('/api/')) {
+    const publicCatalogApi=/\/api\/(?:categories|products(?:\/[^/]+)?|tutorials|documents|resources)(?:\/|$)/.test(url.pathname);
+    if(publicCatalogApi)event.respondWith(networkFirst(event.request));
+    return;
+  }
+  if (url.pathname.includes('/uploads/')) return;
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
     if (response.ok) caches.open(CACHE).then(cache => cache.put(event.request, response.clone()));
     return response;
