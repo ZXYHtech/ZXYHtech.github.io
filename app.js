@@ -18,9 +18,13 @@ const launchParams = new URLSearchParams(location.search);
 const runtime = Object.freeze({mode:'full',apiBaseUrl:'',catalogUrl:'data/catalog.json',...(window.ZYA_RUNTIME||{})});
 const siteBase = new URL('./', document.baseURI);
 const sitePath = path => new URL(String(path||'').replace(/^\//,''), siteBase).href;
+const apiPath = path => runtime.apiBaseUrl
+  ? `${String(runtime.apiBaseUrl).replace(/\/$/,'')}${path.startsWith('/')?path:`/${path}`}`
+  : path;
 const resolveContentUrl = path => {
   const value=String(path||'');
   if(!value||value.startsWith('#')||/^(?:https?:|data:|blob:|mailto:|tel:)/i.test(value))return value;
+  if(runtime.apiBaseUrl&&/^\/?(?:api|uploads)\//i.test(value))return apiPath(value.startsWith('/')?value:`/${value}`);
   return sitePath(value);
 };
 const PRODUCT_DISPLAY_IMAGES = Object.freeze({
@@ -30,12 +34,9 @@ const PRODUCT_DISPLAY_IMAGES = Object.freeze({
 const productDisplayImage = product => PRODUCT_DISPLAY_IMAGES[product?.slug]
   ? sitePath(PRODUCT_DISPLAY_IMAGES[product.slug])
   : resolveContentUrl(product?.image_url || '');
-const apiPath = path => runtime.apiBaseUrl
-  ? `${String(runtime.apiBaseUrl).replace(/\/$/,'')}${path.startsWith('/')?path:`/${path}`}`
-  : path;
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.4'),{updateViaCache:'none'}).catch(()=>{}));
+  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.5'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -117,19 +118,19 @@ async function staticCatalogResponse(path){
 }
 async function api(path, options = {}) {
   const method=String(options.method||'GET').toUpperCase();
-  if(method==='GET'&&runtime.mode==='hybrid'){
-    const local=await staticCatalogResponse(path);
-    if(local)return local;
-  }
+  const staticFallback=method==='GET'&&runtime.mode==='hybrid'?await staticCatalogResponse(path):null;
+  if(staticFallback&&!runtime.apiBaseUrl)return staticFallback;
   if(runtime.mode==='hybrid'&&!runtime.apiBaseUrl&&path.startsWith('/api/'))throw new Error('下单服务尚未配置，请联系网站管理员');
-  const response = await fetch(apiPath(path), {...options,headers:{'Content-Type':'application/json',...(state.adminToken?{'Authorization':`Bearer ${state.adminToken}`}:{}) ,...(options.headers||{})}});
-  const text = await response.text();
-  const data = text ? JSON.parse(text) : {};
-  if (!response.ok) throw new Error(data.error || '请求失败');
-  return data;
+  try{
+    const response = await fetch(apiPath(path), {...options,headers:{'Content-Type':'application/json',...(state.adminToken?{'Authorization':`Bearer ${state.adminToken}`}:{}) ,...(options.headers||{})}});
+    const text = await response.text();
+    let data={};try{data=text?JSON.parse(text):{}}catch(error){if(staticFallback)return staticFallback;throw new Error('数据服务返回了无法识别的内容')}
+    if (!response.ok){if(staticFallback&&[404,408,429,500,502,503,504].includes(response.status))return staticFallback;throw new Error(data.error || '请求失败')}
+    return data;
+  }catch(error){if(staticFallback)return staticFallback;throw error}
 }
 function syncRoleUI(){const admin=Boolean(state.adminToken);document.body.classList.toggle('is-admin-session',admin);const button=$('#review-toggle');if(button)button.hidden=!admin;if(!admin&&state.review)toggleReview(false)}
-async function protectedDownload(path,filename){try{const response=await fetch(path,{headers:{'Authorization':`Bearer ${state.adminToken}`}});if(!response.ok)throw new Error('没有权限导出该文件');const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=filename;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);return true}catch(err){toast(err.message);return false}}
+async function protectedDownload(path,filename){try{const response=await fetch(apiPath(path),{headers:{'Authorization':`Bearer ${state.adminToken}`}});if(!response.ok)throw new Error('没有权限导出该文件');const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=filename;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);return true}catch(err){toast(err.message);return false}}
 function toast(message) {
   const el = $('#toast'); el.textContent = message; el.classList.add('show');
   clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove('show'), 2600);
@@ -341,7 +342,7 @@ function ecosystemLinks(product){
   if(!isController&&!isAttenuator)return '';
   return `<section class="product-ecosystem" data-review-id="product.${escapeHtml(product.slug)}.ecosystem"><div class="section-head"><div><span class="eyebrow">PRODUCT ECOSYSTEM</span><h2>控制器、模块与上位机协同使用</h2></div><p>相关入口按实际组合关系连接</p></div><div class="ecosystem-grid">
     <a href="#product/${isController?'zya-dat-63':'zyc100-controller'}"><span>${isController?'RF MODULE':'CONTROLLER'}</span><b>${isController?'ZYE660 数字衰减模块':'ZYC100 射频测试控制器'}</b><p>${isController?'由 ZYC100 完成衰减设置、扫描和自动化控制。':'连接 ZYE660，实现本机操作与上位机统一控制。'}</p><i>查看产品 →</i></a>
-    <a href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
+    <a href="${sitePath('zya1000-console.html?v=1.29.5')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
     <a href="#downloads"><span>DOCUMENTS</span><b>说明书、固件与软件</b><p>资料由 Pages 静态站和 Gitee 发布页提供，按型号集中查找。</p><i>前往下载中心 →</i></a>
   </div></section>`;
 }
@@ -351,8 +352,8 @@ function controllerEntryHub(product){
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
     <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
-      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
-      <a href="${sitePath('zya1000-console.html?v=1.29.4&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
+      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.5')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
+      <a href="${sitePath('zya1000-console.html?v=1.29.5&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
       <a href="${sitePath('legacy/ZYC100_Manual_V5.0.html')}" target="_blank" rel="noopener"><span>CONTROLLER MANUAL</span><b>ZYC100 在线说明书</b><p>查看接口、按键、本机操作、AT 指令和模块连接方法。</p><i>查看控制器说明书 →</i></a>
       <a href="${sitePath('legacy/ZYA1000_User_Manual.html')}" target="_blank" rel="noopener"><span>SOFTWARE MANUAL</span><b>ZYA1000 使用说明</b><p>查看设备发现、补偿参数、多设备控制和自动化测试流程。</p><i>查看软件说明书 →</i></a>
       <a href="https://gitee.com/ZXYHtech/zyc100/releases" target="_blank" rel="noopener"><span>FIRMWARE</span><b>控制器固件发布</b><p>获取 ZYC100 固件、版本说明及升级文件。</p><i>前往 Gitee →</i></a>
@@ -364,8 +365,8 @@ function controllerEntryHub(product){
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
   return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
-    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
-    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.4&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
+    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.5')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
+    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.5&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
   </section>`;
 }
 function productBrandFooter(product){
@@ -659,8 +660,8 @@ function bindAdmin(){
   $$('#app [data-admin-delete]').forEach(button=>button.onclick=async()=>{if(button.disabled)return;const plural={category:'categories',document:'documents',tutorial:'tutorials',hotspot:'hotspots',asset:'assets'}[button.dataset.adminDelete];if(!confirm('确认删除这条记录？此操作会写入操作记录。'))return;await adminApi(`/api/admin/${plural}/${button.dataset.id}`,{method:'DELETE'});state.products=[];state.categories=[];toast('已删除');if(location.hash==='#admin')renderAdmin()});
   $$('#app [data-admin-status]').forEach(select=>select.onchange=async()=>{const plural=select.dataset.adminStatus==='order'?'orders':'contacts';await adminApi(`/api/admin/${plural}/${select.dataset.id}`,{method:'PATCH',body:JSON.stringify({status:select.value})});toast('状态已更新')});
   $$('#app [data-admin-retry]').forEach(button=>button.onclick=async()=>{button.disabled=true;try{const result=await adminApi(`/api/admin/orders/${button.dataset.adminRetry}/retry-sync`,{method:'POST',body:'{}'});toast(`库存同步：${result.status}`);if(location.hash==='#admin')renderAdmin()}catch(err){toast(err.message)}finally{button.disabled=false}});
-  const uploadForm=$('#asset-upload-form');if(uploadForm)uploadForm.onsubmit=async e=>{e.preventDefault();const fd=new FormData(e.target),file=fd.get('file');if(!file?.size)return toast('请选择文件');const button=$('button',e.target);button.disabled=true;button.textContent='上传中…';try{const response=await fetch('/api/admin/assets/upload',{method:'POST',headers:{'Authorization':`Bearer ${state.adminToken}`,'X-Product-Id':fd.get('product_id'),'X-Asset-Type':fd.get('asset_type'),'X-Asset-Version':fd.get('version')||'1.0','X-File-Name':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file});const result=await response.json();if(!response.ok)throw new Error(result.error||'上传失败');state.products=[];toast('资源文件已上传');if(location.hash==='#admin')renderAdmin()}catch(err){toast(err.message)}finally{button.disabled=false;button.textContent='上传资源'}};
-  const exportButton=$('[data-admin-export-orders]');if(exportButton)exportButton.onclick=async()=>{try{const response=await fetch('/api/admin/orders/export.csv',{headers:{'Authorization':`Bearer ${state.adminToken}`}});if(!response.ok)throw new Error('订单导出失败');const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='smart-manual-orders.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(err){toast(err.message)}};
+  const uploadForm=$('#asset-upload-form');if(uploadForm)uploadForm.onsubmit=async e=>{e.preventDefault();const fd=new FormData(e.target),file=fd.get('file');if(!file?.size)return toast('请选择文件');const button=$('button',e.target);button.disabled=true;button.textContent='上传中…';try{const response=await fetch(apiPath('/api/admin/assets/upload'),{method:'POST',headers:{'Authorization':`Bearer ${state.adminToken}`,'X-Product-Id':fd.get('product_id'),'X-Asset-Type':fd.get('asset_type'),'X-Asset-Version':fd.get('version')||'1.0','X-File-Name':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file});const result=await response.json();if(!response.ok)throw new Error(result.error||'上传失败');state.products=[];toast('资源文件已上传');if(location.hash==='#admin')renderAdmin()}catch(err){toast(err.message)}finally{button.disabled=false;button.textContent='上传资源'}};
+  const exportButton=$('[data-admin-export-orders]');if(exportButton)exportButton.onclick=()=>protectedDownload('/api/admin/orders/export.csv','smart-manual-orders.csv');
   const auditExport=$('[data-admin-export-audit]');if(auditExport)auditExport.onclick=()=>protectedDownload('/api/admin/audit-logs/export.csv','smart-manual-admin-audit.csv');
   const backupButton=$('#download-full-backup');if(backupButton)backupButton.onclick=async()=>{backupButton.disabled=true;backupButton.textContent='正在生成一致性备份…';try{if(await protectedDownload('/api/admin/backup/download',`zya-smart-manual-backup-${new Date().toISOString().slice(0,10)}.zip`))toast('完整备份已生成并开始下载')}finally{backupButton.disabled=false;backupButton.textContent='下载完整备份 ZIP'}};
   const orderSearch=$('#admin-order-search'),orderStatus=$('#admin-order-status');
