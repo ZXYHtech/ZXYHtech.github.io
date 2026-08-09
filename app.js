@@ -36,7 +36,7 @@ const productDisplayImage = product => PRODUCT_DISPLAY_IMAGES[product?.slug]
   : resolveContentUrl(product?.image_url || '');
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.7'),{updateViaCache:'none'}).catch(()=>{}));
+  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.8'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -343,7 +343,7 @@ function ecosystemLinks(product){
   if(!isController&&!isAttenuator)return '';
   return `<section class="product-ecosystem" data-review-id="product.${escapeHtml(product.slug)}.ecosystem"><div class="section-head"><div><span class="eyebrow">PRODUCT ECOSYSTEM</span><h2>控制器、模块与上位机协同使用</h2></div><p>相关入口按实际组合关系连接</p></div><div class="ecosystem-grid">
     <a href="#product/${isController?'zya-dat-63':'zyc100-controller'}"><span>${isController?'RF MODULE':'CONTROLLER'}</span><b>${isController?'ZYE660 数字衰减模块':'ZYC100 射频测试控制器'}</b><p>${isController?'由 ZYC100 完成衰减设置、扫描和自动化控制。':'连接 ZYE660，实现本机操作与上位机统一控制。'}</p><i>查看产品 →</i></a>
-    <a href="${sitePath('zya1000-console.html?v=1.29.7')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
+    <a href="${sitePath('zya1000-console.html?v=1.29.8')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
     <a href="#downloads"><span>DOCUMENTS</span><b>说明书、固件与软件</b><p>资料由 Pages 静态站和 Gitee 发布页提供，按型号集中查找。</p><i>前往下载中心 →</i></a>
   </div></section>`;
 }
@@ -353,8 +353,8 @@ function controllerEntryHub(product){
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
     <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
-      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.7')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
-      <a href="${sitePath('zya1000-console.html?v=1.29.7&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
+      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.8')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
+      <a href="${sitePath('zya1000-console.html?v=1.29.8&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
       <a href="${sitePath('legacy/ZYC100_Manual_V5.0.html')}" target="_blank" rel="noopener"><span>CONTROLLER MANUAL</span><b>ZYC100 在线说明书</b><p>查看接口、按键、本机操作、AT 指令和模块连接方法。</p><i>查看控制器说明书 →</i></a>
       <a href="${sitePath('legacy/ZYA1000_User_Manual.html')}" target="_blank" rel="noopener"><span>SOFTWARE MANUAL</span><b>ZYA1000 使用说明</b><p>查看设备发现、补偿参数、多设备控制和自动化测试流程。</p><i>查看软件说明书 →</i></a>
       <a href="https://gitee.com/ZXYHtech/zyc100/releases" target="_blank" rel="noopener"><span>FIRMWARE</span><b>控制器固件发布</b><p>获取 ZYC100 固件、版本说明及升级文件。</p><i>前往 Gitee →</i></a>
@@ -366,8 +366,8 @@ function controllerEntryHub(product){
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
   return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
-    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.7')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
-    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.7&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
+    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.8')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
+    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.8&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
   </section>`;
 }
 function productBrandFooter(product){
@@ -599,7 +599,7 @@ async function renderAdmin() {
   const d=state.admin,c=d.overview.counts,diag=d.diagnostics;
   const categoriesTable=adminRowsTable([{label:'分类代码',render:r=>`<strong>${escapeHtml(r.code)}</strong>`},{label:'名称',key:'name'},{label:'说明',key:'description'},{label:'商品数',key:'product_count'},{label:'排序',key:'sort_order'}],d.categories,r=>`<button class="button ghost compact" data-admin-edit="category" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="category" data-id="${r.id}" ${r.product_count?'disabled title="分类下仍有商品"':''}>删除</button>`);
   const productsTable=adminRowsTable([
-    {label:'型号',render:r=>`<strong>${escapeHtml(r.model)}</strong><br>${escapeHtml(r.material_code)}`},{label:'名称',key:'name'},{label:'分类',key:'category_code'},{label:'售价',render:r=>money(r.price)},{label:'成本',render:r=>money(r.cost)},{label:'状态',render:r=>`<span class="status-tag ${r.enabled?'on':'warn'}">${r.enabled?'启用':'停用'}</span>`}
+    {label:'型号',render:r=>`<strong>${escapeHtml(r.model)}</strong><br>${escapeHtml(r.material_code)}`},{label:'名称',key:'name'},{label:'分类',key:'category_code'},{label:'售价',render:r=>money(r.price)},{label:'成本',render:r=>money(r.cost)},{label:'公开完整度',render:r=>r.readiness?.ready?'<span class="status-tag on">资料完整</span>':`<span class="status-tag warn">待完善</span><br><small>${escapeHtml((r.readiness?.missing||[]).join('、'))}</small>`},{label:'状态',render:r=>`<span class="status-tag ${r.enabled&&r.readiness?.ready?'on':'warn'}">${!r.enabled?'已下架':r.readiness?.ready?'已公开':'未公开'}</span>`}
   ],d.products,r=>`<button class="button ghost compact" data-admin-edit="product" data-id="${r.id}">编辑</button>`);
   const docsTable=adminRowsTable([{label:'型号',key:'model'},{label:'类型',key:'doc_type'},{label:'文件名称',key:'title'},{label:'版本',key:'version'},{label:'语言',key:'language'}],d.documents,r=>`<button class="button ghost compact" data-admin-edit="document" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="document" data-id="${r.id}">删除</button>`);
   const tutorialsTable=adminRowsTable([{label:'型号',key:'model'},{label:'类型',key:'tutorial_type'},{label:'标题',key:'title'},{label:'时长',render:r=>`${r.duration_minutes} 分钟`},{label:'步骤',render:r=>String(r.steps.length)}],d.tutorials,r=>`<button class="button ghost compact" data-admin-edit="tutorial" data-id="${r.id}">编辑</button> <button class="button ghost compact" data-admin-delete="tutorial" data-id="${r.id}">删除</button>`);
@@ -613,11 +613,11 @@ async function renderAdmin() {
   const auditEntityLabels={category:'分类',product:'商品',document:'文档',tutorial:'教程',hotspot:'热点',asset:'资源',order:'订单',contact:'支持单',annotation:'批注',pages_catalog:'Pages 目录',session:'会话'};
   const auditTable=adminRowsTable([{label:'时间',key:'created_at'},{label:'管理员',key:'actor'},{label:'动作',render:r=>`<span class="status-tag ${r.action==='delete'?'warn':r.action==='create'?'on':''}">${escapeHtml(auditActionLabels[r.action]||r.action)}</span>`},{label:'对象',render:r=>`${escapeHtml(auditEntityLabels[r.entity_type]||r.entity_type)}${r.entity_id?` #${escapeHtml(r.entity_id)}`:''}`},{label:'摘要',key:'summary'},{label:'来源',key:'ip_address'},{label:'修改内容',render:r=>`<details class="audit-detail"><summary>查看差异</summary><b>修改前</b><code>${escapeHtml((r.before_json||'{}').slice(0,800))}</code><b>修改后</b><code>${escapeHtml((r.after_json||'{}').slice(0,800))}</code></details>`}],d.auditLogs,()=> '—');
   app.innerHTML=`<div class="page" data-module="admin"><div class="admin-role-banner"><b>管理员工作区</b><span>此区域包含上传、成本、订单、同步日志和验收工具，访客不可见。</span></div><div class="admin-head"><div><span class="eyebrow">OPERATIONS CONSOLE</span><h1 class="page-title">运营管理后台</h1></div><div><a class="button ghost" href="#analytics">经营分析</a> <span class="status-tag ${d.overview.inventory.ok?'on':'warn'}">库存：${escapeHtml(d.overview.inventory.mode)}</span> <button class="button ghost" id="admin-logout">退出</button></div></div>
-    <div class="kpi-grid"><div class="kpi"><span>商品</span><b>${c.products}</b><small>${c.products_disabled} 个停用</small></div><div class="kpi"><span>订单</span><b>${c.orders}</b><small>${c.orders_pending} 个待处理</small></div><div class="kpi"><span>待处理支持</span><b>${c.contacts_open}</b><small>${c.contacts_processing} 个处理中</small></div><div class="kpi"><span>开放批注</span><b>${c.annotations_open}</b><small>集中验收修改项</small></div></div>
+    <div class="kpi-grid"><div class="kpi"><span>商品</span><b>${c.products_public} / ${c.products}</b><small>${c.products_incomplete} 个待完善 · ${c.products_disabled} 个下架</small></div><div class="kpi"><span>订单</span><b>${c.orders}</b><small>${c.orders_pending} 个待处理</small></div><div class="kpi"><span>待处理支持</span><b>${c.contacts_open}</b><small>${c.contacts_processing} 个处理中</small></div><div class="kpi"><span>开放批注</span><b>${c.annotations_open}</b><small>集中验收修改项</small></div></div>
     <div class="admin-action-strip"><button data-admin-jump="orders"><b>${c.orders_pending}</b><span>待推进订单</span></button><button data-admin-jump="contacts"><b>${c.contacts_open+c.contacts_processing}</b><span>支持单工作量</span></button><button data-admin-jump="integration" class="${c.sync_failed?'has-alert':''}"><b>${c.sync_failed}</b><span>失败同步记录</span></button><button data-admin-jump="audit"><b>${c.audit_logs}</b><span>后台操作记录</span></button></div>
     <div class="admin-shell"><nav class="admin-tabs">${[['categories','分类'],['products','商品'],['documents','文档'],['tutorials','教程'],['hotspots','产品热点'],['assets','资源文件'],['orders','订单'],['contacts','支持单'],['annotations','验收批注'],['integration','同步日志'],['audit','操作记录'],['system','系统维护']].map(([k,n],i)=>`<button data-admin-tab="${k}" class="${i?'':'active'}">${n}</button>`).join('')}</nav>
       <section class="admin-pane active" data-admin-pane="categories"><div class="admin-toolbar"><div><h2>商品分类</h2><p>分类代码用于网址和系统关联，创建后保持不变。</p></div><button class="button primary" data-admin-new="category">新增分类</button></div>${categoriesTable}</section>
-      <section class="admin-pane" data-admin-pane="products"><div class="admin-toolbar"><h2>商品内容</h2><button class="button primary" data-admin-new="product">新增商品</button></div>${productsTable}</section>
+      <section class="admin-pane" data-admin-pane="products"><div class="admin-toolbar"><div><h2>商品内容</h2><p>同时满足产品图片、公开文档、使用教程和功能热点后才会进入访客页面与 Pages 快照。</p></div><button class="button primary" data-admin-new="product">新增商品</button></div>${productsTable}</section>
       <section class="admin-pane" data-admin-pane="documents"><div class="admin-toolbar"><h2>文档与版本</h2><button class="button primary" data-admin-new="document">新增文档</button></div>${docsTable}</section>
       <section class="admin-pane" data-admin-pane="tutorials"><div class="admin-toolbar"><h2>教程与步骤</h2><button class="button primary" data-admin-new="tutorial">新增教程</button></div>${tutorialsTable}</section>
       <section class="admin-pane" data-admin-pane="hotspots"><div class="admin-toolbar"><h2>3D/实物热点</h2><button class="button primary" data-admin-new="hotspot">新增热点</button></div><div class="admin-note">热点位置使用相对百分比，因此替换真实 GLB 模型或产品图片后，编辑器仍可复用同一套说明内容。</div>${hotspotsTable}</section>
