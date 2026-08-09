@@ -81,6 +81,16 @@
 .workspace-checklist small { color:var(--muted);line-height:1.45; }
 .workspace-checklist em { color:var(--muted);font-style:normal;text-align:right; }
 .workspace-checklist article > div { display:flex;justify-content:flex-end;gap:6px; }
+.hotspot-position-editor { display:grid;gap:10px;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel2); }
+.hotspot-position-editor p { margin:3px 0 0;color:var(--muted);font-size:12px; }
+.hotspot-picker-stage { position:relative;overflow:hidden;aspect-ratio:16/9;min-height:260px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(circle at center,color-mix(in srgb,var(--mint) 8%,transparent),transparent 55%),linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px),var(--panel);background-size:auto,32px 32px,32px 32px,auto;touch-action:none;cursor:crosshair; }
+.hotspot-picker-stage img { width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none; }
+.hotspot-picker-stage > span { display:none;position:absolute;inset:0;place-items:center;padding:24px;text-align:center;color:var(--muted); }
+.hotspot-picker-stage.no-image > span { display:grid; }
+.hotspot-picker-marker { position:absolute;z-index:2;translate:-50% -50%;width:30px;height:30px;padding:0;border:5px solid color-mix(in srgb,var(--mint) 35%,transparent);border-radius:50%;background:var(--mint);box-shadow:0 0 0 2px var(--panel),0 4px 15px rgba(0,0,0,.25);cursor:grab; }
+.hotspot-picker-marker::after { content:'';position:absolute;inset:7px;border-radius:50%;background:var(--panel); }
+.hotspot-picker-marker:active { cursor:grabbing;scale:1.08; }
+.hotspot-coordinate-fields { grid-template-columns:1fr 1fr; }
 .admin-related-products { margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px; }
 .admin-related-products legend { padding:0 7px;color:var(--mint);font-weight:800; }
 .admin-related-products legend small { color:var(--muted);font-weight:400; }
@@ -108,4 +118,5 @@
   .workspace-checklist article > em { text-align:left;padding-left:42px; }
   .workspace-checklist article > div { grid-column:1/-1;justify-content:stretch; }
   .workspace-checklist article > div .button { flex:1; }
+  .hotspot-picker-stage { min-height:190px; }
 }
