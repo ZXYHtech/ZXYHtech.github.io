@@ -187,5 +187,6 @@
     window.addEventListener('beforeunload',()=>{state.devices.forEach(device=>device.controller.disconnect().catch(()=>{}));persist()});
   }
   restore();bind();applyCardOrder();bindCardDragging();renderAll();const requestedView=consoleParams.get('view');switchView(compactMode?'device':['device','multi','automation'].includes(requestedView)?requestedView:'device');
+  if(compactMode&&parent!==window){const publishHeight=()=>parent.postMessage({type:'zya1000-compact-height',height:Math.ceil(document.documentElement.scrollHeight)},location.origin);new ResizeObserver(publishHeight).observe(document.body);addEventListener('load',publishHeight);setTimeout(publishHeight,60)}
   if(!window.isSecureContext||!navigator.serial){toast(!window.isSecureContext?'请通过 HTTPS 或 localhost 访问':'请使用 Chrome 或 Edge 桌面版浏览器');$$('[data-connect-device],#add-device,#mobile-connect').forEach(button=>button.disabled=true)}
 })();
