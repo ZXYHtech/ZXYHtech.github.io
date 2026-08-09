@@ -35,7 +35,7 @@ const apiPath = path => runtime.apiBaseUrl
   : path;
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.3'),{updateViaCache:'none'}).catch(()=>{}));
+  addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.29.4'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -65,12 +65,20 @@ applyTheme(state.theme,{announce:false});
 
 const zyaBridge = (()=>{
   const pending=new Map();
+  const controlChannel='BroadcastChannel' in window?new BroadcastChannel('zya1000-control'):null;
+  const browserAcks=new Map();controlChannel?.addEventListener('message',event=>{const id=event.data?.request_id,task=browserAcks.get(id);if(event.data?.type==='zya1000-control-ack'&&task){browserAcks.delete(id);task(event.data)}});
   const mode=window.chrome?.webview?'webview2':window.ZYA1000Bridge?.invoke?'native-object':'browser-demo';
   if(window.chrome?.webview){window.chrome.webview.addEventListener('message',event=>{const message=typeof event.data==='string'?JSON.parse(event.data):event.data;const task=pending.get(message.requestId);if(task){pending.delete(message.requestId);message.ok===false?task.reject(new Error(message.error||'ZYA1000 操作失败')):task.resolve(message)}})}
   async function send(action,payload={}){
     const requestId=`zya-${Date.now()}-${Math.random().toString(16).slice(2)}`;const message={protocol:'zya1000.web/v1',requestId,action,payload,context:{model:launchParams.get('model')||'',serial:launchParams.get('serial')||'',hardware:launchParams.get('hardware')||'',firmware:launchParams.get('firmware')||''}};
     if(mode==='webview2')return new Promise((resolve,reject)=>{pending.set(requestId,{resolve,reject});window.chrome.webview.postMessage(message);setTimeout(()=>{if(pending.delete(requestId))reject(new Error('ZYA1000 响应超时'))},8000)});
     if(mode==='native-object'){const result=await window.ZYA1000Bridge.invoke(JSON.stringify(message));return typeof result==='string'?JSON.parse(result):result}
+    if(action==='set-attenuation'){
+      const command={action,value_db:Number(payload.value_db),mode:payload.mode||'parallel',request_id:requestId,created_at:Date.now(),expires_at:Date.now()+10*60*1000};
+      localStorage.setItem('zya1000.pending-command',JSON.stringify(command));controlChannel?.postMessage(command);
+      if(controlChannel)return new Promise(resolve=>{browserAcks.set(requestId,result=>resolve({ok:true,mode:'web-console-live',requestId,action,payload,queued:false,...result}));setTimeout(()=>{if(browserAcks.delete(requestId))resolve({ok:true,mode:'web-console-queue',requestId,action,payload,queued:true,message:'配置已进入网页上位机待发送队列'})},450)});
+      return {ok:true,mode:'web-console-queue',requestId,action,payload,queued:true,message:'配置已进入网页上位机待发送队列'};
+    }
     return {ok:true,mode:'browser-demo',requestId,action,payload,message:'浏览器演示已完成，未调用真实设备'};
   }
   return {mode,send};
@@ -333,7 +341,7 @@ function ecosystemLinks(product){
   if(!isController&&!isAttenuator)return '';
   return `<section class="product-ecosystem" data-review-id="product.${escapeHtml(product.slug)}.ecosystem"><div class="section-head"><div><span class="eyebrow">PRODUCT ECOSYSTEM</span><h2>控制器、模块与上位机协同使用</h2></div><p>相关入口按实际组合关系连接</p></div><div class="ecosystem-grid">
     <a href="#product/${isController?'zya-dat-63':'zyc100-controller'}"><span>${isController?'RF MODULE':'CONTROLLER'}</span><b>${isController?'ZYE660 数字衰减模块':'ZYC100 射频测试控制器'}</b><p>${isController?'由 ZYC100 完成衰减设置、扫描和自动化控制。':'连接 ZYE660，实现本机操作与上位机统一控制。'}</p><i>查看产品 →</i></a>
-    <a href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
+    <a href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener"><span>WEB CONSOLE</span><b>ZYA1000 网页上位机</b><p>设备发现、多设备同步、补偿数据、日志和自动化测试。</p><i>打开网页版上位机 →</i></a>
     <a href="#downloads"><span>DOCUMENTS</span><b>说明书、固件与软件</b><p>资料由 Pages 静态站和 Gitee 发布页提供，按型号集中查找。</p><i>前往下载中心 →</i></a>
   </div></section>`;
 }
@@ -343,8 +351,8 @@ function controllerEntryHub(product){
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
     <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
-      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
-      <a href="${sitePath('zya1000-console.html?v=1.29.1&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
+      <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
+      <a href="${sitePath('zya1000-console.html?v=1.29.4&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
       <a href="${sitePath('legacy/ZYC100_Manual_V5.0.html')}" target="_blank" rel="noopener"><span>CONTROLLER MANUAL</span><b>ZYC100 在线说明书</b><p>查看接口、按键、本机操作、AT 指令和模块连接方法。</p><i>查看控制器说明书 →</i></a>
       <a href="${sitePath('legacy/ZYA1000_User_Manual.html')}" target="_blank" rel="noopener"><span>SOFTWARE MANUAL</span><b>ZYA1000 使用说明</b><p>查看设备发现、补偿参数、多设备控制和自动化测试流程。</p><i>查看软件说明书 →</i></a>
       <a href="https://gitee.com/ZXYHtech/zyc100/releases" target="_blank" rel="noopener"><span>FIRMWARE</span><b>控制器固件发布</b><p>获取 ZYC100 固件、版本说明及升级文件。</p><i>前往 Gitee →</i></a>
@@ -356,8 +364,8 @@ function controllerEntryHub(product){
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
   return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
-    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.1')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
-    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.1&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
+    <div class="section-head"><div><span class="eyebrow">WEB SERIAL CONTROL</span><h2>网页衰减控制</h2><p>连接控制器后，仅显示衰减控制和实时通信日志。</p></div><a class="button primary" href="${sitePath('zya1000-console.html?v=1.29.4')}" target="_blank" rel="noopener">进入全屏上位机 →</a></div>
+    <iframe data-zya-compact src="${sitePath('zya1000-console.html?v=1.29.4&embed=compact')}" title="ZYA1000 快速衰减控制" allow="serial" loading="lazy"></iframe>
   </section>`;
 }
 function productBrandFooter(product){
@@ -402,6 +410,7 @@ function attenuatorCalculator(product) {
 }
 function bindAttenuator(config) {
   const step=Number(config.step)||.5,max=Math.max(0,Number(config.max)||0),bits=(config.bits||[]).map(Number).filter(value=>Number.isFinite(value)&&value>0),switchStart=Number(config.switch_start)||1,digits=Math.max(0,String(step).split('.')[1]?.length||0),input=$('#attenuation-input'),switches=$('#dip-switches'),result=$('#calc-result'),modeSummary=$('#mode-summary');let current=null,psOn=false;
+  if(zyaBridge.mode==='browser-demo')$('.calculator-actions>span').textContent='可转交网页上位机，连接后自动发送';
   const format=value=>Number(value.toFixed(Math.min(digits+1,4)));
   const dipMarkup=(number,label,value,on,options={})=>`<button type="button" class="dip-toggle ${on?'on':'off'} ${options.ps?'ps-switch':''} ${options.locked?'locked':''}" ${options.ps?'data-ps-switch':'data-dip="'+options.index+'"'} aria-pressed="${on}" ${options.locked?'disabled aria-disabled="true"':''}><span class="dip-number">${number}</span><span class="dip-on-label">ON</span><span class="dip-track"><i></i></span><b>${label}</b><small>${value}</small></button>`;
   const calculate = () => {
@@ -425,7 +434,7 @@ function bindAttenuator(config) {
   switches.onclick=e=>{const ps=e.target.closest('[data-ps-switch]');if(ps){psOn=!psOn;calculate();return}const button=e.target.closest('[data-dip]');if(!button||psOn)return;const selected=$$('.dip-toggle.on[data-dip]',switches).map(item=>Number(item.dataset.dip)),index=Number(button.dataset.dip),next=selected.includes(index)?selected.filter(value=>value!==index):[...selected,index],value=format(next.reduce((sum,bitIndex)=>sum+bits[bitIndex],0));input.value=String(value);calculate()};
   $$('[data-attenuation-preset]').forEach(button=>button.onclick=()=>{input.value=button.dataset.attenuationPreset;calculate()});
   $('#copy-attenuation').onclick=async()=>{if(!current)return toast('请先输入有效衰减值');const text=current.ps?`衰减 ${current.achievable} dB；DIP1/PS=1（SPI）；控制码：${current.code}/${current.hex}/${current.binary}；DIP2–DIP8 无效`:`衰减 ${current.achievable} dB；DIP1/PS=0（并行）；顶部 ON：${current.switchNames.join('、')||'无'}；SPI参考码：${current.code}/${current.hex}/${current.binary}`;try{await navigator.clipboard.writeText(text);toast('控制配置已复制')}catch(_){toast(text)}};
-  $('#send-attenuation').onclick=async e=>{if(!current)return toast('请先输入有效衰减值');const button=e.currentTarget;button.disabled=true;try{await zyaBridge.send('set-attenuation',{mode:current.mode,ps:current.ps,value_db:current.achievable,spi_code:current.code,switches:[{switch:1,on:Boolean(current.ps),role:'PS'},...current.on.map((on,index)=>({switch:switchStart+index,on:current.ps?false:on,ignored:Boolean(current.ps),value_db:bits[index]}))]});toast(zyaBridge.mode==='browser-demo'?'配置已完成浏览器演示':'衰减配置已发送至 ZYA1000')}catch(err){toast(err.message)}finally{button.disabled=false}};
+  $('#send-attenuation').onclick=async e=>{if(!current)return toast('请先输入有效衰减值');const button=e.currentTarget;button.disabled=true;try{const response=await zyaBridge.send('set-attenuation',{mode:current.mode,ps:current.ps,value_db:current.achievable,spi_code:current.code,switches:[{switch:1,on:Boolean(current.ps),role:'PS'},...current.on.map((on,index)=>({switch:switchStart+index,on:current.ps?false:on,ignored:Boolean(current.ps),value_db:bits[index]}))]});if(response?.queued){toast(`已转交 ${current.achievable} dB，正在打开控制器`);setTimeout(()=>location.hash='#product/zyc100-controller',180)}else toast('衰减配置已发送至 ZYA1000')}catch(err){toast(err.message)}finally{button.disabled=false}};
   calculate();
 }
 
