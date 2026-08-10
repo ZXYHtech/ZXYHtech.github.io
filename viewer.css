@@ -494,6 +494,8 @@
   box-shadow: 0 14px 34px rgba(0,0,0,.2);
   backdrop-filter: blur(12px);
 }
+.hotspot-detail .hotspot-action { display:block;margin-top:10px; }
+.hotspot-detail .hotspot-action[hidden] { display:none; }
 
 .pseudo3d-viewer .viewer-status {
   gap: 7px;

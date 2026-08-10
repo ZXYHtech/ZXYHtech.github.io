@@ -4,6 +4,8 @@
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
   const quantize=value=>(Math.round(clamp(Number(value)||0,0,31.75)*4)/4).toFixed(2);
   const storeKey='zya1000.web-console.v1';
+  const pendingCommandKey='zya1000.pending-command';
+  let pendingApplying=false,lastPendingRequest='';
   const consoleParams=new URLSearchParams(location.search),compactMode=consoleParams.get('embed')==='compact';
   document.body.classList.toggle('compact-console',compactMode);
   const state={devices:[],activeId:null,view:'device',sync:false,automationStop:false,timeline:[],compensation:{type:'csv',points:[]},cardOrder:[]};
@@ -32,7 +34,7 @@
       const connected=await controller.requestAndConnect();
       if(!connected){controller.dispose?.();return}
       const info=controller.describePort();device.portKey=`${info.usbVendorId||0}:${info.usbProductId||0}:${state.devices.length}`;device.name=state.savedNames?.[device.portKey]||device.name;
-      state.devices.push(device);state.activeId=device.id;switchView('device');renderAll();await wait(180);await refreshDevice(device);toast(`${device.name} 已连接`);
+      state.devices.push(device);state.activeId=device.id;switchView('device');renderAll();await wait(180);await refreshDevice(device);const applied=await applyPendingAttenuation();toast(applied?`${device.name} 已连接，并已应用待发送衰减`:`${device.name} 已连接`);
     }catch(error){toast(error.message||'连接失败')}
   }
 
@@ -75,12 +77,15 @@
   }
   async function setAttenuation(value,source='control'){
     const target=quantize(value),targets=targetDevices();
-    if(!targets.length){toast('请先连接设备');return}
+    if(!targets.length){toast('请先连接设备');return false}
     const previous=new Map(targets.map(device=>[device.id,device.attenuation]));targets.forEach(device=>device.attenuation=Number(target));if(!mainAttenuationDragging)renderDeviceData();if(state.view==='multi'&&!multiDraggingIds.size)renderMulti();
     const results=await Promise.allSettled(targets.map(device=>{const comp=device.tru?getCompensation(device.frequency||1):0;return device.controller.send(device.tru?`at+SetTrueAttenuationVal=${target},${quantize(Number(target)+comp)}`:`at+SetAttenuationVal=\`${target}\``)}));
-    if(results.some(result=>result.status==='rejected')){targets.forEach(device=>device.attenuation=previous.get(device.id));renderDeviceData();if(state.view==='multi')renderMulti();toast('部分设备衰减下发失败');return}
+    if(results.some(result=>result.status==='rejected')){targets.forEach(device=>device.attenuation=previous.get(device.id));renderDeviceData();if(state.view==='multi')renderMulti();toast('部分设备衰减下发失败');return false}
     if(!['slider','realtime'].includes(source))toast(`设备衰减已设置为 ${target} dB`)
+    return true
   }
+  function readPendingCommand(){try{const command=JSON.parse(localStorage.getItem(pendingCommandKey)||'null');if(!command||command.action!=='set-attenuation'||!Number.isFinite(Number(command.value_db)))return null;if(Number(command.expires_at||0)<Date.now()){localStorage.removeItem(pendingCommandKey);return null}return command}catch{localStorage.removeItem(pendingCommandKey);return null}}
+  async function applyPendingAttenuation(command=readPendingCommand()){if(!command)return false;const requestId=String(command.request_id||'local');if(pendingApplying&&lastPendingRequest===requestId)return false;if(!connectedDevices().length){toast(`已收到 ${quantize(command.value_db)} dB，连接设备后自动发送`);return false}pendingApplying=true;lastPendingRequest=requestId;try{const applied=await setAttenuation(command.value_db,'external');if(applied){localStorage.removeItem(pendingCommandKey);controlChannel?.postMessage({type:'zya1000-control-ack',request_id:command.request_id,value_db:Number(command.value_db)});return true}return false}finally{pendingApplying=false}}
   function displayAttenuation(device=activeDevice()){if(!device||!Number.isFinite(device.attenuation))return null;const comp=device.tru?getCompensation(device.frequency||1):0;return clamp(device.attenuation+comp,0,63.5)}
   function setDisplayedAttenuation(value,source='control'){const device=activeDevice(),comp=device?.tru?getCompensation(device.frequency||1):0;return setAttenuation(Number(value)-comp,source)}
   function attenuationStep(){return clamp(Math.round((Number($('#attenuation-step').value)||.25)*4)/4,.25,31.75)}
@@ -187,5 +192,7 @@
     window.addEventListener('beforeunload',()=>{state.devices.forEach(device=>device.controller.disconnect().catch(()=>{}));persist()});
   }
   restore();bind();applyCardOrder();bindCardDragging();renderAll();const requestedView=consoleParams.get('view');switchView(compactMode?'device':['device','multi','automation'].includes(requestedView)?requestedView:'device');
+  const controlChannel='BroadcastChannel' in window?new BroadcastChannel('zya1000-control'):null;controlChannel?.addEventListener('message',event=>applyPendingAttenuation(event.data));addEventListener('storage',event=>{if(event.key===pendingCommandKey&&event.newValue)applyPendingAttenuation()});if(readPendingCommand())setTimeout(()=>applyPendingAttenuation(),90);
+  if(compactMode&&parent!==window){const publishHeight=()=>parent.postMessage({type:'zya1000-compact-height',height:Math.ceil(document.documentElement.scrollHeight)},location.origin);new ResizeObserver(publishHeight).observe(document.body);addEventListener('load',publishHeight);setTimeout(publishHeight,60)}
   if(!window.isSecureContext||!navigator.serial){toast(!window.isSecureContext?'请通过 HTTPS 或 localhost 访问':'请使用 Chrome 或 Edge 桌面版浏览器');$$('[data-connect-device],#add-device,#mobile-connect').forEach(button=>button.disabled=true)}
 })();

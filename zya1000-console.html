@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#f4f5f7">
   <title>ZYA1000 网页上位机</title>
   <link rel="icon" href="legacy/assets/zxyh-logo-cutout-v1.png">
-  <link rel="stylesheet" href="zya1000-console.css?v=1.28.1">
+  <link rel="stylesheet" href="zya1000-console.css?v=1.29.1">
 </head>
 <body>
   <div class="app-shell">
     <aside class="app-sidebar">
-      <a class="console-brand" href="./?v=1.28.1#zya1000" aria-label="返回 ZYA1000 产品页面">
+<a class="console-brand" href="./?v=1.30.1#product/zyc100-controller" aria-label="返回 ZYC100 控制器产品页面">
         <span class="brand-mark">Z</span><span><b>ZYA1000</b><small>RF CONTROL · WEB</small></span>
       </a>
       <nav class="console-nav" aria-label="上位机功能">
@@ -24,7 +24,7 @@
       <div class="sidebar-bottom">
         <button class="add-device" id="add-device">＋ 连接 USB 设备</button>
         <div id="device-summary">USB 0 台 · 115200 Baud</div>
-        <div><a href="legacy/ZYA1000_User_Manual.html" target="_blank" rel="noopener">帮助</a><a href="./?v=1.28.0#zya1000">返回产品页</a></div>
+<div><a href="legacy/ZYA1000_User_Manual.html" target="_blank" rel="noopener">帮助</a><a href="./?v=1.30.1#product/zyc100-controller">返回产品页</a></div>
       </div>
     </aside>
 
@@ -110,7 +110,7 @@
     <form method="dialog"><header><div><h2>插入损耗补偿</h2><p>选择一种与桌面版兼容的数据格式</p></div><button value="cancel" aria-label="关闭">×</button></header><div class="compensation-types"><label><input type="radio" name="compensation-type" value="csv" checked><span>CSV 查找表<small>频率 GHz, 损耗 dB</small></span></label><label><input type="radio" name="compensation-type" value="formula"><span>多项式公式<small>以 f 表示 GHz</small></span></label><label><input type="radio" name="compensation-type" value="s2p"><span>Touchstone S2P<small>支持 DB / MA / RI</small></span></label></div><div data-compensation-panel="csv"><label>CSV 补偿表<input id="compensation-csv-file" type="file" accept=".csv,text/csv"></label></div><div data-compensation-panel="formula" hidden><label>S21 多项式公式<input id="compensation-formula" value="-1.17217-0.30125*f-0.01049*f^2" autocomplete="off"></label><p>输入 S21（dB），例如：-1.2-0.3*f-0.01*f^2，系统使用其绝对值作为插入损耗。</p></div><div data-compensation-panel="s2p" hidden><label>Touchstone 文件<input id="compensation-s2p-file" type="file" accept=".s2p,text/plain"></label><p>自动读取 S21，并按照文件头识别 GHz/MHz/Hz 与 DB、MA、RI 数据格式。</p></div><p id="compensation-preview">应用后会按当前频率线性插值。</p><footer><button value="cancel">取消</button><button value="apply" class="accent-button" id="apply-compensation">应用补偿</button></footer></form>
   </dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="web-serial.js?v=1.28.1"></script>
-  <script src="zya1000-console.js?v=1.28.1"></script>
+  <script src="web-serial.js?v=1.29.0"></script>
+<script src="zya1000-console.js?v=1.30.1"></script>
 </body>
 </html>
