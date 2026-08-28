@@ -7,11 +7,11 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>My OS</title>
 <style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f4f8f5;color:#17352d}.wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.card{width:min(560px,100%);background:#fff;border:1px solid #dbe8e1;border-radius:24px;padding:30px;box-shadow:0 18px 50px rgba(33,75,61,.09)}h1{margin:0 0 10px;font-size:28px}.sub{color:#66766f;margin:0 0 22px}.bar{height:9px;background:#e7f0eb;border-radius:99px;overflow:hidden}.fill{height:100%;width:4%;background:linear-gradient(90deg,#6bb890,#2d8a62);transition:width .18s}.status{margin-top:14px;color:#536962;font-size:14px}.meta{margin-top:6px;color:#8a9993;font-size:12px}.err{display:none;margin-top:16px;padding:13px 14px;background:#fff3e8;border:1px solid #f1d1b2;border-radius:12px;color:#8a5426;line-height:1.65}button{border:0;border-radius:11px;background:#2d8a62;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;margin-top:10px}</style>
-</head><body><div class="wrap"><div class="card"><h1>My OS</h1><p class="sub">正在准备你的自适应生活系统…</p><div class="bar"><div class="fill" id="fill"></div></div><div class="status" id="status">准备载入 V22</div><div class="meta" id="meta">优先从已有本地应用快速升级；普通刷新直接从本地启动</div><div class="err" id="err"></div></div></div>
+</head><body><div class="wrap"><div class="card"><h1>My OS</h1><p class="sub">正在准备你的自适应生活系统…</p><div class="bar"><div class="fill" id="fill"></div></div><div class="status" id="status">准备载入 V22.1</div><div class="meta" id="meta">优先从已有本地应用快速升级；普通刷新直接从本地启动</div><div class="err" id="err"></div></div></div>
 <script>
 (async()=>{
-const VERSION='22',COUNT=19,EXPECTED_LENGTH=108624,CACHE_KEY='my_os_app_shell_v22';
-const PRIOR_KEYS=['my_os_app_shell_v21','my_os_app_shell_v20','my_os_app_shell_v19','my_os_app_shell_v18','my_os_app_shell_v17','my_os_app_shell_v16','my_os_app_shell_v15','my_os_app_shell_v14','my_os_app_shell_v13_1','my_os_app_shell_v13','my_os_app_shell_v12'];
+const VERSION='22.1',COUNT=19,EXPECTED_LENGTH=108624,CACHE_KEY='my_os_app_shell_v22_1';
+const PRIOR_KEYS=['my_os_app_shell_v22','my_os_app_shell_v21','my_os_app_shell_v20','my_os_app_shell_v19','my_os_app_shell_v18','my_os_app_shell_v17','my_os_app_shell_v16','my_os_app_shell_v15','my_os_app_shell_v14','my_os_app_shell_v13_1','my_os_app_shell_v13','my_os_app_shell_v12'];
 const fill=document.getElementById('fill'),status=document.getElementById('status'),meta=document.getElementById('meta'),err=document.getElementById('err');
 const progress=(v,t)=>{fill.style.width=Math.max(4,Math.min(100,v))+'%';if(t)status.textContent=t};
 const launch=html=>{document.open();document.write(html);document.close()};
@@ -21,13 +21,14 @@ function inject(html){
  if(!html.includes(anchor))throw new Error('应用入口标记不存在');
  if(!html.includes('const titles='))html=html.replace(anchor,"const titles={dashboard:'总览',today:'今天',calibration:'校准 / 中断',discoveries:'发现',experiments:'实验',projects:'项目 / Resume',manual:'我的说明书',book:'系统学习',method:'方法速查'};\n"+anchor);
  const tail='renderDashboard();renderTodayHistory();renderCalibration();renderPatterns();renderExperiments();renderProjects();renderManual();initBookMode();';
- if(html.includes(tail)&&!html.includes('V22 resilient navigation'))html=html.replace(tail,"// V22 resilient navigation\ndocument.addEventListener('click',function(e){const p=e.target.closest&&e.target.closest('[data-page]');if(p){e.preventDefault();go(p.dataset.page);return}const g=e.target.closest&&e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}});\n"+tail);
+ if(html.includes(tail)&&!html.includes('V20 resilient navigation'))html=html.replace(tail,"// V21 resilient navigation\ndocument.addEventListener('click',function(e){const p=e.target.closest&&e.target.closest('[data-page]');if(p){e.preventDefault();go(p.dataset.page);return}const g=e.target.closest&&e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}});\n"+tail);
  const hc='</'+'head>',bc='</'+'body>';
- const styles=[['v11.css','11'],['v12.css','12'],['v13.css','13'],['v14.css','14'],['v15.css','15'],['v16.css','16'],['v17.css','17'],['v18.css','18'],['v19.css','19'],['v20.css','20'],['v21.css','21'],['v22.css','22']];
- const scripts=[['v11_patch.js','11'],['v12_patch.js','12'],['v13_patch.js','13'],['v13_fix.js','13.1'],['v14_patch.js','14'],['v15_patch.js','15'],['v16_patch.js','16'],['v17_patch.js','17'],['v18_patch.js','18'],['v19_patch.js','19'],['v20_patch.js','20'],['v21_patch.js','21'],['v22_patch.js','22']];
+ const styles=[['v11.css','11'],['v12.css','12'],['v13.css','13'],['v14.css','14'],['v15.css','15'],['v16.css','16'],['v17.css','17'],['v18.css','18'],['v19.css','19'],['v20.css','20'],['v21.css','21'],['v22.css','22'],['v22_1_fix.css','22.1']];
+ html=html.replace(/<script[^>]+v18_patch\.js[^>]*><\/script>/g,'');
+ const scripts=[['v11_patch.js','11'],['v12_patch.js','12'],['v13_patch.js','13'],['v13_fix.js','13.1'],['v14_patch.js','14'],['v15_patch.js','15'],['v16_patch.js','16'],['v17_patch.js','17'],['v18_runtime_fix.js','18.3'],['v19_patch.js','19'],['v20_patch.js','20'],['v21_patch.js','21'],['v22_patch.js','22']];
  styles.forEach(([f,v])=>{if(!html.includes(f))html=html.replace(hc,`<link rel="stylesheet" href="./${f}?v=${v}">`+hc)});
  scripts.forEach(([f,v])=>{if(!html.includes(f))html=html.replace(bc,'<script src="./'+f+'?v='+v+'"></'+'script>'+bc)});
- html=html.replace(/Engineer Adaptive OS V8/g,'My OS V22').replace(/My OS V21/g,'My OS V22').replace(/My OS V20/g,'My OS V22').replace(/My OS V19/g,'My OS V22').replace(/My OS V18/g,'My OS V22').replace(/My OS V17/g,'My OS V22').replace(/My OS V16/g,'My OS V22').replace(/My OS V15/g,'My OS V22').replace(/My OS V14/g,'My OS V22').replace(/My OS V13\.1/g,'My OS V22').replace(/My OS V13/g,'My OS V22');
+ html=html.replace(/Engineer Adaptive OS V8/g,'My OS V22.1').replace(/My OS V22/g,'My OS V22.1').replace(/My OS V21/g,'My OS V22.1').replace(/My OS V20/g,'My OS V22.1').replace(/My OS V19/g,'My OS V22.1').replace(/My OS V18/g,'My OS V22.1').replace(/My OS V17/g,'My OS V22.1').replace(/My OS V16/g,'My OS V22.1').replace(/My OS V15/g,'My OS V22.1').replace(/My OS V14/g,'My OS V22.1').replace(/My OS V13\.1/g,'My OS V22.1').replace(/My OS V13/g,'My OS V22.1');
  return html;
 }
 function getLocal(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
@@ -38,9 +39,9 @@ try{
  else if(u.get('update')==='1')removeKey(CACHE_KEY);
  if(u.has('deep')||u.has('update')){u.delete('deep');u.delete('update');try{history.replaceState(null,'',location.pathname+(u.toString()?'?'+u.toString():''))}catch(e){}}
  let cached=getLocal(CACHE_KEY);
- if(cached&&cached.includes('v22_patch.js')){progress(100,'从本地启动');meta.textContent='My OS V22 已缓存 · 普通刷新无需重新下载核心内容';await new Promise(r=>setTimeout(r,20));launch(cached);return}
+ if(cached&&cached.includes('v22_patch.js')&&cached.includes('v18_runtime_fix.js')){progress(100,'从本地启动');meta.textContent='My OS V22.1 已缓存 · 普通刷新无需重新下载核心内容';await new Promise(r=>setTimeout(r,20));launch(cached);return}
  let html='';
- for(const k of PRIOR_KEYS){const prior=getLocal(k);if(prior&&prior.includes('v13_patch.js')){progress(58,'正在从已有版本快速升级到 V22…');html=inject(prior);break}}
+ for(const k of PRIOR_KEYS){const prior=getLocal(k);if(prior&&prior.includes('v13_patch.js')){progress(58,'正在从已有版本快速升级到 V22.1…');html=inject(prior);break}}
  if(!html){
    if(!('DecompressionStream'in window))throw new Error('当前浏览器不支持内置 gzip 解压，请升级 Chrome / Edge');
    const parts=[];let loaded=0;
@@ -48,9 +49,9 @@ try{
    progress(78,'正在校验…');const b64=parts.join('');if(b64.length!==EXPECTED_LENGTH)throw new Error(`核心数据不完整：${b64.length}/${EXPECTED_LENGTH}`);const bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
    progress(87,'正在解压…');const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));html=await new Response(stream).text();html=inject(html);
  }
- progress(93,'正在安装 V22 知识内容增强系统…');if(!html.includes('v22_patch.js'))throw new Error('V22 功能注入失败');
- if(putLocal(CACHE_KEY,html))meta.textContent='V22 完整应用已缓存；以后刷新直接启动';else meta.textContent='浏览器未允许应用缓存，本次仍可使用';
+ progress(93,'正在安装 V22.1 稳定性修复…');if(!html.includes('v22_patch.js')||!html.includes('v18_runtime_fix.js'))throw new Error('V22.1 修复注入失败');
+ if(putLocal(CACHE_KEY,html))meta.textContent='V22.1 完整应用已缓存；以后刷新直接启动';else meta.textContent='浏览器未允许应用缓存，本次仍可使用';
  progress(100,'启动完成');await new Promise(r=>setTimeout(r,45));launch(html);
-}catch(e){console.error('[My OS V22]',e);status.textContent='未能启动';err.style.display='block';err.innerHTML='<b>加载失败</b><br>'+String(e.message||e)+'<br><button onclick="location.href=\'/time/?update=1&v=22&t=\'+Date.now()">重新升级</button><button onclick="location.href=\'/time/?deep=1&v=22&t=\'+Date.now()" style="margin-left:6px;background:#6d7d76">深度重载</button>'}
+}catch(e){console.error('[My OS V22.1]',e);status.textContent='未能启动';err.style.display='block';err.innerHTML='<b>加载失败</b><br>'+String(e.message||e)+'<br><button onclick="location.href=\'/time/?update=1&v=22.1&t=\'+Date.now()">重新升级</button><button onclick="location.href=\'/time/?deep=1&v=22.1&t=\'+Date.now()" style="margin-left:6px;background:#6d7d76">深度重载</button>'}
 })();
 </script></body></html>
