@@ -1,0 +1,49 @@
+/* My OS V23.2.1 · mobile pomodoro layout polish */
+.v2321-hide-test{display:none!important}
+#v232BgReminder .v232-bg-note{display:none!important}
+#v232BgReminder .v232-bg-actions{display:none!important}
+#v232BgReminder.v2321-needs-recovery .v232-bg-actions{display:flex!important}
+#v232BgReminder.v2321-needs-recovery #v232BgTest{display:none!important}
+@media(max-width:900px){
+ .top-inner{width:calc(100% - 20px)!important;gap:6px!important}
+ .top-inner .crumb{display:none!important}
+ .top-actions{width:100%;justify-content:flex-end;gap:6px!important}
+ .top-actions .pill{margin-right:auto;padding:7px 10px!important}
+ .top-actions .icon-btn{width:38px;height:38px;flex:0 0 38px}
+}
+@media(max-width:760px){
+ #pomodoroPanel{padding:14px!important;border-radius:18px!important}
+ #pomodoroPanel .pomodoro-head{margin-bottom:10px!important}
+ #pomodoroPanel .pomodoro-head h2{font-size:17px!important}
+ #pomodoroPanel .pomodoro-head p{font-size:12px!important;line-height:1.55!important}
+ #pomodoroPanel .pomo-layout{gap:12px!important}
+ #pomodoroPanel .pomo-plan{gap:8px!important}
+ #pomodoroPanel .pomo-timer{padding:18px 12px!important;border-radius:16px!important}
+ #pomodoroPanel .pomo-clock{font-size:48px!important;margin:6px 0!important}
+ #pomodoroPanel .pomo-progress{font-size:12px!important}
+ #pomodoroPanel .pomo-actions{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
+ #pomodoroPanel .pomo-actions #pomoStartPause{grid-column:1/-1;width:100%!important;min-height:48px;font-size:16px!important}
+ #pomodoroPanel .pomo-actions #pomoFinish,#pomodoroPanel .pomo-actions #pomoReset{width:100%!important;min-height:42px;margin:0!important}
+ #pomodoroPanel .pomo-foot{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px!important;align-items:center!important;width:100%}
+ #pomodoroPanel .pomo-foot>#pomoPlanHint{min-width:0;line-height:1.45}
+ #pomodoroPanel .pomo-foot>#pomoClearToday{white-space:nowrap}
+ #pomoAlertSettings.pomo-alert-settings{grid-column:1/-1;width:100%;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px!important;margin:4px 0 0!important;padding:10px 0 0!important;align-items:stretch!important}
+ #pomoAlertSettings .pomo-alert-toggle{justify-content:center;min-width:0;padding:7px 3px!important;font-size:11px!important;line-height:1.25;text-align:center;white-space:nowrap}
+ #pomoAlertSettings .pomo-alert-toggle input{width:16px;height:16px;flex:0 0 16px}
+ #pomoTestAlert{display:none!important}
+ #v232BgReminder.v232-bg-reminder{width:100%;margin:10px 0 0!important;padding:10px 12px!important;border-radius:13px!important;background:linear-gradient(135deg,var(--soft),var(--paper));}
+ #v232BgReminder .v232-bg-head{align-items:center!important;gap:10px!important}
+ #v232BgReminder .v232-bg-head b{font-size:12px!important}
+ #v232BgReminder .v232-bg-head small{font-size:9px!important;margin-top:2px!important}
+ #v232BgReminder .v232-switch{font-size:10px!important}
+ #v232BgReminder .v232-bg-status{margin:6px 0 0!important;padding:0!important;border:0!important;background:transparent!important}
+ #v232BgReminder .v232-bg-status b{font-size:11px!important;color:var(--green,var(--accent))}
+ #v232BgReminder .v232-bg-status small{display:none!important}
+ #v232BgReminder .v232-bg-actions{margin-top:7px!important}
+ #v232BgReminder.v2321-needs-recovery .v232-bg-actions{display:flex!important}
+ #v232BgReminder #v232BgResume{width:100%;min-height:36px;margin:0!important}
+}
+@media(max-width:420px){
+ #pomoAlertSettings .pomo-alert-toggle{font-size:10px!important;padding:7px 2px!important;gap:3px!important}
+ .top-actions .pill{font-size:11px!important}
+}
