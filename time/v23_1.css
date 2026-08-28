@@ -1,0 +1,43 @@
+/* My OS V23.1 · Whole-site quality pass */
+:root{--v231-gap:14px}
+.v231-hidden{display:none!important}
+.v231-tool-section{display:none!important;scroll-margin-top:18px}
+.v231-tool-section.v231-open{display:block!important}
+.v231-tool-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.v231-tool-bar b{font-size:13px}.v231-tool-bar button{margin:0!important}
+.v231-manual-extra,.v231-discovery-extra,.v231-dashboard-more,.v231-today-reflection,.v231-today-more{border:1px solid var(--line);border-radius:16px;background:var(--paper);margin:12px 0 16px;overflow:hidden}
+.v231-manual-extra>summary,.v231-discovery-extra>summary,.v231-dashboard-more>summary,.v231-today-reflection>summary,.v231-today-more>summary{cursor:pointer;list-style:none;padding:13px 15px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:10px;color:inherit}
+.v231-manual-extra>summary::-webkit-details-marker,.v231-discovery-extra>summary::-webkit-details-marker,.v231-dashboard-more>summary::-webkit-details-marker,.v231-today-reflection>summary::-webkit-details-marker,.v231-today-more>summary::-webkit-details-marker{display:none}
+.v231-manual-extra>summary small,.v231-discovery-extra>summary small,.v231-dashboard-more>summary small,.v231-today-reflection>summary small,.v231-today-more>summary small{font-weight:500;color:var(--muted);font-size:11px}
+.v231-manual-extra[open]>summary,.v231-discovery-extra[open]>summary,.v231-dashboard-more[open]>summary,.v231-today-reflection[open]>summary,.v231-today-more[open]>summary{border-bottom:1px solid var(--line);background:var(--soft)}
+.v231-manual-extra-body,.v231-discovery-extra-body,.v231-dashboard-more-body,.v231-today-reflection-body,.v231-today-more-body{padding:12px}
+.v231-manual-extra-body>.panel,.v231-discovery-extra-body>.panel,.v231-dashboard-more-body>.panel{margin-bottom:10px}
+.v231-dashboard-more-body>.grid-2,.v231-dashboard-more-body>.grid-4{margin-bottom:12px}
+#page-dashboard.v231-clean>#runtimeBanner,#page-dashboard.v231-clean>#dayPhaseGuide{display:none!important}
+#page-dashboard.v231-clean>.panel.hero.v231-legacy-hero{display:none!important}
+#page-dashboard.v231-clean #v14Engine{margin-top:0}
+#page-dashboard.v231-clean .v231-empty-signal{display:none!important}
+#page-manual.v231-clean #v17MapEntry{display:none!important}
+#page-book.v231-clean>.book-intro{display:none!important}
+#page-discoveries.v231-clean .hero-loop span{white-space:normal;text-align:center}
+#page-today.v231-clean .v231-today-reflection>.stack{margin:0}
+#page-today.v231-clean .v231-today-reflection-body>.stack{display:grid;gap:10px}
+#page-today.v231-clean .v231-today-reflection-body .panel{margin:0}
+.page .kicker{letter-spacing:.08em}
+.page h1{letter-spacing:-.025em}
+.page p,.panel p,.card p{overflow-wrap:anywhere}
+button,summary,[role="button"]{touch-action:manipulation}
+@media(max-width:760px){
+  .page{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+  #mobileNav.mobile-nav,.mobile-nav#mobileNav{grid-template-columns:repeat(4,minmax(0,1fr))!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}
+  #mobileNav button{min-width:0!important;width:100%!important;min-height:58px!important;margin:0!important;padding:6px 2px!important}
+  #mobileNav button span{font-size:11px!important;line-height:1.15;white-space:nowrap}
+  .now-help-btn{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
+  input,textarea,select{font-size:16px!important}
+  .page-head{gap:10px!important}.page-head h1{font-size:27px!important}.page-head p{line-height:1.65}
+  .page-actions{gap:7px!important;flex-wrap:wrap}.page-actions .btn{min-height:40px}
+  .v231-tool-bar{position:sticky;top:6px;z-index:6;box-shadow:0 6px 18px rgba(20,55,43,.06)}
+  .v231-manual-extra-body,.v231-discovery-extra-body,.v231-dashboard-more-body,.v231-today-reflection-body,.v231-today-more-body{padding:9px}
+  #runtimeBadge{display:none!important}
+}
+.v23-tool-grid button.active{border-color:var(--accent)!important;background:color-mix(in srgb,var(--accent) 10%,var(--paper))!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent) inset}
