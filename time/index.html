@@ -7,14 +7,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>My OS</title>
 <style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f4f8f5;color:#17352d}.wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.card{width:min(560px,100%);background:#fff;border:1px solid #dbe8e1;border-radius:24px;padding:30px;box-shadow:0 18px 50px rgba(33,75,61,.09)}h1{margin:0 0 10px;font-size:28px}.sub{color:#66766f;margin:0 0 22px}.bar{height:9px;background:#e7f0eb;border-radius:99px;overflow:hidden}.fill{height:100%;width:4%;background:linear-gradient(90deg,#6bb890,#2d8a62);transition:width .18s}.status{margin-top:14px;color:#536962;font-size:14px}.meta{margin-top:6px;color:#8a9993;font-size:12px}.err{display:none;margin-top:16px;padding:13px 14px;background:#fff3e8;border:1px solid #f1d1b2;border-radius:12px;color:#8a5426;line-height:1.65}button{border:0;border-radius:11px;background:#2d8a62;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;margin-top:10px}</style>
-</head><body><div class="wrap"><div class="card"><h1>My OS</h1><p class="sub">正在准备你的自适应生活系统…</p><div class="bar"><div class="fill" id="fill"></div></div><div class="status" id="status">准备载入 V13</div><div class="meta" id="meta">首次升级加载一次；之后普通刷新直接从本地启动</div><div class="err" id="err"></div></div></div>
+</head><body><div class="wrap"><div class="card"><h1>My OS</h1><p class="sub">正在准备你的自适应生活系统…</p><div class="bar"><div class="fill" id="fill"></div></div><div class="status" id="status">准备载入 V13.1</div><div class="meta" id="meta">首次升级加载一次；之后普通刷新直接从本地启动</div><div class="err" id="err"></div></div></div>
 <script>
 (async()=>{
-const VERSION='13',COUNT=19,EXPECTED_LENGTH=108624,CACHE_KEY='my_os_app_shell_v13';
+const VERSION='13.1',COUNT=19,EXPECTED_LENGTH=108624,CACHE_KEY='my_os_app_shell_v13_1';
 const fill=document.getElementById('fill'),status=document.getElementById('status'),meta=document.getElementById('meta'),err=document.getElementById('err');
 const progress=(v,t)=>{fill.style.width=Math.max(4,Math.min(100,v))+'%';if(t)status.textContent=t};
 const launch=html=>{document.open();document.write(html);document.close()};
-function clearOld(){try{['eao_app_shell_v10','eao_app_shell_v10_1','eao_app_shell_v11','my_os_app_shell_v12',CACHE_KEY].forEach(k=>localStorage.removeItem(k))}catch(e){}}
+function clearOld(){try{['eao_app_shell_v10','eao_app_shell_v10_1','eao_app_shell_v11','my_os_app_shell_v12','my_os_app_shell_v13',CACHE_KEY].forEach(k=>localStorage.removeItem(k))}catch(e){}}
 function inject(html){
  const anchor="const KEY='eao_v4_data';";
  if(!html.includes(anchor))throw new Error('应用入口标记不存在');
@@ -28,21 +28,22 @@ function inject(html){
  if(!html.includes('v11_patch.js'))html=html.replace(bc,'<script src="./v11_patch.js?v=11"></'+'script>'+bc);
  if(!html.includes('v12_patch.js'))html=html.replace(bc,'<script src="./v12_patch.js?v=12"></'+'script>'+bc);
  if(!html.includes('v13_patch.js'))html=html.replace(bc,'<script src="./v13_patch.js?v=13"></'+'script>'+bc);
- html=html.replace(/Engineer Adaptive OS V8/g,'My OS V13');
+ if(!html.includes('v13_fix.js'))html=html.replace(bc,'<script src="./v13_fix.js?v=13.1"></'+'script>'+bc);
+ html=html.replace(/Engineer Adaptive OS V8/g,'My OS V13.1');
  return html;
 }
 try{
  const u=new URLSearchParams(location.search);if(u.get('update')==='1'){clearOld();u.delete('update');try{history.replaceState(null,'',location.pathname+(u.toString()?'?'+u.toString():''))}catch(e){}}
  let cached='';try{cached=localStorage.getItem(CACHE_KEY)||''}catch(e){}
- if(cached&&cached.includes('v13_patch.js')){progress(100,'从本地启动');meta.textContent='My OS V13 已缓存 · 普通刷新不再重新下载核心内容';await new Promise(r=>setTimeout(r,20));launch(cached);return}
+ if(cached&&cached.includes('v13_fix.js')){progress(100,'从本地启动');meta.textContent='My OS V13.1 已缓存 · 普通刷新不再重新下载核心内容';await new Promise(r=>setTimeout(r,20));launch(cached);return}
  if(!('DecompressionStream'in window))throw new Error('当前浏览器不支持内置 gzip 解压，请升级 Chrome / Edge');
  const parts=[];let loaded=0;
  for(let i=0;i<COUNT;i++){const n=String(i).padStart(2,'0');progress(5+i/COUNT*68,`首次升级载入 ${i+1}/${COUNT}`);const r=await fetch(`./v9/${n}.txt?v=9`,{cache:'force-cache'});if(!r.ok)throw new Error(`核心数据 ${n} HTTP ${r.status}`);const t=(await r.text()).trim();if(!t)throw new Error(`核心数据 ${n} 为空`);parts.push(t);loaded+=t.length;meta.textContent=`已载入 ${loaded.toLocaleString()} / ${EXPECTED_LENGTH.toLocaleString()} 字符`}
  progress(78,'正在校验…');const b64=parts.join('');if(b64.length!==EXPECTED_LENGTH)throw new Error(`核心数据不完整：${b64.length}/${EXPECTED_LENGTH}`);const bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
  progress(87,'正在解压…');const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));let html=await new Response(stream).text();
- progress(93,'正在安装 V13 引导、知识学习与提醒…');html=inject(html);if(!html.includes('v13_patch.js'))throw new Error('V13 功能注入失败');
+ progress(93,'正在安装首次引导、知识学习与番茄提醒…');html=inject(html);if(!html.includes('v13_fix.js'))throw new Error('V13.1 功能注入失败');
  try{localStorage.setItem(CACHE_KEY,html);meta.textContent='完整应用已缓存；以后刷新直接启动'}catch(e){meta.textContent='浏览器未允许应用缓存，本次仍可使用'}
  progress(100,'启动完成');await new Promise(r=>setTimeout(r,50));launch(html);
-}catch(e){console.error('[My OS V13]',e);status.textContent='未能启动';err.style.display='block';err.innerHTML='<b>加载失败</b><br>'+String(e.message||e)+'<br><button onclick="location.href=\'/time/?update=1&v=13&t=\'+Date.now()">清缓存并重新加载</button>'}
+}catch(e){console.error('[My OS V13.1]',e);status.textContent='未能启动';err.style.display='block';err.innerHTML='<b>加载失败</b><br>'+String(e.message||e)+'<br><button onclick="location.href=\'/time/?update=1&v=13.1&t=\'+Date.now()">清缓存并重新加载</button>'}
 })();
 </script></body></html>
