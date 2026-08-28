@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8f5">
+  <title>Engineer Adaptive OS</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Microsoft YaHei",system-ui,-apple-system,sans-serif;background:#f4f8f5;color:#17352d}.wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.card{width:min(560px,100%);background:white;border:1px solid #dbe8e1;border-radius:24px;padding:30px;box-shadow:0 18px 50px rgba(33,75,61,.09)}h1{margin:0 0 10px;font-size:28px}.sub{color:#66766f;margin:0 0 22px}.bar{height:9px;background:#e7f0eb;border-radius:99px;overflow:hidden}.fill{height:100%;width:6%;background:linear-gradient(90deg,#6bb890,#2d8a62);transition:width .25s}.status{margin-top:14px;color:#536962;font-size:14px}.err{display:none;margin-top:16px;padding:12px 14px;background:#fff3e8;border:1px solid #f1d1b2;border-radius:12px;color:#8a5426}button{border:0;border-radius:11px;background:#2d8a62;color:white;padding:10px 14px;font-weight:700;cursor:pointer;margin-top:10px}
+  </style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+  <h1>Engineer Adaptive OS</h1>
+  <p class="sub">正在加载工程师自适应工作与生活系统…</p>
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="status" id="status">准备载入 V8 稳定版</div>
+  <div class="err" id="err"></div>
+</div></div>
+<script>
+(async()=>{
+  const count=9, fill=document.getElementById('fill'), status=document.getElementById('status'), err=document.getElementById('err');
+  try{
+    const parts=[];
+    for(let i=0;i<count;i++){
+      const n=String(i).padStart(2,'0');
+      status.textContent=`正在载入核心数据 ${i+1}/${count}`;
+      const r=await fetch(`./v8/${n}.txt?v=8`,{cache:'no-cache'});
+      if(!r.ok) throw new Error(`数据分片 ${n} 加载失败 (${r.status})`);
+      parts.push((await r.text()).trim());
+      fill.style.width=`${8+(i+1)/count*55}%`;
+    }
+    status.textContent='正在解压应用…';
+    const b64=parts.join('');
+    const bin=atob(b64); const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    let html;
+    if('DecompressionStream' in window){
+      const ds=new DecompressionStream('gzip');
+      const stream=new Blob([bytes]).stream().pipeThrough(ds);
+      html=await new Response(stream).text();
+    }else{
+      await new Promise((ok,bad)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js';s.onload=ok;s.onerror=bad;document.head.appendChild(s)});
+      html=new TextDecoder().decode(window.pako.ungzip(bytes));
+    }
+    fill.style.width='100%'; status.textContent='启动完成';
+    sessionStorage.setItem('eao_pages_boot','ok');
+    document.open(); document.write(html); document.close();
+  }catch(e){
+    console.error(e); err.style.display='block'; err.innerHTML=`加载失败：${e.message}<br><button onclick="location.href='./'">重新加载</button>`; status.textContent='未能启动';
+  }
+})();
+</script>
+</body>
+</html>
