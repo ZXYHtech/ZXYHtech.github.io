@@ -1,0 +1,8 @@
+/* My OS V23.2 · background reminder */
+.v232-bg-reminder{margin-top:10px;padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.v232-bg-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.v232-bg-head b{display:block;font-size:13px}.v232-bg-head small{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+.v232-switch{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;white-space:nowrap}.v232-switch input{width:17px;height:17px;margin:0}
+.v232-bg-status{margin-top:9px;padding:9px 10px;border-radius:11px;background:var(--paper);border:1px solid var(--line)}.v232-bg-status b{display:block;font-size:12px}.v232-bg-status small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.5}
+.v232-bg-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.v232-bg-actions .mini-btn{margin:0!important}
+.v232-bg-note{margin-top:8px;font-size:10px;color:var(--muted)}.v232-bg-note summary{cursor:pointer;font-weight:800;color:var(--muted)}.v232-bg-note p{margin:6px 0 0;line-height:1.55}
+@media(max-width:760px){.v232-bg-head{align-items:flex-start}.v232-bg-actions{display:grid;grid-template-columns:1fr 1fr}.v232-bg-actions .mini-btn{width:100%;min-height:36px}}
