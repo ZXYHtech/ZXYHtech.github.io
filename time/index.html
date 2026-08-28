@@ -13,61 +13,72 @@
 <body>
 <div class="wrap"><div class="card">
   <h1>Engineer Adaptive OS</h1>
-  <p class="sub">正在加载工程师自适应工作与生活系统…</p>
+  <p class="sub">正在启动工程师自适应工作与生活系统…</p>
   <div class="bar"><div class="fill" id="fill"></div></div>
-  <div class="status" id="status">准备载入 V9 稳定版</div>
-  <div class="meta" id="meta">完整性校验已启用 · /time/ GitHub Pages</div>
+  <div class="status" id="status">准备载入 V10</div>
+  <div class="meta" id="meta">首次加载后会缓存完整应用；以后刷新不再重复下载核心分片</div>
   <div class="err" id="err"></div>
 </div></div>
 <script>
 (async()=>{
-  const VERSION='9';
+  const VERSION='10';
+  const SOURCE_VERSION='9';
   const COUNT=19;
   const EXPECTED_LENGTH=108624;
+  const CACHE_KEY='eao_app_shell_v10';
+  const PATCH_MARK='__EAO_V10_PATCHED__';
   const fill=document.getElementById('fill'),status=document.getElementById('status'),meta=document.getElementById('meta'),err=document.getElementById('err');
   const setProgress=(v,t)=>{fill.style.width=Math.max(4,Math.min(100,v))+'%';if(t)status.textContent=t};
+  const launch=(html)=>{document.open();document.write(html);document.close();};
+  const clearCache=()=>{try{localStorage.removeItem(CACHE_KEY)}catch(e){}};
+  const patchApp=(html)=>{
+    if(html.includes(PATCH_MARK)) return html;
+    const anchor="const KEY='eao_v4_data';";
+    if(!html.includes(anchor)) throw new Error('应用入口标记不存在，无法应用 V10 修复');
+    const patch=`/*${PATCH_MARK}*/\nconst titles={dashboard:'总览',today:'今天',calibration:'校准 / 中断',discoveries:'发现',experiments:'实验',projects:'项目 / Resume',manual:'我的说明书',book:'系统学习',method:'方法速查'};\n`;
+    html=html.replace(anchor,patch+anchor);
+    const navPatch=`\n// V10 resilient navigation binding\ndocument.addEventListener('click',function(e){const p=e.target.closest&&e.target.closest('[data-page]');if(p){e.preventDefault();go(p.dataset.page);return;}const g=e.target.closest&&e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go);}});\n`;
+    const tail='renderDashboard();renderTodayHistory();renderCalibration();renderPatterns();renderExperiments();renderProjects();renderManual();initBookMode();';
+    if(html.includes(tail)) html=html.replace(tail,navPatch+tail); else html=html.replace('</script>',navPatch+'</script>');
+    html=html.replace(/Engineer Adaptive OS V8/g,'Engineer Adaptive OS V10').replace(/\bV8\b/g,'V10');
+    return html;
+  };
   try{
+    const params=new URLSearchParams(location.search);
+    if(params.get('update')==='1'){clearCache();params.delete('update');try{history.replaceState(null,'',location.pathname+(params.toString()?'?'+params.toString():''))}catch(e){}}
+    let cached='';
+    try{cached=localStorage.getItem(CACHE_KEY)||''}catch(e){}
+    if(cached && cached.includes(PATCH_MARK)){
+      setProgress(100,'从本地缓存启动');meta.textContent='已使用 V10 App Shell 缓存 · 不重复下载 19 个分片';
+      launch(cached);return;
+    }
     if(!('DecompressionStream' in window)) throw new Error('当前浏览器不支持内置 gzip 解压，请升级 Chrome / Edge 后重试');
-    const parts=[];
-    let loaded=0;
+    const parts=[];let loaded=0;
     for(let i=0;i<COUNT;i++){
       const n=String(i).padStart(2,'0');
-      setProgress(5+(i/COUNT)*72,`正在载入核心数据 ${i+1}/${COUNT}`);
-      const url=`./v9/${n}.txt?v=${VERSION}`;
-      let r;
-      try{r=await fetch(url,{cache:'no-store'});}catch(fetchErr){throw new Error(`无法读取分片 ${n}：${fetchErr.message||'网络请求失败'}`);}
+      setProgress(5+(i/COUNT)*68,`首次载入核心数据 ${i+1}/${COUNT}`);
+      const url=`./v9/${n}.txt?v=${SOURCE_VERSION}`;
+      let r;try{r=await fetch(url,{cache:'force-cache'});}catch(fetchErr){throw new Error(`无法读取分片 ${n}：${fetchErr.message||'网络请求失败'}`);}
       if(!r.ok) throw new Error(`分片 ${n} HTTP ${r.status}`);
-      const text=(await r.text()).trim();
-      if(!text) throw new Error(`分片 ${n} 为空`);
-      parts.push(text);loaded+=text.length;
-      meta.textContent=`已载入 ${loaded.toLocaleString()} / ${EXPECTED_LENGTH.toLocaleString()} 字符`;
+      const text=(await r.text()).trim();if(!text) throw new Error(`分片 ${n} 为空`);
+      parts.push(text);loaded+=text.length;meta.textContent=`首次载入 ${loaded.toLocaleString()} / ${EXPECTED_LENGTH.toLocaleString()} 字符`;
     }
-    setProgress(82,'正在校验完整性…');
-    const b64=parts.join('');
-    if(b64.length!==EXPECTED_LENGTH) throw new Error(`核心数据不完整：期望 ${EXPECTED_LENGTH}，实际 ${b64.length}`);
-    if(b64.length%4!==0) throw new Error('Base64 数据长度异常');
-    let bin;
-    try{bin=atob(b64);}catch(e){throw new Error('核心数据 Base64 校验失败');}
-    const bytes=new Uint8Array(bin.length);
-    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
-    if(bytes[0]!==0x1f||bytes[1]!==0x8b) throw new Error('gzip 文件头校验失败');
-    setProgress(90,'正在解压应用…');
-    let html;
-    try{
-      const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-      html=await new Response(stream).text();
-    }catch(e){throw new Error(`解压失败：${e.message||'数据损坏'}`);}
-    setProgress(97,'正在验证页面…');
-    if(!html.includes('Engineer Adaptive OS')||!html.includes('</html>')) throw new Error('页面内容校验失败');
-    sessionStorage.setItem('eao_pages_boot','v9-ok');
-    meta.textContent='完整性校验通过';setProgress(100,'启动完成');
-    await new Promise(r=>setTimeout(r,80));
-    document.open();document.write(html);document.close();
+    setProgress(77,'正在校验完整性…');
+    const b64=parts.join('');if(b64.length!==EXPECTED_LENGTH) throw new Error(`核心数据不完整：期望 ${EXPECTED_LENGTH}，实际 ${b64.length}`);
+    let bin;try{bin=atob(b64);}catch(e){throw new Error('核心数据 Base64 校验失败');}
+    const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    if(bytes[0]!==0x1f||bytes[1]!==0x8b)throw new Error('gzip 文件头校验失败');
+    setProgress(86,'正在解压应用…');
+    let html;try{const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));html=await new Response(stream).text();}catch(e){throw new Error(`解压失败：${e.message||'数据损坏'}`);}
+    setProgress(92,'正在修复交互与导航…');
+    html=patchApp(html);
+    if(!html.includes(PATCH_MARK)||!html.includes('const titles='))throw new Error('V10 交互补丁校验失败');
+    setProgress(96,'正在缓存完整应用…');
+    try{localStorage.setItem(CACHE_KEY,html);meta.textContent='完整应用已缓存；以后刷新将直接启动'}catch(e){meta.textContent='浏览器拒绝本地缓存；本次仍可正常启动'}
+    setProgress(100,'启动完成');await new Promise(r=>setTimeout(r,60));launch(html);
   }catch(e){
-    console.error('[EAO boot]',e);
-    status.textContent='未能启动';
-    err.style.display='block';
-    err.innerHTML=`<b>加载失败</b><br>${String(e.message||e)}<br><button onclick="location.href='/time/?v=9&t='+Date.now()">重新加载</button><button class="secondary" onclick="navigator.clipboard&&navigator.clipboard.writeText(String(document.getElementById('err').innerText))">复制错误</button>`;
+    console.error('[EAO V10 boot]',e);status.textContent='未能启动';err.style.display='block';
+    err.innerHTML=`<b>加载失败</b><br>${String(e.message||e)}<br><button onclick="location.href='/time/?update=1&t='+Date.now()">清缓存并重新加载</button><button class="secondary" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('err').innerText)">复制错误</button>`;
   }
 })();
 </script>
