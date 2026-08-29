@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#071f2c">
+<title>开钓！Reality Fishing Adventure</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hud">
+    <div class="hud-left glass">
+      <span class="pill">🌿 柳岸溪湾</span>
+      <b id="mission">任务：寻找第一处鱼影</b>
+      <small id="subMission">点击岸边光点移动，观察哪里有鱼。</small>
+    </div>
+    <div class="hud-right glass">
+      <div><small>等级</small><b id="lv">LV.1</b></div>
+      <div><small>图鉴</small><b id="dex">0/12</b></div>
+      <div><small>连胜</small><b id="streak">0</b></div>
+    </div>
+  </div>
+
+  <div id="intro" class="screen show">
+    <div class="intro-card">
+      <div class="logo-fish">🐟</div>
+      <span class="eyebrow">REALITY FISHING ADVENTURE</span>
+      <h1>今天，去水边<br><em>遇见一条鱼。</em></h1>
+      <p>这不是统计页面。你会移动、寻找鱼影、抛竿、等口、提竿、控线，最后把真实钓鱼玩成一场探索冒险。</p>
+      <button id="enter" class="primary big">开始探索</button>
+      <small>建议打开声音 · 手机横竖屏都可玩</small>
+    </div>
+  </div>
+
+  <div id="guide" class="guide glass hidden">
+    <div class="guide-avatar">🧢</div>
+    <div><b id="guideTitle">水边向导</b><p id="guideText">先别急着抛竿。看看哪里有鱼影、波纹和结构变化。</p></div>
+  </div>
+
+  <div id="zonePanel" class="zone-panel hidden">
+    <button data-zone="reed"><span>🌾</span><b>芦苇边</b><small>障碍多 · 小型鱼活跃</small></button>
+    <button data-zone="drop"><span>🌊</span><b>深浅坎</b><small>鱼影少 · 可能有惊喜</small></button>
+    <button data-zone="flow"><span>💧</span><b>缓流口</b><small>食物经过 · 活动更频繁</small></button>
+  </div>
+
+  <div id="actionBar" class="action-bar hidden">
+    <button id="scan" class="round"><span>👀</span><small>观察</small></button>
+    <button id="cast" class="primary action" disabled><span>🎣</span><b>抛竿</b><small>先选水面落点</small></button>
+    <button id="bag" class="round"><span>🎒</span><small>背包</small></button>
+  </div>
+
+  <div id="bitePanel" class="bite-panel hidden">
+    <div class="bite-ring"><div></div><span>!</span></div>
+    <b>咬口！</b>
+    <button id="strike" class="strike">现在提竿！</button>
+    <small>太早或太晚都会错过</small>
+  </div>
+
+  <div id="fightPanel" class="fight hidden">
+    <div class="fight-top glass">
+      <div class="fish-name"><span id="fightIcon">🐟</span><div><small>未知鱼种</small><b id="fightName">水下黑影</b></div></div>
+      <div class="stamina"><small>鱼的体力</small><div><i id="fishHp"></i></div></div>
+    </div>
+    <div class="tension-wrap glass">
+      <div class="tension-label"><b>线组张力</b><span id="tensionText">保持在绿色区域</span></div>
+      <div class="tension"><i class="safe"></i><b id="tensionNeedle"></b></div>
+      <p>按住收线提高张力，鱼猛冲时松开卸力。</p>
+      <button id="reel" class="reel">按住收线</button>
+    </div>
+  </div>
+
+  <div id="catchCard" class="catch-card hidden">
+    <div class="burst"></div>
+    <div class="catch-inner">
+      <span class="new-tag">NEW · 图鉴解锁</span>
+      <div id="catchFish" class="catch-fish">🐟</div>
+      <h2 id="catchName">鲫鱼</h2>
+      <p id="catchDesc">喜欢在近岸缓流和结构边活动，是非常适合新手认识鱼口节奏的对象鱼。</p>
+      <div class="catch-stats"><span><small>稀有度</small><b id="rarity">★☆☆☆☆</b></span><span><small>本局经验</small><b id="gain">+80 XP</b></span></div>
+      <div class="catch-actions">
+        <button id="realCatch" class="ghost">📷 我现实也上鱼了</button>
+        <button id="continue" class="primary">继续探索</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
+<script src="./game.js"></script>
+</body>
+</html>
