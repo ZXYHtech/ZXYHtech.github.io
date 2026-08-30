@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/monadfish-lite-finalize.yml'
+      - '.github/scripts/monadfish_source_lite.py'
       - '.github/scripts/monadfish_zh_lite.py'
   workflow_dispatch:
 
@@ -32,13 +33,40 @@ jobs:
           git fetch --depth 1 origin 817708f05b609accb5b8ed39c299e318459044cf
           git checkout --detach 817708f05b609accb5b8ed39c299e318459044cf
 
-      - name: Build original MonadFish client
+      - name: Apply source-level Chinese and wallet-free Lite patch
+        run: |
+          python3 .github/scripts/monadfish_source_lite.py /tmp/monadfish-upstream
+
+      - name: Build wallet-free MonadFish client
         working-directory: /tmp/monadfish-upstream
         env:
           VITE_BASE_PATH: /fish/games/monadfish/
         run: |
           npm ci
           npm run build
+
+      - name: Verify wallet frameworks are absent from emitted assets
+        run: |
+          set -euo pipefail
+          echo 'Checking generated filenames for wallet framework chunks...'
+          if find /tmp/monadfish-upstream/dist/assets -maxdepth 1 -type f \( \
+            -iname '*wallet*' -o \
+            -iname '*metamask*' -o \
+            -iname '*rainbow*' -o \
+            -iname '*w3m-modal*' -o \
+            -iname '*coinbasewallet*' \
+          \) -print | grep -q .; then
+            echo 'Wallet-specific chunks were emitted:'
+            find /tmp/monadfish-upstream/dist/assets -maxdepth 1 -type f \( \
+              -iname '*wallet*' -o \
+              -iname '*metamask*' -o \
+              -iname '*rainbow*' -o \
+              -iname '*w3m-modal*' -o \
+              -iname '*coinbasewallet*' \
+            \) -print
+            exit 1
+          fi
+          echo 'PASS: no wallet-specific output chunks'
 
       - name: Reuse local API compatibility layer
         run: |
@@ -78,8 +106,8 @@ jobs:
           Upstream: https://github.com/KaimiEwl/fishing-game
           Pinned source: 817708f05b609accb5b8ed39c299e318459044cf
           License: MIT (see LICENSE-MonadFish.txt)
-          Adaptation: localStorage-backed API compatibility, Chinese UI localization and a Chinese game-guide page.
-          Wallet connection, wallet verification, MON transactions and authoritative online leaderboard are not exposed in Lite mode.
+          Adaptation: source-level wallet stack removal, localStorage-backed API compatibility, Chinese UI localization and a Chinese game-guide page.
+          Wallet providers/connectors, wallet verification, MON transactions and authoritative online leaderboard are not part of the Lite player build.
           TXT
 
       - name: Stage same-origin mirror
