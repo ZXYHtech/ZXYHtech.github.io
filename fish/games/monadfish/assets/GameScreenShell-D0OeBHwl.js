@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports, H as HIGH_FETCH_PRIORITY_PROPS, a as CoinIcon } from "./index-DPq5UnH7.js";
+import { j as jsxRuntimeExports, H as HIGH_FETCH_PRIORITY_PROPS, a as CoinIcon } from "./index-BS_fjQJr.js";
 const DEFAULT_OVERLAY = "bg-[radial-gradient(circle_at_50%_0%,rgba(124,92,255,0.26),transparent_34%),linear-gradient(180deg,rgba(16,16,44,0.45)_0%,rgba(8,9,20,0.50)_48%,rgba(5,7,13,0.65)_100%)]";
 const DEFAULT_SHELL_PADDING = "px-3 pb-[calc(var(--bottom-nav-clearance,6rem)+1rem)] pt-3 sm:px-6 sm:pt-5";
 const GameScreenShell = ({

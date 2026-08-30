@@ -7,15 +7,21 @@
   const LEADERBOARD_KEY = 'zxyh_monadfish_lite_leaderboard_v1';
   const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';
             if (SMOKE) Math.random = () => 0.01;
-  const fish = [
-    {id:'carp',chance:45.14,price:4,xp:5},
-    {id:'perch',chance:28,price:8,xp:10},
-    {id:'bream',chance:15,price:18,xp:18},
-    {id:'catfish',chance:8,price:38,xp:25},
-    {id:'goldfish',chance:3,price:100,xp:50},
-    {id:'mutant',chance:.8,price:400,xp:100},
-    {id:'pike',chance:.05,price:5000,xp:500},
-    {id:'leviathan',chance:.01,price:25000,xp:5000},
+    const fish = [
+    {id:'carp',chance:26,price:4,xp:5},
+    {id:'perch',chance:18,price:8,xp:10},
+    {id:'tilapia',chance:12,price:5,xp:6},
+    {id:'trout',chance:10,price:11,xp:12},
+    {id:'bass',chance:8,price:14,xp:14},
+    {id:'bream',chance:8,price:18,xp:18},
+    {id:'koi',chance:6,price:26,xp:22},
+    {id:'eel',chance:4,price:34,xp:28},
+    {id:'catfish',chance:4,price:38,xp:25},
+    {id:'goldfish',chance:2.5,price:100,xp:50},
+    {id:'tuna',chance:.8,price:75,xp:45},
+    {id:'mutant',chance:.55,price:400,xp:100},
+    {id:'pike',chance:.1,price:5000,xp:500},
+    {id:'leviathan',chance:.05,price:25000,xp:5000},
   ];
   const rodCosts = {1:1500,2:6000,3:12000,4:18000};
   const recipes = {
@@ -78,9 +84,9 @@
   const markCatchProgress = (p,f) => {
     const gp=p.game_progress||initialProgress();
     if(gp.tasks?.catch_10) gp.tasks.catch_10.progress=Math.min(10,(gp.tasks.catch_10.progress||0)+1);
-    if(['bream','catfish','goldfish','mutant','pike','leviathan'].includes(f.id) && gp.tasks?.rare_1) gp.tasks.rare_1.progress=1;
+    if(['bream','koi','eel','catfish','goldfish','tuna','mutant','pike','leviathan'].includes(f.id) && gp.tasks?.rare_1) gp.tasks.rare_1.progress=1;
     if(gp.weeklyMissions?.catch_60_fish) gp.weeklyMissions.catch_60_fish.progress=(gp.weeklyMissions.catch_60_fish.progress||0)+1;
-    if(['bream','catfish','goldfish','mutant','pike','leviathan'].includes(f.id) && gp.weeklyMissions?.catch_6_rare) gp.weeklyMissions.catch_6_rare.progress=(gp.weeklyMissions.catch_6_rare.progress||0)+1;
+    if(['bream','koi','eel','catfish','goldfish','tuna','mutant','pike','leviathan'].includes(f.id) && gp.weeklyMissions?.catch_6_rare) gp.weeklyMissions.catch_6_rare.progress=(gp.weeklyMissions.catch_6_rare.progress||0)+1;
     p.game_progress=gp;
   };
   const getCasts = () => safeJSON(sessionStorage.getItem(CAST_KEY),'{}') || {};

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/GrillScreen-CD3jUMJq.js","assets/GameScreenShell-COjlbzCJ.js","assets/GrillScoreInfoButton-CY1cYt6A.js","assets/LeaderboardScreen-Ct-6RpIw.js","assets/MapScreen-wq18ks6n.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/GrillScreen-Cb2idxs4.js","assets/GameScreenShell-D0OeBHwl.js","assets/GrillScoreInfoButton-DGoEgkGx.js","assets/LeaderboardScreen-CMtq88Ld.js","assets/MapScreen-BPppLIPw.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -17383,8 +17383,32 @@ const FISH_SPRITE_MAP = {
   "pike": 3,
   "catfish": 4,
   "goldfish": 5,
-  "mutant": 6
+  "mutant": 6,
+  "leviathan": 7,
+  "tilapia": 0,
+  "trout": 1,
+  "bass": 3,
+  "koi": 5,
+  "eel": 6,
+  "tuna": 2
 };
+const FISH_VISUAL_VARIANTS = {
+  carp: { sprite: 0, hue: 0, scaleX: 1, scaleY: 1 },
+  perch: { sprite: 1, hue: 0, scaleX: 1, scaleY: 1 },
+  bream: { sprite: 2, hue: 0, scaleX: 1, scaleY: 1 },
+  pike: { sprite: 3, hue: 0, scaleX: 1.08, scaleY: 0.92 },
+  catfish: { sprite: 4, hue: 0, scaleX: 1.08, scaleY: 1 },
+  goldfish: { sprite: 5, hue: 0, scaleX: 0.9, scaleY: 0.96 },
+  mutant: { sprite: 6, hue: 0, scaleX: 1, scaleY: 1 },
+  leviathan: { sprite: 7, hue: 0, scaleX: 1.2, scaleY: 1.05 },
+  tilapia: { sprite: 0, hue: 54, scaleX: 0.9, scaleY: 1.06 },
+  trout: { sprite: 1, hue: -24, scaleX: 1.18, scaleY: 0.86 },
+  bass: { sprite: 3, hue: 88, scaleX: 1.16, scaleY: 0.88 },
+  koi: { sprite: 5, hue: 18, scaleX: 1.06, scaleY: 0.98 },
+  eel: { sprite: 6, hue: 148, scaleX: 1.45, scaleY: 0.66 },
+  tuna: { sprite: 2, hue: 196, scaleX: 1.42, scaleY: 0.72 }
+};
+const AMBIENT_SPECIES = Object.keys(FISH_VISUAL_VARIANTS);
 const drawAnimatedSprite = (ctx, img, width, height, phase, intensity = 1) => {
   const swim = Math.sin(phase * 2.2);
   const glide = Math.sin(phase * 1.15);
@@ -17728,7 +17752,7 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
     }
   }
   class FishEntity {
-    constructor(w2, h, fishType) {
+    constructor(w2, h, fishType, speciesId = "carp") {
       __publicField(this, "x");
       __publicField(this, "y");
       __publicField(this, "targetX");
@@ -17741,13 +17765,22 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
       __publicField(this, "wobble");
       __publicField(this, "fishType");
       __publicField(this, "wobbleSpeed");
+      __publicField(this, "speciesId");
+      __publicField(this, "hue");
+      __publicField(this, "bodyScaleX");
+      __publicField(this, "bodyScaleY");
       __publicField(this, "depthMin");
       __publicField(this, "depthMax");
       __publicField(this, "facing");
       __publicField(this, "targetCooldown");
       __publicField(this, "turnLock");
-      const traits = FISH_TRAITS[fishType] || FISH_TRAITS[0];
-      this.fishType = fishType;
+      const visual = FISH_VISUAL_VARIANTS[speciesId] || FISH_VISUAL_VARIANTS.carp;
+      const traits = FISH_TRAITS[visual.sprite] || FISH_TRAITS[fishType] || FISH_TRAITS[0];
+      this.fishType = visual.sprite;
+      this.speciesId = speciesId;
+      this.hue = visual.hue;
+      this.bodyScaleX = visual.scaleX;
+      this.bodyScaleY = visual.scaleY;
       this.speed = traits.speed + Math.random() * 0.18;
       this.size = traits.size + Math.random() * 10;
       this.wobbleSpeed = traits.wobbleSpeed;
@@ -17777,20 +17810,27 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
       this.targetCooldown = Math.max(0, this.targetCooldown - 1);
       this.turnLock = Math.max(0, this.turnLock - 1);
       if (this.state === "booked") {
-        this.x += (bobber.x - this.x) * 0.15;
-        this.y += (bobber.y + 12 - this.y) * 0.15;
-        const hookedAngle = -Math.PI / 2 + Math.sin(this.wobble * 4) * 0.2;
-        this.angle += (hookedAngle - this.angle) * 0.12;
-        this.visualAngle += (this.angle - this.visualAngle) * 0.18;
+        const lateralFight = Math.sin(this.wobble * 5.2) * 34 + Math.sin(this.wobble * 2.15) * 15;
+        const verticalFight = Math.cos(this.wobble * 4.4) * 8 + Math.sin(this.wobble * 1.7) * 4;
+        const targetX = bobber.x + lateralFight;
+        const targetY = bobber.y + 50 + verticalFight;
+        this.x += (targetX - this.x) * 0.18;
+        this.y += (targetY - this.y) * 0.2;
+        this.facing = Math.sin(this.wobble * 5.2) >= 0 ? 1 : -1;
+        const hookedAngle = Math.sin(this.wobble * 4.8) * 0.16;
+        this.angle += (hookedAngle - this.angle) * 0.16;
+        this.visualAngle += (this.angle - this.visualAngle) * 0.24;
         return;
       }
       if (gs === "waiting" && Math.random() < 5e-3) this.state = "chasing";
       if (gs === "idle") this.state = "idle";
       let tx = this.targetX, ty = this.targetY;
       const minY = h * 0.38;
-      if (this.state === "chasing" && gs === "waiting") {
-        tx = bobber.x + Math.cos(this.wobble) * 60;
-        ty = Math.max(minY, bobber.y + 30 + Math.sin(this.wobble) * 20);
+      if (this.state === "chasing" && (gs === "waiting" || gs === "biting")) {
+        const chaseRadius = gs === "biting" ? 16 : 60;
+        const chaseDepth = gs === "biting" ? 42 : 30;
+        tx = bobber.x + Math.cos(this.wobble) * chaseRadius;
+        ty = Math.max(minY, bobber.y + chaseDepth + Math.sin(this.wobble) * (gs === "biting" ? 8 : 20));
       } else if (this.state === "idle") {
         if (this.targetCooldown <= 0 || Math.hypot(tx - this.x, ty - this.y) < 45) this.setRandomTarget(w2, h);
       }
@@ -17833,8 +17873,11 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
       const img = imgs[this.fishType];
       if (img) {
         const aspect = img.width / img.height;
-        const dw = this.size * 2, dh2 = dw / aspect;
-        drawAnimatedSprite(ctx, img, dw, dh2, this.wobble, this.state === "chasing" ? 1.35 : 1);
+        const dw = this.size * 2 * this.bodyScaleX;
+        const dh2 = this.size * 2 / aspect * this.bodyScaleY;
+        ctx.filter = this.hue === 0 ? "none" : `hue-rotate(${this.hue}deg) saturate(1.18)`;
+        drawAnimatedSprite(ctx, img, dw, dh2, this.wobble, this.state === "booked" ? 1.8 : this.state === "chasing" ? 1.35 : 1);
+        ctx.filter = "none";
       } else {
         const colors = ["#4488ff", "#ff8844", "#44aa44", "#8844cc"];
         ctx.fillStyle = colors[this.fishType] || "#4488ff";
@@ -17904,7 +17947,11 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
     if (fishRef.current.length === 0) {
-      for (let i = 0; i < 8; i++) fishRef.current.push(new FishEntity(initialSize.w, initialSize.h, i));
+      for (let i = 0; i < 18; i++) {
+        const speciesId = AMBIENT_SPECIES[i % AMBIENT_SPECIES.length];
+        const visual = FISH_VISUAL_VARIANTS[speciesId] || FISH_VISUAL_VARIANTS.carp;
+        fishRef.current.push(new FishEntity(initialSize.w, initialSize.h, visual.sprite, speciesId));
+      }
     }
     if (bubblesRef.current.length === 0) {
       for (let i = 0; i < 20; i++) bubblesRef.current.push(new Bubble(initialSize.w, initialSize.h));
@@ -18016,6 +18063,10 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
         ctx.arc(boatX + bw * 0.35 + 12, by2 - 55, 14, 0, Math.PI * 2);
         ctx.fill();
       }
+      const fightFish = fishRef.current.find((f2) => f2.state === "booked");
+      window.__MONADFISH_HOOK_FIGHT__ = Boolean(
+        fightFish && (gameState === "catching" || gameState === "result")
+      );
       if (gameState !== "idle") {
         const bx = bobberPosRef.current.x;
         const by = bobberPosRef.current.y;
@@ -18101,45 +18152,66 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
           ctx.arc(bx - 1, by - 2, 3, 0, Math.PI * 2);
           ctx.fill();
         }
-        const hookY = by + 50;
-        ctx.strokeStyle = "rgba(255,255,255,0.3)";
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.moveTo(bx, by + 6);
-        ctx.lineTo(bx, hookY);
-        ctx.stroke();
-        ctx.strokeStyle = "#ccc";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(bx, hookY);
-        ctx.lineTo(bx, hookY + 6);
-        ctx.quadraticCurveTo(bx + 8, hookY + 14, bx + 2, hookY + 10);
-        ctx.quadraticCurveTo(bx - 3, hookY + 6, bx - 2, hookY + 2);
-        ctx.stroke();
-        ctx.fillStyle = "#ccc";
-        ctx.beginPath();
-        ctx.moveTo(bx - 2, hookY + 2);
-        ctx.lineTo(bx - 5, hookY - 1);
-        ctx.lineTo(bx - 1, hookY + 1);
-        ctx.fill();
-        const ww = Math.sin(t2 * 5) * 3;
-        ctx.strokeStyle = "#ff6633";
-        ctx.lineWidth = 2.5;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(bx + 2, hookY + 8);
-        ctx.quadraticCurveTo(bx + 5 + ww, hookY + 14, bx + 2 + ww * 0.5, hookY + 18);
-        ctx.stroke();
-        ctx.lineCap = "butt";
         const bookedFish = fishRef.current.find((f2) => f2.state === "booked");
-        if (bookedFish && fishImgsRef.current[bookedFish.fishType]) {
-          const fImg = fishImgsRef.current[bookedFish.fishType];
-          const fA = fImg.width / fImg.height;
-          const fW = 60, fH = fW / fA;
+        if (!bookedFish) {
+          const hookY = by + 50;
+          ctx.strokeStyle = "rgba(255,255,255,0.3)";
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(bx, by + 6);
+          ctx.lineTo(bx, hookY);
+          ctx.stroke();
+          ctx.strokeStyle = "#ccc";
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(bx, hookY);
+          ctx.lineTo(bx, hookY + 6);
+          ctx.quadraticCurveTo(bx + 8, hookY + 14, bx + 2, hookY + 10);
+          ctx.quadraticCurveTo(bx - 3, hookY + 6, bx - 2, hookY + 2);
+          ctx.stroke();
+          ctx.fillStyle = "#ccc";
+          ctx.beginPath();
+          ctx.moveTo(bx - 2, hookY + 2);
+          ctx.lineTo(bx - 5, hookY - 1);
+          ctx.lineTo(bx - 1, hookY + 1);
+          ctx.fill();
+          const ww = Math.sin(t2 * 5) * 3;
+          ctx.strokeStyle = "#ff6633";
+          ctx.lineWidth = 2.5;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(bx + 2, hookY + 8);
+          ctx.quadraticCurveTo(bx + 5 + ww, hookY + 14, bx + 2 + ww * 0.5, hookY + 18);
+          ctx.stroke();
+          ctx.lineCap = "butt";
+        }
+        if (bookedFish) {
+          const fx = bookedFish.x;
+          const fy = bookedFish.y;
+          const pull = Math.max(-18, Math.min(18, fx - bx));
           ctx.save();
-          ctx.translate(bx, hookY + 10);
-          ctx.rotate(Math.sin(t2 * 3) * 0.2);
-          drawAnimatedSprite(ctx, fImg, fW, fH, t2 * 2.2, 1.4);
+          ctx.strokeStyle = "rgba(238,248,255,0.9)";
+          ctx.lineWidth = 1.25;
+          ctx.shadowColor = "rgba(180,235,255,0.45)";
+          ctx.shadowBlur = 4;
+          ctx.beginPath();
+          ctx.moveTo(bx, by + 5);
+          ctx.quadraticCurveTo(bx + pull * 0.32, (by + fy) * 0.5, fx, fy - 2);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "#e5edf5";
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(fx, fy - 3);
+          ctx.quadraticCurveTo(fx + 7, fy + 4, fx + 1, fy + 8);
+          ctx.stroke();
+          ctx.globalAlpha = 0.25;
+          ctx.strokeStyle = "#d9fbff";
+          for (let i = 0; i < 2; i++) {
+            ctx.beginPath();
+            ctx.ellipse(bx + pull * 0.14, waterLevel + 2, 12 + i * 9 + Math.abs(pull) * 0.12, 3 + i, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          }
           ctx.restore();
         }
       }
@@ -18147,39 +18219,57 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
         b.update(h, waterLevel);
         b.draw(ctx);
       });
+      if (gameState === "biting" && !fishRef.current.some((f2) => f2.state === "chasing")) {
+        let nearest = null;
+        let nearestDistance = Infinity;
+        fishRef.current.forEach((f2) => {
+          if (f2.state === "booked") return;
+          const d = Math.hypot(f2.x - bobberPosRef.current.x, f2.y - bobberPosRef.current.y);
+          if (d < nearestDistance) {
+            nearestDistance = d;
+            nearest = f2;
+          }
+        });
+        if (nearest) nearest.state = "chasing";
+      }
+      if (gameState === "catching" && !fishRef.current.some((f2) => f2.state === "booked")) {
+        let hooked = null;
+        let hookedScore = Infinity;
+        fishRef.current.forEach((f2) => {
+          if (f2.state === "booked") return;
+          const d = Math.hypot(f2.x - bobberPosRef.current.x, f2.y - bobberPosRef.current.y);
+          const score = d + (f2.state === "chasing" ? -1e3 : 0);
+          if (score < hookedScore) {
+            hookedScore = score;
+            hooked = f2;
+          }
+        });
+        if (hooked) hooked.state = "booked";
+      }
       if ((gameState === "biting" || gameState === "catching") && (lastResult == null ? void 0 : lastResult.success) && lastResult.fish) {
         const targetType = FISH_SPRITE_MAP[lastResult.fish.id] ?? 0;
-        const alreadyBooked = fishRef.current.some((f2) => f2.state === "booked");
-        if (!alreadyBooked) {
-          let best = null;
-          let bestDist = Infinity;
+        let best = fishRef.current.find((f2) => f2.state === "booked") ?? null;
+        if (!best) {
+          let bestScore = Infinity;
           fishRef.current.forEach((f2) => {
-            if (f2.fishType === targetType && f2.state !== "booked") {
-              const d = Math.hypot(f2.x - bobberPosRef.current.x, f2.y - bobberPosRef.current.y);
-              if (d < bestDist) {
-                bestDist = d;
-                best = f2;
-              }
+            const d = Math.hypot(f2.x - bobberPosRef.current.x, f2.y - bobberPosRef.current.y);
+            const chaseBonus = f2.state === "chasing" ? -1e3 : 0;
+            const score = d + chaseBonus;
+            if (score < bestScore) {
+              bestScore = score;
+              best = f2;
             }
           });
-          if (!best) {
-            let anyBest = null;
-            let anyDist = Infinity;
-            fishRef.current.forEach((f2) => {
-              if (f2.state !== "booked") {
-                const d = Math.hypot(f2.x - bobberPosRef.current.x, f2.y - bobberPosRef.current.y);
-                if (d < anyDist) {
-                  anyDist = d;
-                  anyBest = f2;
-                }
-              }
-            });
-            if (anyBest) {
-              anyBest.fishType = targetType;
-              best = anyBest;
-            }
-          }
-          if (best) best.state = "booked";
+        }
+        if (best) {
+          const speciesId = lastResult.fish.id;
+          const visual = FISH_VISUAL_VARIANTS[speciesId] || FISH_VISUAL_VARIANTS.carp;
+          best.fishType = targetType;
+          best.speciesId = speciesId;
+          best.hue = visual.hue;
+          best.bodyScaleX = visual.scaleX;
+          best.bodyScaleY = visual.scaleY;
+          best.state = "booked";
         }
       }
       ctx.globalAlpha = 1;
@@ -18246,7 +18336,7 @@ const MonadFishCanvas = ({ onCast, gameState, lastResult, rodLevel = 0, assets =
       window.removeEventListener("resize", handleResize);
       resizeObserver.disconnect();
     };
-  }, [gameState]);
+  }, [gameState, lastResult]);
   reactExports.useEffect(() => {
     if (gameState === "casting") {
       const { w: w2, h } = getCanvasSize();
@@ -18598,41 +18688,29 @@ const PlayerPanel = ({ player }) => {
   const totalDishCount = ((player == null ? void 0 : player.cookedDishes) || []).reduce((sum, dish) => sum + (dish.quantity || 0), 0);
   const totalBait = Math.max(0, Number((player == null ? void 0 : player.bait) || 0)) + Math.max(0, Number((player == null ? void 0 : player.dailyFreeBait) || 0));
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cn("fixed z-30 flex items-center gap-1.5", isMobile ? "left-3 top-3" : "left-5 top-5"), children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "a",
-        {
-          href: "/fish/games/monadfish/guide.html",
-          className: "inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-300/20 bg-black/85 text-cyan-100 shadow-md backdrop-blur-md transition hover:border-cyan-300/40",
-          "aria-label": "游戏说明",
-          title: "游戏说明",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { className: "h-4 w-4" })
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        "button",
-        {
-          type: "button",
-          onClick: () => setIsExpanded((prev) => !prev),
-          className: cn(
-            "inline-flex items-center gap-2 rounded-full border border-cyan-300/24 bg-black/88 px-2.5 py-1.5 text-zinc-100 shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all hover:scale-[1.03] hover:border-cyan-300/38 hover:bg-zinc-950 active:scale-95",
-            isExpanded && "border-cyan-300/40"
-          ),
-          "aria-expanded": isExpanded,
-          "aria-label": isExpanded ? "收起等级详情" : "查看等级详情",
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-full border border-cyan-300/18", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PlayerLevelAvatar, { level: (player == null ? void 0 : player.level) || 1, avatarUrl: player == null ? void 0 : player.avatarUrl, size: "sm" }) }),
-            !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-left", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block text-[10px] font-bold text-cyan-100/75", children: "等级" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block max-w-[6.5rem] truncate text-sm font-black text-zinc-100", children: (player == null ? void 0 : player.nickname) || `Lv. ${(player == null ? void 0 : player.level) || 1}` })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { className: cn("h-4 w-4 shrink-0 text-cyan-100 transition-transform", isExpanded && "rotate-180") })
-            ] })
-          ]
-        }
-      )
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("fixed z-30 flex items-center gap-1.5", isMobile ? "left-3 top-3" : "left-5 top-5"), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        type: "button",
+        onClick: () => setIsExpanded((prev) => !prev),
+        className: cn(
+          "inline-flex items-center gap-2 rounded-full border border-cyan-300/24 bg-black/88 px-2.5 py-1.5 text-zinc-100 shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all hover:scale-[1.03] hover:border-cyan-300/38 hover:bg-zinc-950 active:scale-95",
+          isExpanded && "border-cyan-300/40"
+        ),
+        "aria-expanded": isExpanded,
+        "aria-label": isExpanded ? "收起等级详情" : "查看等级详情",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-full border border-cyan-300/18", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PlayerLevelAvatar, { level: (player == null ? void 0 : player.level) || 1, avatarUrl: player == null ? void 0 : player.avatarUrl, size: "sm" }) }),
+          !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-left", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block text-[10px] font-bold text-cyan-100/75", children: "等级" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block max-w-[6.5rem] truncate text-sm font-black text-zinc-100", children: (player == null ? void 0 : player.nickname) || `Lv. ${(player == null ? void 0 : player.level) || 1}` })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { className: cn("h-4 w-4 shrink-0 text-cyan-100 transition-transform", isExpanded && "rotate-180") })
+          ] })
+        ]
+      }
+    ) }),
     isExpanded && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("fixed z-30", isMobile ? "left-3 top-[3.85rem] w-[min(18rem,calc(100vw-1.5rem))]" : "left-5 top-[4.65rem] w-[18.75rem]"), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border border-cyan-300/16 bg-black/92 p-3 text-zinc-100 shadow-[0_18px_40px_rgba(0,0,0,0.58)] backdrop-blur-xl", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(PlayerLevelAvatar, { level: (player == null ? void 0 : player.level) || 1, avatarUrl: player == null ? void 0 : player.avatarUrl, size: "md" }),
@@ -19136,67 +19214,127 @@ const CUBE_REBALANCE_CONFIG = config.CUBE_REBALANCE_CONFIG;
 const FISH_DATA = [
   {
     id: "carp",
-    name: "Carp",
+    name: "鲤鱼",
     emoji: "✨",
     rarity: "common",
     ...FISH_ECONOMY.carp,
-    description: "A common fish, but great for a stew!"
+    description: "常见而可靠的淡水鱼，适合新手练习。"
   },
   {
     id: "perch",
-    name: "Perch",
+    name: "河鲈",
     emoji: "🐠",
     rarity: "uncommon",
     ...FISH_ECONOMY.perch,
-    description: "A striped predator with vivid colors"
+    description: "有条纹的小型掠食鱼，动作敏捷。"
   },
   {
     id: "bream",
-    name: "Bream",
+    name: "欧鳊",
     emoji: "🐡",
     rarity: "rare",
     ...FISH_ECONOMY.bream,
-    description: "A large fish with golden sides"
+    description: "体型宽厚、侧身泛金的大型鱼。"
   },
   {
     id: "catfish",
-    name: "Catfish",
+    name: "鲶鱼",
     emoji: "🐙",
     rarity: "epic",
     ...FISH_ECONOMY.catfish,
-    description: "A giant of the deep with whiskers"
+    description: "栖息深水的大型鲶鱼，力量很足。"
+  },
+  {
+    id: "tilapia",
+    name: "罗非鱼",
+    emoji: "🐟",
+    rarity: "common",
+    chance: 12,
+    price: 5,
+    xp: 6,
+    description: "适应力强的常见鱼，咬口积极。"
+  },
+  {
+    id: "trout",
+    name: "虹鳟",
+    emoji: "🐟",
+    rarity: "uncommon",
+    chance: 10,
+    price: 11,
+    xp: 12,
+    description: "喜欢较凉水层，体色鲜明、冲刺很快。"
+  },
+  {
+    id: "bass",
+    name: "黑鲈",
+    emoji: "🐟",
+    rarity: "uncommon",
+    chance: 8,
+    price: 14,
+    xp: 14,
+    description: "攻击性强，咬钩后会频繁横向冲刺。"
+  },
+  {
+    id: "koi",
+    name: "锦鲤",
+    emoji: "🎏",
+    rarity: "rare",
+    chance: 6,
+    price: 26,
+    xp: 22,
+    description: "颜色醒目的稀有鲤科鱼，收藏价值较高。"
+  },
+  {
+    id: "eel",
+    name: "鳗鱼",
+    emoji: "〰️",
+    rarity: "rare",
+    chance: 4,
+    price: 34,
+    xp: 28,
+    description: "身体修长，挣扎时摆动幅度很大。"
+  },
+  {
+    id: "tuna",
+    name: "金枪鱼",
+    emoji: "🐟",
+    rarity: "epic",
+    chance: 0.8,
+    price: 75,
+    xp: 45,
+    description: "高速巡游的大型鱼，出现概率较低。"
   },
   {
     id: "goldfish",
-    name: "Goldfish",
+    name: "金鱼",
     emoji: "✨",
     rarity: "legendary",
     ...FISH_ECONOMY.goldfish,
-    description: "Grants wishes... well, almost!"
+    description: "闪着金光的稀有鱼，十分醒目。"
   },
   {
     id: "mutant",
-    name: "Mutant Fish",
+    name: "变异鱼",
     emoji: "👾",
     rarity: "mythical",
     ...FISH_ECONOMY.mutant,
-    description: "Something strange from the depths... NFT-ready!"
+    description: "来自深水的奇异变种，动作难以预测。"
   },
   {
     id: "pike",
-    name: "Purple Fish",
+    name: "紫影鱼",
     emoji: "🦈",
     rarity: "secret",
     ...FISH_ECONOMY.pike,
-    description: "A majestic purple predator! extremely rare!"
+    description: "罕见的紫色掠食鱼，速度极快。"
   },
   {
     id: "leviathan",
-    name: "Cosmic Leviathan",
+    name: "星海利维坦",
     emoji: "🌌",
     rarity: "mythical",
     ...FISH_ECONOMY.leviathan,
-    description: "Legend of the ocean! 1 in 10,000 fishers have seen it..."
+    description: "传说中的巨型深水鱼，极少出现。"
   }
 ];
 const RARITY_COLORS = {
@@ -19400,7 +19538,21 @@ const FISH_IMAGE_SRC = {
   catfish: publicAsset("assets/fish_catfish.png"),
   goldfish: publicAsset("assets/fish_goldfish.png"),
   mutant: publicAsset("assets/fish_mutant.png"),
-  leviathan: publicAsset("assets/fish_leviathan.png")
+  leviathan: publicAsset("assets/fish_leviathan.png"),
+  tilapia: publicAsset("assets/fish_carp.png"),
+  trout: publicAsset("assets/fish_perch.png"),
+  bass: publicAsset("assets/fish_pike.png"),
+  koi: publicAsset("assets/fish_goldfish.png"),
+  eel: publicAsset("assets/fish_mutant.png"),
+  tuna: publicAsset("assets/fish_bream.png")
+};
+const FISH_VARIANT_STYLE = {
+  tilapia: { filter: "hue-rotate(54deg) saturate(0.82) brightness(0.9)" },
+  trout: { filter: "hue-rotate(-24deg) saturate(1.28) brightness(1.08)" },
+  bass: { filter: "hue-rotate(88deg) saturate(0.72) brightness(0.82)" },
+  koi: { filter: "hue-rotate(18deg) saturate(1.55) brightness(1.12)" },
+  eel: { filter: "hue-rotate(148deg) saturate(0.76) brightness(0.78)" },
+  tuna: { filter: "hue-rotate(196deg) saturate(0.92) brightness(0.88)" }
 };
 const SIZE_CLASSES = {
   badge: "h-4 w-4",
@@ -19493,6 +19645,7 @@ const FishIcon = ({
                 "relative z-[1] block h-full w-full object-contain drop-shadow-[0_6px_8px_rgba(0,0,0,0.32)]",
                 isPurpleFish && "animate-purple-fish-drift drop-shadow-[0_0_14px_rgba(197,116,255,0.7)]"
               ),
+              style: FISH_VARIANT_STYLE[id2],
               draggable: false
             }
           ),
@@ -25645,7 +25798,6 @@ function useGameState(options) {
     pendingServerCastRef.current = null;
     pendingFishRef.current = null;
     setGameState("catching");
-    await new Promise((resolve) => setTimeout(resolve, 1e3));
     if (serverCast && onResolveServerFishingCast) {
       try {
         const result = await onResolveServerFishingCast(serverCast.castId, "reel", serverCast.resolveToken);
@@ -25671,8 +25823,9 @@ function useGameState(options) {
         onServerFishingError == null ? void 0 : onServerFishingError(error instanceof Error ? error.message : "Could not resolve cast.");
         setLastResult({ success: false });
       }
+      await new Promise((resolve) => setTimeout(resolve, 1900));
       setGameState("result");
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+      await new Promise((resolve) => setTimeout(resolve, 2200));
       setGameState("idle");
       setLastResult(null);
       return;
@@ -28171,12 +28324,12 @@ const loadGlobalLeaderboardEntries = async () => {
 const saveGlobalLeaderboardEntry = async (_entry) => false;
 const deleteGlobalLeaderboardEntry = async (_id) => false;
 const TRAVEL_ICON_SRC = travelIconSrc;
-const TasksScreen = reactExports.lazy(() => __vitePreload(() => import("./TasksScreen-D0N1zune.js"), true ? [] : void 0));
-const ShopScreen = reactExports.lazy(() => __vitePreload(() => import("./ShopScreen-sESanaiL.js"), true ? [] : void 0));
-const GrillScreen = reactExports.lazy(() => __vitePreload(() => import("./GrillScreen-CD3jUMJq.js"), true ? __vite__mapDeps([0,1,2]) : void 0));
-const WheelScreen = reactExports.lazy(() => __vitePreload(() => import("./WheelScreen-BNH75g8U.js"), true ? [] : void 0));
-const LeaderboardScreen = reactExports.lazy(() => __vitePreload(() => import("./LeaderboardScreen-Ct-6RpIw.js"), true ? __vite__mapDeps([3,1,2]) : void 0));
-const MapScreen = reactExports.lazy(() => __vitePreload(() => import("./MapScreen-wq18ks6n.js"), true ? __vite__mapDeps([4,1]) : void 0));
+const TasksScreen = reactExports.lazy(() => __vitePreload(() => import("./TasksScreen-DviP9wju.js"), true ? [] : void 0));
+const ShopScreen = reactExports.lazy(() => __vitePreload(() => import("./ShopScreen-Dvx7_-vM.js"), true ? [] : void 0));
+const GrillScreen = reactExports.lazy(() => __vitePreload(() => import("./GrillScreen-Cb2idxs4.js"), true ? __vite__mapDeps([0,1,2]) : void 0));
+const WheelScreen = reactExports.lazy(() => __vitePreload(() => import("./WheelScreen-7rnrzAUy.js"), true ? [] : void 0));
+const LeaderboardScreen = reactExports.lazy(() => __vitePreload(() => import("./LeaderboardScreen-CMtq88Ld.js"), true ? __vite__mapDeps([3,1,2]) : void 0));
+const MapScreen = reactExports.lazy(() => __vitePreload(() => import("./MapScreen-BPppLIPw.js"), true ? __vite__mapDeps([4,1]) : void 0));
 const PREMIUM_SESSION_STATUS_REFRESH_COOLDOWN_MS = 6e4;
 const EMPTY_MON_SUMMARY = {
   totalEarnedMon: 0,

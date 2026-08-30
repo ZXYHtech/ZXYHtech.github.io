@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports, C as Card, B as Button } from "./index-DPq5UnH7.js";
+import { j as jsxRuntimeExports, C as Card, B as Button } from "./index-BS_fjQJr.js";
 const taskTitle = (task, index) => (task == null ? void 0 : task.title) || (task == null ? void 0 : task.name) || (task == null ? void 0 : task.label) || `任务 ${index + 1}`;
 const taskDescription = (task) => (task == null ? void 0 : task.description) || (task == null ? void 0 : task.desc) || (task == null ? void 0 : task.requirement) || "";
 const taskStatus = (task) => String((task == null ? void 0 : task.status) || "").toLowerCase();
