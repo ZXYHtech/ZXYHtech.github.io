@@ -1,21 +1,22 @@
 const openGames={
-  monad:{title:'MonadFish',icon:'🐠',url:'https://kaimiewl.github.io/fishing-game/',license:'MIT',repo:'KaimiEwl/fishing-game',note:'移动端友好的浏览器钓鱼游戏：地图推进、鱼种稀有度、装备升级和任务循环。'},
-  fishfarm:{title:"Gallifrey's Fish Farm",icon:'🏝️',url:'https://gallifreycar.github.io/gallifreys-fish-farm/',license:'MIT',repo:'gallifreyCar/gallifreys-fish-farm',note:'挂机钓鱼 + 鱼宠收集 + 建村 + Boss 战，玩法更偏养成。'},
-  chill:{title:'Chill Fishing',icon:'⛵',url:'https://cdn.jsdelivr.net/gh/cristianjeffries/chill-fishing@2c35441c0d1fb51242c0cc5718c7f1970151425c/index.html',license:'MIT',repo:'cristianjeffries/chill-fishing',note:'Canvas 钓鱼 RPG：50+鱼种、昼夜天气、不同水深、船只升级、图鉴和长期存档。'}
+  paradise:{title:'Paradise Isle',icon:'🏝️',url:'https://appleweiping.github.io/paradise-isle/',license:'MIT',repo:'appleweiping/paradise-isle',note:'岛屿生活游戏，内含完整钓鱼小游戏：抛竿、咬口、收线、鱼种与鱼竿成长。'},
+  harpoon:{title:'Harpoon Fishing',icon:'🎯',url:'https://beephids.github.io/harpoon-fishing/',license:'AGPL-3.0',repo:'beephids/harpoon-fishing',note:'触屏友好的街机捕鱼：拖动瞄准、松手发射，支持单人和双人。'}
 };
 function games(){
   if(openGames[S.gameScreen])return externalGame(S.gameScreen);
-  S.gameScreen='hub';
-  shell(`<div class="hero"><span class="eyebrow">开源小游戏</span><h1>换个玩法，直接在这里玩。</h1><div class="lead">这里仅收录有明确开源许可证的钓鱼游戏。游戏在当前页面内打开，不再混入自制反应题或练习题。</div></div>
+  S.gameScreen='hub';setGameChrome(false);
+  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 已筛除API依赖</span><h1>先保证能玩，再谈数量。</h1><div class="lead">已下架 MonadFish、Fish Farm 和错误的 Chill Fishing CDN 嵌法。这里只保留无需本站后端、适合浏览器运行的候选。</div></div>
   <div class="gamegrid">${Object.entries(openGames).map(([id,g])=>`<button class="gamecard" data-game="${id}"><span class="gicon">${g.icon}</span><b>${g.title}</b><small>${g.note}</small><span class="badge">${g.license} · 开源</span></button>`).join('')}</div>
-  <section class="card"><span class="eyebrow">说明</span><div class="sub">游戏版权归各原作者，本站只做网页内嵌入口，并保留项目名、仓库与许可证信息。若第三方页面临时不可用，可换另一个游戏。</div></section>`,'开源小游戏');
+  <section class="card"><span class="eyebrow">验收规则</span><div class="sub">有API缺失、窗口无法点击、资源路径错误或手机布局不可用的游戏，直接下架。第三款通过相同验收后再加入，不再为了凑数量上线。</div></section>`,'小游戏');
   app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;games()});
 }
-function gameBack(){S.gameScreen='hub';games()}
+function gameBack(){S.gameScreen='hub';setGameChrome(false);games()}
 function externalGame(id){
-  const g=openGames[id];
-  shell(`<section class="card deep"><span class="eyebrow" style="color:#ffdc91">开源游戏 · ${g.license}</span><div class="title">${g.icon} ${g.title}</div><div class="sub">${g.note}</div><div class="pillrow"><span class="pill on" style="color:white">${g.repo}</span></div><button id="gameBack" class="secondary" style="margin-top:10px">← 换一个游戏</button></section>
-  <iframe class="gameframe external" src="${g.url}" title="${g.title}" allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write" referrerpolicy="no-referrer" loading="eager"></iframe>
-  <div class="legalnote">${g.title} 来自开源项目 ${g.repo}（${g.license}）。当前页面仅嵌入运行，不把原作标为本站自研。</div>`,'开源小游戏');
+  const g=openGames[id];stopCam();setGameChrome(true);
+  app.innerHTML=`<div class="game-stage"><div class="game-topbar"><button id="gameBack" class="game-back">← 换游戏</button><div class="game-name"><b>${g.icon} ${g.title}</b><small>${g.license} · ${g.repo}</small></div><button id="gameReload" class="game-reload">↻</button></div><div class="game-viewport"><div id="gameLoading" class="game-loading">正在载入 ${g.title}…</div><iframe id="gameFrame" class="gameframe-full" src="${g.url}" title="${g.title}" allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div id="gameHint" class="game-hint">若10秒后仍是空白或无法操作，请返回；该游戏会自动从可玩列表移除，避免继续误导玩家。</div></div>`;
+  const frame=document.querySelector('#gameFrame'),loading=document.querySelector('#gameLoading'),hint=document.querySelector('#gameHint');
   document.querySelector('#gameBack').onclick=gameBack;
+  document.querySelector('#gameReload').onclick=()=>{loading.style.display='grid';frame.src=g.url+(g.url.includes('?')?'&':'?')+'reload='+Date.now()};
+  frame.onload=()=>{loading.style.display='none';hint.classList.add('loaded')};
+  setTimeout(()=>{if(loading.style.display!=='none')hint.classList.add('warn')},10000);
 }
