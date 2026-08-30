@@ -5,9 +5,11 @@
   const SESSION_KEY = 'zxyh_monadfish_lite_session_v1';
   const CAST_KEY = 'zxyh_monadfish_lite_casts_v1';
   const LEADERBOARD_KEY = 'zxyh_monadfish_lite_leaderboard_v1';
+  const RECENT_FISH_KEY = 'zxyh_monadfish_recent_fish_v2';
   const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';
-            if (SMOKE) Math.random = () => 0.01;
-    const fish = [
+  if (SMOKE) Math.random = () => 0.01;
+
+  const fish = [
     {id:'carp',chance:26,price:4,xp:5},
     {id:'perch',chance:18,price:8,xp:10},
     {id:'tilapia',chance:12,price:5,xp:6},
@@ -69,9 +71,28 @@
   };
   const json = (data,status=200) => Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}}));
   const bodyOf = init => { if(!init?.body) return {}; if(typeof init.body==='string') return safeJSON(init.body,{}); return {}; };
-  const weightedFish = () => {
-    let r=Math.random()*fish.reduce((s,f)=>s+f.chance,0),c=0;
-    for(const f of fish){c+=f.chance;if(r<=c)return f;} return fish[0];
+  const getRecentFish = () => safeJSON(sessionStorage.getItem(RECENT_FISH_KEY),'[]') || [];
+  const rememberFish = id => {
+    const recent=[id,...getRecentFish().filter(x=>x!==id)].slice(0,4);
+    sessionStorage.setItem(RECENT_FISH_KEY,JSON.stringify(recent));
+  };
+  const weightedFish = p => {
+    const recent=getRecentFish();
+    const discovered=new Set((p?.inventory||[]).filter(x=>x.quantity>0).map(x=>x.fishId));
+    const weighted=fish.map(f=>{
+      let weight=f.chance;
+      const pos=recent.indexOf(f.id);
+      if(pos===0) weight*=0.18;
+      else if(pos===1) weight*=0.48;
+      else if(pos>=2) weight*=0.72;
+      if(!discovered.has(f.id) && f.chance>=0.5) weight*=1.35;
+      return {...f,weight};
+    });
+    const total=weighted.reduce((s,f)=>s+f.weight,0);
+    let r=Math.random()*total,c=0;
+    for(const f of weighted){c+=f.weight;if(r<=c){rememberFish(f.id);return f;}}
+    rememberFish(weighted[0].id);
+    return weighted[0];
   };
   const addXp = (p,amount) => {
     let levelUp=null; p.xp += amount;
@@ -94,38 +115,38 @@
   const playerAction = body => {
     const action=String(body.action||''); let p=loadPlayer();
     if(action==='start_fishing_cast'){
-      if((p.daily_free_bait||0)>0)p.daily_free_bait-=1; else if((p.bait||0)>0)p.bait-=1; else return json({error:'No bait left. Come back after the daily refill or buy bait.'},400);
+      if((p.daily_free_bait||0)>0)p.daily_free_bait-=1; else if((p.bait||0)>0)p.bait-=1; else return json({error:'鱼饵不足。每日鱼饵恢复后再来，或先去商店补充。'},400);
       const id='cast-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), casts=getCasts();
       casts[id]={startedAt:Date.now()};saveCasts(casts);savePlayer(p);
       return json({player:p,fishing_cast:{id,waitMs:SMOKE?80:900+Math.floor(Math.random()*1100),biteWindowMs:SMOKE?3000:2200,startedAt:iso(),consumedBucket:'daily_free_bait',resolveToken:'local'}});
     }
     if(action==='resolve_fishing_cast'){
       const success=body.resolution==='reel' && (SMOKE || Math.random()<0.72); let chosen=null,levelUp=null,xpGain=3;
-      if(success){chosen=weightedFish();xpGain=chosen.xp+3;addInventory(p,chosen.id);p.total_catches+=1;markCatchProgress(p,chosen);} levelUp=addXp(p,xpGain);savePlayer(p);
+      if(success){chosen=weightedFish(p);xpGain=chosen.xp+3;addInventory(p,chosen.id);p.total_catches+=1;markCatchProgress(p,chosen);} levelUp=addXp(p,xpGain);savePlayer(p);
       return json({player:p,fishing_result:{success,fishId:chosen?.id||null,xpGain,firstCatchBonus:0,levelUp,albumReward:null,monReward:null,specialReward:null,occurredAt:iso()}});
     }
     if(action==='sell_fish'){
       const id=String(body.fish_id||''), f=fish.find(x=>x.id===id), item=p.inventory.find(x=>x.fishId===id);
-      if(!f||!item||item.quantity<1)return json({error:'Fish not available.'},400);item.quantity-=1;p.inventory=p.inventory.filter(x=>x.quantity>0);p.coins+=f.price;savePlayer(p);return json({player:p,sell_price:f.price});
+      if(!f||!item||item.quantity<1)return json({error:'没有可出售的这条鱼。'},400);item.quantity-=1;p.inventory=p.inventory.filter(x=>x.quantity>0);p.coins+=f.price;savePlayer(p);return json({player:p,sell_price:f.price});
     }
     if(action==='buy_bait'){
-      const amount=Math.max(1,Number(body.amount||1)),cost=amount*80;if(p.coins<cost)return json({error:'Not enough gold.'},400);p.coins-=cost;p.bait+=amount;savePlayer(p);return json({player:p});
+      const amount=Math.max(1,Number(body.amount||1)),cost=amount*80;if(p.coins<cost)return json({error:'金币不足。'},400);p.coins-=cost;p.bait+=amount;savePlayer(p);return json({player:p});
     }
     if(action==='buy_rod'){
-      const level=Number(body.level||0),cost=rodCosts[level]||0;if(!cost||p.coins<cost)return json({error:'Not enough gold for this rod.'},400);p.coins-=cost;p.rod_level=Math.max(p.rod_level,level);p.equipped_rod=level;savePlayer(p);return json({player:p});
+      const level=Number(body.level||0),cost=rodCosts[level]||0;if(!cost||p.coins<cost)return json({error:'金币不足，暂时买不起这根鱼竿。'},400);p.coins-=cost;p.rod_level=Math.max(p.rod_level,level);p.equipped_rod=level;savePlayer(p);return json({player:p});
     }
     if(action==='equip_rod'){
-      const level=Number(body.level||0);if(level>p.rod_level && !p.nft_rods.includes(level))return json({error:'Rod not owned.'},400);p.equipped_rod=level;savePlayer(p);return json({player:p});
+      const level=Number(body.level||0);if(level>p.rod_level && !p.nft_rods.includes(level))return json({error:'这根鱼竿尚未拥有。'},400);p.equipped_rod=level;savePlayer(p);return json({player:p});
     }
     if(action==='cook_recipe'){
-      const id=String(body.recipe_id||''),r=recipes[id];if(!r)return json({error:'Recipe unavailable in Lite mode.'},400);
-      for(const [fid,q] of Object.entries(r.ingredients)){const it=p.inventory.find(x=>x.fishId===fid);if(!it||it.quantity<q)return json({error:'Not enough fish.'},400);}
+      const id=String(body.recipe_id||''),r=recipes[id];if(!r)return json({error:'Lite 版暂不支持这份菜谱。'},400);
+      for(const [fid,q] of Object.entries(r.ingredients)){const it=p.inventory.find(x=>x.fishId===fid);if(!it||it.quantity<q)return json({error:'鱼获数量不足，无法烹饪。'},400);}
       for(const [fid,q] of Object.entries(r.ingredients)){const it=p.inventory.find(x=>x.fishId===fid);it.quantity-=q;}p.inventory=p.inventory.filter(x=>x.quantity>0);
       const dish=p.cooked_dishes.find(x=>x.recipeId===id);if(dish)dish.quantity+=1;else p.cooked_dishes.push({recipeId:id,quantity:1,createdAt:iso()});p.game_progress.dishesToday=(p.game_progress.dishesToday||0)+1;p.game_progress.grillScore=(p.game_progress.grillScore||0)+r.score;savePlayer(p);
-      return json({player:p,leaderboard_entry:{id:'local',name:p.nickname||'Local angler',score:p.game_progress.grillScore,dishes:p.game_progress.dishesToday,updated_at:iso()}});
+      return json({player:p,leaderboard_entry:{id:'local',name:p.nickname||'本地钓手',score:p.game_progress.grillScore,dishes:p.game_progress.dishesToday,updated_at:iso()}});
     }
     if(action==='sell_cooked_dish'){
-      const id=String(body.recipe_id||''),r=recipes[id],dish=p.cooked_dishes.find(x=>x.recipeId===id);if(!r||!dish||dish.quantity<1)return json({error:'Dish not available.'},400);dish.quantity-=1;p.cooked_dishes=p.cooked_dishes.filter(x=>x.quantity>0);p.coins+=r.score;savePlayer(p);return json({player:p});
+      const id=String(body.recipe_id||''),r=recipes[id],dish=p.cooked_dishes.find(x=>x.recipeId===id);if(!r||!dish||dish.quantity<1)return json({error:'没有可出售的这份料理。'},400);dish.quantity-=1;p.cooked_dishes=p.cooked_dishes.filter(x=>x.quantity>0);p.coins+=r.score;savePlayer(p);return json({player:p});
     }
     if(action==='claim_task_reward'){
       p.coins+=50;savePlayer(p);return json({player:p});
@@ -137,12 +158,12 @@
     if(action==='submit_social_task_verification') return json({verification:{task_id:String(body.task_id||''),status:'verified',proof_url:body.proof_url||null,updated_at:iso(),verified_by_wallet:null}});
     if(action==='claim_social_task_reward') return json({player:p,verification:{task_id:String(body.task_id||''),status:'claimed',proof_url:null,updated_at:iso(),verified_by_wallet:null}});
     if(action==='update_grill_leaderboard'){
-      const entry={id:'local',name:String(body.name||p.nickname||'Local angler').slice(0,24),score:p.game_progress.grillScore||0,dishes:p.game_progress.dishesToday||0,updated_at:iso()};localStorage.setItem(LEADERBOARD_KEY,JSON.stringify([entry]));return json({leaderboard_entry:entry});
+      const entry={id:'local',name:String(body.name||p.nickname||'本地钓手').slice(0,24),score:p.game_progress.grillScore||0,dishes:p.game_progress.dishesToday||0,updated_at:iso()};localStorage.setItem(LEADERBOARD_KEY,JSON.stringify([entry]));return json({leaderboard_entry:entry});
     }
     if(action==='roll_cube'){
-      const roll={id:'local-roll-'+Date.now(),cube_faces:[[{id:'coin_60',label:'60 coins',type:'coins',coins:60}]],target_face_index:0,target_tile_index:0,prize:{id:'coin_60',label:'60 coins',type:'coins',coins:60}};return json({player:p,roll});
+      const roll={id:'local-roll-'+Date.now(),cube_faces:[[{id:'coin_60',label:'60 金币',type:'coins',coins:60}]],target_face_index:0,target_tile_index:0,prize:{id:'coin_60',label:'60 金币',type:'coins',coins:60}};return json({player:p,roll});
     }
-    if(action==='apply_cube_reward'){p.coins+=60;savePlayer(p);return json({player:p,prize:{id:'coin_60',label:'60 coins',type:'coins',coins:60}});}
+    if(action==='apply_cube_reward'){p.coins+=60;savePlayer(p);return json({player:p,prize:{id:'coin_60',label:'60 金币',type:'coins',coins:60}});}
     if(['buy_fishing_net','claim_fishing_net','mark_fishing_net_notified','buy_cube_rolls'].includes(action)){savePlayer(p);return json({player:p,claimed_catch:[],rolls:Number(body.rolls||0)});}
     return json({player:p,success:true});
   };
@@ -167,10 +188,11 @@
     return nativeFetch(input,init);
   };
   window.__MONADFISH_LITE_READY__ = true;
-  window.__MONADFISH_LITE_RESET__ = () => {localStorage.removeItem(PLAYER_KEY);localStorage.removeItem(SESSION_KEY);localStorage.removeItem(LEADERBOARD_KEY);location.reload();};
+  window.__MONADFISH_VARIETY_V2__ = true;
+  window.__MONADFISH_LITE_RESET__ = () => {localStorage.removeItem(PLAYER_KEY);localStorage.removeItem(SESSION_KEY);localStorage.removeItem(LEADERBOARD_KEY);sessionStorage.removeItem(RECENT_FISH_KEY);location.reload();};
   const addBadge=()=>{
     if(document.getElementById('zxyh-lite-badge'))return;
-    const d=document.createElement('div');d.id='zxyh-lite-badge';d.textContent='MonadFish Lite · 本地存档';
+    const d=document.createElement('div');d.id='zxyh-lite-badge';d.textContent='MonadFish 中文 Lite · 本地存档';
     d.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(0,0,0,.68);color:#bffcff;border:1px solid rgba(103,232,249,.35);border-radius:999px;padding:5px 10px;font:700 11px/1 system-ui;pointer-events:none;backdrop-filter:blur(8px)';document.body.appendChild(d);
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addBadge);else addBadge();
