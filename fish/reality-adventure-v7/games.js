@@ -9,9 +9,9 @@ function games(){
   shell(`<div class="hero"><span class="eyebrow">开源小游戏</span><h1>换个玩法，直接在这里玩。</h1><div class="lead">这里仅收录有明确开源许可证的钓鱼游戏。游戏在当前页面内打开，不再混入自制反应题或练习题。</div></div>
   <div class="gamegrid">${Object.entries(openGames).map(([id,g])=>`<button class="gamecard" data-game="${id}"><span class="gicon">${g.icon}</span><b>${g.title}</b><small>${g.note}</small><span class="badge">${g.license} · 开源</span></button>`).join('')}</div>
   <section class="card"><span class="eyebrow">说明</span><div class="sub">游戏版权归各原作者，本站只做网页内嵌入口，并保留项目名、仓库与许可证信息。若第三方页面临时不可用，可换另一个游戏。</div></section>`,'开源小游戏');
-  app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;render()});
+  app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;games()});
 }
-function gameBack(){S.gameScreen='hub';render()}
+function gameBack(){S.gameScreen='hub';games()}
 function externalGame(id){
   const g=openGames[id];
   shell(`<section class="card deep"><span class="eyebrow" style="color:#ffdc91">开源游戏 · ${g.license}</span><div class="title">${g.icon} ${g.title}</div><div class="sub">${g.note}</div><div class="pillrow"><span class="pill on" style="color:white">${g.repo}</span></div><button id="gameBack" class="secondary" style="margin-top:10px">← 换一个游戏</button></section>
