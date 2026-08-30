@@ -9,6 +9,8 @@ on:
       - '.github/scripts/monadfish_guest_player_bridge.py'
       - '.github/scripts/monadfish_walletless_wheel.py'
       - '.github/scripts/monadfish_walletless_boost.py'
+      - '.github/scripts/monadfish_gameplay_v2.py'
+      - '.github/scripts/monadfish_runtime_species.py'
       - '.github/scripts/monadfish_zh_lite.py'
   workflow_dispatch:
 
@@ -42,6 +44,7 @@ jobs:
           python3 .github/scripts/monadfish_guest_player_bridge.py /tmp/monadfish-upstream
           python3 .github/scripts/monadfish_walletless_wheel.py /tmp/monadfish-upstream
           python3 .github/scripts/monadfish_walletless_boost.py /tmp/monadfish-upstream
+          python3 .github/scripts/monadfish_gameplay_v2.py /tmp/monadfish-upstream
 
       - name: Build wallet-free MonadFish client
         working-directory: /tmp/monadfish-upstream
@@ -102,6 +105,7 @@ jobs:
               html=html.replace(marker,inject+marker,1)
           p.write_text(html,encoding='utf-8')
           PY
+          python3 .github/scripts/monadfish_runtime_species.py /tmp/monadfish-upstream/dist/local-api-shim.js
 
       - name: Apply Chinese Lite adaptation
         run: |
@@ -112,7 +116,7 @@ jobs:
           Upstream: https://github.com/KaimiEwl/fishing-game
           Pinned source: 817708f05b609accb5b8ed39c299e318459044cf
           License: MIT (see LICENSE-MonadFish.txt)
-          Adaptation: source-level wallet stack removal, localStorage-backed API compatibility, Chinese UI localization and a Chinese game-guide page.
+          Adaptation: source-level wallet stack removal, localStorage-backed API compatibility, Chinese UI localization, realistic hook-fight animation, expanded fish species and a Chinese game-guide page.
           Wallet providers/connectors, wallet verification, MON transactions and authoritative online leaderboard are not part of the Lite player build.
           TXT
 
@@ -147,15 +151,19 @@ jobs:
               {timeout:15000}
             );
 
+            const guideLinks=await page.locator('a[href="/fish/games/monadfish/guide.html"]').count();
+            if(guideLinks!==1) throw new Error(`Expected one guide entry, found ${guideLinks}`);
+            await page.getByRole('link',{name:'打开游戏说明'}).waitFor({state:'visible',timeout:10000});
+
             const cast=page.getByRole('button',{name:'抛竿'});
             await cast.waitFor({state:'visible',timeout:30000});
             await cast.click();
             const hook=page.getByRole('button',{name:'提竿'});
             await hook.waitFor({state:'visible',timeout:10000});
             await hook.click();
+            await page.waitForFunction(()=>window.__MONADFISH_HOOK_FIGHT__===true,{timeout:5000});
+            await page.waitForTimeout(500);
             await page.getByText('钓到了！').waitFor({state:'visible',timeout:10000});
-
-            await page.getByRole('link',{name:'打开游戏说明'}).waitFor({state:'visible',timeout:10000});
 
             const visibleWalletControls=await page
               .locator('button:not([data-zxyh-wallet-hidden="1"]),a:not([data-zxyh-wallet-hidden="1"]),[role="button"]:not([data-zxyh-wallet-hidden="1"])')
@@ -170,6 +178,12 @@ jobs:
             );
             if(!(stored.total_catches>=1)) throw new Error('Catch did not persist locally');
 
+            const speciesIds=await page.evaluate(async()=>{
+              const text=await (await fetch('/fish/games/monadfish/local-api-shim.js')).text();
+              return ['tilapia','trout','bass','koi','eel','tuna'].filter(id=>text.includes(`id:'${id}'`));
+            });
+            if(speciesIds.length!==6) throw new Error('Expanded fish species are missing from runtime');
+
             const guide=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
             await guide.goto(
               'http://127.0.0.1:4173/fish/games/monadfish/guide.html',
@@ -182,7 +196,7 @@ jobs:
 
             const blocking=errors.filter(e=>/guest session|player-actions|Failed to fetch/i.test(e));
             if(blocking.length) throw new Error('Blocking runtime errors: '+blocking.join(' | '));
-            console.log('PASS: Chinese MonadFish Lite playability, localization, wallet removal and guide page');
+            console.log('PASS: single guide entry + realistic hook fight + 14 catchable species + Chinese wallet-free Lite');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
