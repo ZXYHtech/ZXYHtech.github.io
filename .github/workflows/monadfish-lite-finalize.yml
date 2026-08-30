@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/monadfish-lite-finalize.yml'
+      - '.github/scripts/monadfish_zh_lite.py'
   workflow_dispatch:
 
 permissions:
@@ -53,8 +54,10 @@ jobs:
           for line in block.splitlines():
               lines.append(line[10:] if line.startswith('          ') else line)
           shim='\n'.join(lines)+'\n'
-          # Smoke mode only: deterministic random so the browser test cannot randomly miss a fish.
-          shim=shim.replace("const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';", "const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';\n            if (SMOKE) Math.random = () => 0.01;")
+          shim=shim.replace(
+              "const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';",
+              "const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';\n            if (SMOKE) Math.random = () => 0.01;"
+          )
           Path('/tmp/monadfish-upstream/dist/local-api-shim.js').write_text(shim,encoding='utf-8')
 
           p=Path('/tmp/monadfish-upstream/dist/index.html')
@@ -65,14 +68,18 @@ jobs:
               html=html.replace(marker,inject+marker,1)
           p.write_text(html,encoding='utf-8')
           PY
+
+      - name: Apply Chinese Lite adaptation
+        run: |
+          python3 .github/scripts/monadfish_zh_lite.py /tmp/monadfish-upstream/dist
           cp /tmp/monadfish-upstream/LICENSE /tmp/monadfish-upstream/dist/LICENSE-MonadFish.txt
           cat > /tmp/monadfish-upstream/dist/README-LITE.txt <<'TXT'
-          MonadFish Lite integration for ZXYHtech /fish/
+          MonadFish Chinese Lite integration for ZXYHtech /fish/
           Upstream: https://github.com/KaimiEwl/fishing-game
           Pinned source: 817708f05b609accb5b8ed39c299e318459044cf
           License: MIT (see LICENSE-MonadFish.txt)
-          Adaptation: original static client plus localStorage-backed API compatibility.
-          Wallet/MON transactions and authoritative online leaderboard are disabled in Lite mode.
+          Adaptation: localStorage-backed API compatibility, Chinese UI localization and a Chinese game-guide page.
+          Wallet connection, wallet verification, MON transactions and authoritative online leaderboard are not exposed in Lite mode.
           TXT
 
       - name: Stage same-origin mirror
@@ -101,20 +108,47 @@ jobs:
             const errors=[];
             page.on('pageerror',e=>errors.push(String(e)));
             await page.goto('http://127.0.0.1:4173/fish/games/monadfish/?smoke=1',{waitUntil:'networkidle',timeout:90000});
-            await page.waitForFunction(()=>window.__MONADFISH_LITE_READY__===true,{timeout:15000});
-            const cast=page.getByRole('button',{name:'Cast line'});
+            await page.waitForFunction(
+              ()=>window.__MONADFISH_LITE_READY__===true && window.__MONADFISH_ZH_LITE__===true,
+              {timeout:15000}
+            );
+
+            const cast=page.getByRole('button',{name:'抛竿'});
             await cast.waitFor({state:'visible',timeout:30000});
             await cast.click();
-            // The smoke API intentionally uses a very short wait. Test the real actionable state instead of a transient label.
-            const hook=page.getByRole('button',{name:'Hook fish'});
+            const hook=page.getByRole('button',{name:'提竿'});
             await hook.waitFor({state:'visible',timeout:10000});
             await hook.click();
-            await page.getByText('Caught!').waitFor({state:'visible',timeout:10000});
-            const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('zxyh_monadfish_lite_player_v1')||'{}'));
+            await page.getByText('钓到了！').waitFor({state:'visible',timeout:10000});
+
+            await page.getByRole('link',{name:'打开游戏说明'}).waitFor({state:'visible',timeout:10000});
+
+            const visibleWalletControls=await page
+              .locator('button:not([data-zxyh-wallet-hidden="1"]),a:not([data-zxyh-wallet-hidden="1"]),[role="button"]:not([data-zxyh-wallet-hidden="1"])')
+              .evaluateAll(nodes=>nodes.filter(el=>
+                /(connect\s+wallet|verify\s+wallet|wallet\b|withdraw\b|deposit\b|claim\s+mon\b|buy\s+mon\b|pay\s+with\s+mon)/i
+                  .test((el.textContent||'')+' '+(el.getAttribute('aria-label')||''))
+              ).length);
+            if(visibleWalletControls!==0) throw new Error('Wallet controls are still visible');
+
+            const stored=await page.evaluate(
+              ()=>JSON.parse(localStorage.getItem('zxyh_monadfish_lite_player_v1')||'{}')
+            );
             if(!(stored.total_catches>=1)) throw new Error('Catch did not persist locally');
+
+            const guide=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            await guide.goto(
+              'http://127.0.0.1:4173/fish/games/monadfish/guide.html',
+              {waitUntil:'domcontentloaded',timeout:30000}
+            );
+            await guide.getByRole('heading',{name:'🎣 MonadFish 中文版游戏说明'})
+              .waitFor({state:'visible',timeout:10000});
+            await guide.getByText('本版本已经移除钱包入口和 MON / 区块链交易功能。',{exact:false})
+              .waitFor({state:'visible',timeout:10000});
+
             const blocking=errors.filter(e=>/guest session|player-actions|Failed to fetch/i.test(e));
             if(blocking.length) throw new Error('Blocking runtime errors: '+blocking.join(' | '));
-            console.log('PASS: MonadFish Lite cast -> bite -> hook -> catch -> local persistence on 390x844 touch viewport');
+            console.log('PASS: Chinese MonadFish Lite playability, localization, wallet removal and guide page');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
@@ -127,6 +161,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No mirror changes.'
           else
-            git commit -m 'fish: publish verified MonadFish Lite mirror'
+            git commit -m 'fish: publish verified Chinese MonadFish Lite mirror'
             git push
           fi
