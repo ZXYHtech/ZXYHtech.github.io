@@ -14,11 +14,12 @@ const ShopScreen = ({ coins = 0, bait = 0, dailyFreeBait = 0, rodLevel = 0, onBu
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "mb-4 border-cyan-300/15 bg-black/65 p-4 text-zinc-100", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mb-3 text-lg font-black text-cyan-100", children: "购买鱼饵" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mb-1 text-lg font-black text-cyan-100", children: "购买鱼饵" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-3 text-xs text-zinc-400", children: "鱼饵统一 12 金币 / 个；每天另送 30 个免费鱼饵。" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-2 sm:grid-cols-2", children: BAIT_PACKAGES.map((pack, index) => {
         const amount = Number(pack.amount ?? pack.bait ?? pack.quantity ?? 0);
-        const cost = Number(pack.cost ?? pack.coinCost ?? pack.coins ?? 0);
-        const disabled = amount <= 0 || cost <= 0 || coins < cost;
+        const cost = Math.max(1, amount * 12);
+        const disabled = amount <= 0 || coins < cost;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { disabled, onClick: () => onBuyBait == null ? void 0 : onBuyBait(amount, cost), className: "h-auto min-h-14 justify-between rounded-xl border border-cyan-300/15 bg-zinc-950 px-4 text-left hover:bg-zinc-900", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [/* @__PURE__ */ jsxRuntimeExports.jsxs("b", { className: "block text-cyan-100", children: [amount || "?"," 个鱼饵"] }),/* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: "text-zinc-400", children: "补充抛竿资源" })] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1 font-black text-amber-200", children: [/* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "h-4 w-4" }),cost || "?"] })
