@@ -1,14 +1,9 @@
 name: Fish game smoke
 
+# V2.24 direct-maintenance mode:
+# gameplay commits no longer spend custom GitHub Actions automatically.
+# Keep this browser regression suite as an operator-invoked fallback only.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'fish/games/**'
-      - 'fish/app-v8/games.js'
-      - 'fish/app-v8/core.js'
-      - 'fish/app-v8/boot.js'
-      - '.github/workflows/fish-game-smoke.yml'
   workflow_dispatch:
 
 permissions:
@@ -28,6 +23,7 @@ jobs:
           node --check fish/games/dock-pull/game.js
           node --check fish/games/ikutan-fishing/game.js
           node --check fish/games/monadfish/local-api-shim.js
+          node --check fish/games/monadfish/fight-feel-v3.js
           node --check fish/app-v8/games.js
       - name: Install browser driver
         run: npm install --no-save playwright-core@1.55.0
@@ -52,16 +48,18 @@ jobs:
             const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
             let errors=[]; page.on('pageerror',e=>errors.push(String(e)));
 
-            // Game 1: MonadFish Lite — real cast, bite, hook, catch and persistence.
+            // Game 1: MonadFish Lite — Chinese cast, hook-fight and persistence.
             await page.goto('http://127.0.0.1:4173/fish/games/monadfish/?smoke=1',{waitUntil:'networkidle',timeout:90000});
             await page.waitForFunction(()=>window.__MONADFISH_LITE_READY__===true,{timeout:15000});
-            const monadCast=page.getByRole('button',{name:'Cast line'});
+            const monadCast=page.getByRole('button',{name:'抛竿'});
             await monadCast.waitFor({state:'visible',timeout:30000});
             await monadCast.click();
-            const monadHook=page.getByRole('button',{name:'Hook fish'});
+            const monadHook=page.getByRole('button',{name:'提竿'});
             await monadHook.waitFor({state:'visible',timeout:10000});
             await monadHook.click();
-            await page.getByText('Caught!').waitFor({state:'visible',timeout:10000});
+            await page.waitForFunction(()=>window.__MONADFISH_HOOK_FIGHT__===true,{timeout:5000});
+            await page.waitForFunction(()=>window.__MONADFISH_FIGHT_FEEL_V3__===true,{timeout:5000});
+            await page.getByText('钓到了！').waitFor({state:'visible',timeout:10000});
             const monadSaved=await page.evaluate(()=>JSON.parse(localStorage.getItem('zxyh_monadfish_lite_player_v1')||'{}'));
             if(!(monadSaved.total_catches>=1)) throw new Error('MonadFish Lite catch not persisted');
             if(errors.some(e=>/guest session|player-actions|Failed to fetch/i.test(e))) throw new Error('MonadFish Lite errors: '+errors.join(' | '));
@@ -91,7 +89,7 @@ jobs:
             if(count<1) throw new Error('Fishing Game catch was not persisted in state');
             if(errors.length) throw new Error('Fishing Game errors: '+errors.join(' | '));
 
-            // Host integration: all entries open same-origin and hide photo FAB / bottom navigation while playing.
+            // Host integration.
             errors=[];
             await page.goto('http://127.0.0.1:4173/fish/app-v8/',{waitUntil:'load'});
             await page.locator('[data-nav="me"]').click();
@@ -107,6 +105,6 @@ jobs:
             }
             if(errors.length) throw new Error('Host integration errors: '+errors.join(' | '));
             await browser.close();
-            console.log('PASS: MonadFish Lite + two fallback games complete smoke interactions; host hides FAB/nav.');
+            console.log('PASS: manual fish browser regression suite.');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
