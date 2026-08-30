@@ -10,6 +10,7 @@ on:
       - '.github/scripts/monadfish_walletless_wheel.py'
       - '.github/scripts/monadfish_walletless_boost.py'
       - '.github/scripts/monadfish_gameplay_v2.py'
+      - '.github/scripts/monadfish_gameplay_v3.py'
       - '.github/scripts/monadfish_runtime_species.py'
       - '.github/scripts/monadfish_zh_lite.py'
   workflow_dispatch:
@@ -45,6 +46,7 @@ jobs:
           python3 .github/scripts/monadfish_walletless_wheel.py /tmp/monadfish-upstream
           python3 .github/scripts/monadfish_walletless_boost.py /tmp/monadfish-upstream
           python3 .github/scripts/monadfish_gameplay_v2.py /tmp/monadfish-upstream
+          python3 .github/scripts/monadfish_gameplay_v3.py /tmp/monadfish-upstream
 
       - name: Build wallet-free MonadFish client
         working-directory: /tmp/monadfish-upstream
@@ -148,6 +150,7 @@ jobs:
             await page.goto('http://127.0.0.1:4173/fish/games/monadfish/?smoke=1',{waitUntil:'networkidle',timeout:90000});
             await page.waitForFunction(
               ()=>window.__MONADFISH_LITE_READY__===true && window.__MONADFISH_ZH_LITE__===true,
+              null,
               {timeout:15000}
             );
 
@@ -161,7 +164,7 @@ jobs:
             const hook=page.getByRole('button',{name:'提竿'});
             await hook.waitFor({state:'visible',timeout:10000});
             await hook.click();
-            await page.waitForFunction(()=>window.__MONADFISH_HOOK_FIGHT__===true,{timeout:5000});
+            await page.waitForFunction(()=>window.__MONADFISH_HOOK_FIGHT__===true,null,{timeout:5000});
             await page.waitForTimeout(500);
             await page.getByText('钓到了！').waitFor({state:'visible',timeout:10000});
 
