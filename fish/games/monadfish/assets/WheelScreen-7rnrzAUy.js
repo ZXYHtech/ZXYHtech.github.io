@@ -12,22 +12,32 @@ const prizeLabel = (prize) => {
   if (prize.rodLevel != null) return `鱼竿等级 ${prize.rodLevel}`;
   return "神秘奖励";
 };
+const wait=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
 const WheelScreen = ({ coins = 0, availableRolls = 0, onRequestRoll, onResolveReward, onOpenTasks, onSpinStartSound, onRevealSound, onRewardSound }) => {
   const [busy,setBusy]=reactExports.useState(false);
   const [lastPrize,setLastPrize]=reactExports.useState(null);
+  const spinLockRef=reactExports.useRef(false);
   const localRolls=Math.max(0,Number(availableRolls||0));
   const spin=async()=>{
-    if(busy||localRolls<=0)return;
+    if(spinLockRef.current||busy||localRolls<=0)return;
+    spinLockRef.current=true;
     setBusy(true);setLastPrize(null);
+    const spinStartedAt=performance.now();
     try{
       onSpinStartSound==null?void 0:onSpinStartSound();
       const roll=await(onRequestRoll==null?void 0:onRequestRoll());
       if(!(roll==null?void 0:roll.prize))return;
+      const remaining=Math.max(0,850-(performance.now()-spinStartedAt));
+      if(remaining>0)await wait(remaining);
       onRevealSound==null?void 0:onRevealSound();
       const resolved=await(onResolveReward==null?void 0:onResolveReward(roll.prize,roll.id));
       setLastPrize(resolved||roll.prize);
+      await wait(120);
       onRewardSound==null?void 0:onRewardSound();
-    }finally{setBusy(false);}
+    }finally{
+      spinLockRef.current=false;
+      setBusy(false);
+    }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div",{className:"h-full overflow-y-auto bg-[#05060b] px-4 pb-28 pt-6 text-zinc-100",children:/* @__PURE__ */jsxRuntimeExports.jsxs("div",{className:"mx-auto flex min-h-[75vh] w-full max-w-2xl flex-col items-center justify-center",children:[
     /* @__PURE__ */jsxRuntimeExports.jsx("p",{className:"text-xs font-black uppercase tracking-[0.2em] text-violet-200/75",children:"每日奖励"}),
