@@ -16,72 +16,85 @@
     .step{padding:12px 8px;border-radius:14px;background:#0d2137;text-align:center;font-weight:800}.num{display:block;color:#66e8ff;font-size:12px;margin-bottom:6px}
     ul,ol{padding-left:1.25rem;line-height:1.8;margin:8px 0}.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#12304a;color:#a5f3fc;font-size:12px;font-weight:800;margin-right:5px}
     .species{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.fish{padding:7px 10px;border:1px solid #5ee9f52b;border-radius:999px;background:#0b2033;color:#d8fbff;font-size:13px;font-weight:700}
-    .note{border-color:#fbbf2450;background:#261b08cc;color:#ffe9a8}.note h2{color:#ffd66b}
+    .motion{border-color:#86efac4c;background:#071d17cc}.motion h2{color:#a7f3d0}.motion strong{color:#d9f99d}
     footer{padding:10px 4px;color:#6f93a8;font-size:12px;line-height:1.6;text-align:center}
-    @media(max-width:720px){.flow{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:520px){h1{font-size:25px}section{padding:15px}}
+    @media(max-width:720px){.flow{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){h1{font-size:25px}section{padding:15px}}
   </style>
 </head>
 <body>
 <main>
   <div class="top"><a class="back" href="/fish/games/monadfish/">← 返回游戏</a></div>
-  <h1>🎣 MonadFish 中文版游戏说明</h1>
-  <div class="lead">这是一款轻量化的浏览器钓鱼游戏。现在的核心体验不是“点一下就结算”，而是让你看到鱼接近鱼饵、咬钩、被钩住后拉着鱼线左右挣扎，最后才真正上岸。</div>
+  <h1>🎣 MonadFish 游戏说明</h1>
+  <div class="lead">核心体验是完整地经历“抛竿 → 鱼靠近 → 咬钩 → 提竿 → 搏鱼 → 上岸”，而不是点击后立刻结算。手机还可以开启体感模式，用倾斜动作帮助控制鱼线张力。</div>
+
   <section>
     <h2>1. 最基本的钓鱼流程</h2>
     <div class="flow">
-      <div class="step"><span class="num">STEP 1</span>点击“抛竿”</div>
-      <div class="step"><span class="num">STEP 2</span>观察鱼靠近鱼饵</div>
-      <div class="step"><span class="num">STEP 3</span>咬钩后点击“提竿”</div>
-      <div class="step"><span class="num">STEP 4</span>鱼被钩住并左右搏鱼</div>
-      <div class="step"><span class="num">STEP 5</span>拉上岸并获得鱼获</div>
+      <div class="step"><span class="num">第 1 步</span>点击“抛竿”</div>
+      <div class="step"><span class="num">第 2 步</span>观察鱼靠近鱼饵</div>
+      <div class="step"><span class="num">第 3 步</span>咬钩后点击“提竿”</div>
+      <div class="step"><span class="num">第 4 步</span>跟随方向遛鱼</div>
+      <div class="step"><span class="num">第 5 步</span>成功拉鱼上岸</div>
     </div>
-    <p>咬钩以后不要期待鱼立刻消失。成功提竿后，鱼会留在线端附近挣扎，鱼线会持续拉向鱼的位置，经过短暂搏鱼过程后才显示最终鱼获。</p>
+    <p>成功提竿后，鱼会继续留在线端附近挣扎，鱼线和鱼的运动保持关联。不同回合可能出现持续发力、短促冲刺、蛇形摆动、沉底重拉或高速横冲。</p>
   </section>
+
+  <section class="motion">
+    <h2>2. 📱 体感搏鱼怎么玩</h2>
+    <ol>
+      <li>手机打开游戏后，点击左上角 <strong>“开启体感”</strong>。部分浏览器会弹出方向与运动传感器权限，允许即可。</li>
+      <li>鱼向右拉时，把手机轻轻向左倾；鱼向左拉时，则向右倾。可以理解为真实钓鱼里的“反方向回杆”。</li>
+      <li>方向抵消正确时，张力会下降；方向做反，张力会上升。张力太高时，支持震动的手机会给出短促提醒。</li>
+      <li>如果拿手机的姿势改变了，再点一次体感按钮即可重新校准当前角度。</li>
+      <li>不支持传感器或不授权也没关系：搏鱼时在屏幕左右移动手指，同样可以提供触控辅助。</li>
+    </ol>
+    <p><strong>当前版本：</strong>体感主要影响搏鱼张力和反馈手感，不会因为不同手机传感器灵敏度直接判定“跑鱼”。先保证公平，再逐步加强体感玩法。</p>
+  </section>
+
   <section>
-    <h2>2. 现在有哪些鱼</h2>
-    <p>中文版 Lite 当前共有 <b>14 种可钓鱼类</b>。常见鱼更容易出现，稀有鱼仍保持较低概率；同时游戏会减少近期连续钓到同一种鱼的情况，并对尚未收集的普通/中稀有鱼提供轻微发现加权，让鱼获变化更明显。</p>
+    <h2>3. 现在有哪些鱼</h2>
+    <p>当前共有 <b>14 种可钓鱼类</b>。游戏会降低近期重复鱼种的出现权重，并适当提高尚未收集鱼种的发现机会，让连续钓鱼时变化更丰富。</p>
     <div class="species">
       <span class="fish">鲤鱼</span><span class="fish">河鲈</span><span class="fish">罗非鱼</span><span class="fish">虹鳟</span><span class="fish">黑鲈</span><span class="fish">欧鳊</span><span class="fish">锦鲤</span><span class="fish">鳗鱼</span><span class="fish">鲶鱼</span><span class="fish">金鱼</span><span class="fish">金枪鱼</span><span class="fish">变异鱼</span><span class="fish">紫影鱼</span><span class="fish">星海利维坦</span>
     </div>
   </section>
+
   <section>
-    <h2>3. 底部功能都做什么</h2>
+    <h2>4. 底部功能</h2>
     <ul>
-      <li><span class="tag">钓鱼</span>主玩法，抛竿、等鱼靠近、咬钩、提竿、搏鱼、获得鱼获。</li>
-      <li><span class="tag">任务</span>完成日常或阶段目标，领取游戏内奖励。</li>
-      <li><span class="tag">商店</span>购买鱼饵、鱼竿和其他可用装备。</li>
-      <li><span class="tag">烧烤</span>用鱼获制作料理，扩展鱼获价值和收集玩法。</li>
-      <li><span class="tag">魔方</span>特殊奖励玩法，有可用次数时可以尝试。</li>
-      <li><span class="tag">排行</span>查看当前版本支持的成绩与本地排行信息。</li>
+      <li><span class="tag">钓鱼</span>抛竿、等待咬钩、提竿和搏鱼。</li>
+      <li><span class="tag">任务</span>完成钓鱼与成长目标，达到条件后直接领取奖励。</li>
+      <li><span class="tag">商店</span>补充鱼饵、升级鱼竿。</li>
+      <li><span class="tag">烧烤</span>把鱼获制作成料理并积累烧烤积分。</li>
+      <li><span class="tag">魔方</span>使用获得的次数抽取游戏内奖励。</li>
+      <li><span class="tag">排行</span>比较烧烤积分，查看自己的料理成长。</li>
+      <li><span class="tag">地图</span>查看后续将逐步开放的钓场。</li>
     </ul>
   </section>
+
   <section>
-    <h2>4. 资源与成长</h2>
+    <h2>5. 资源与成长</h2>
     <ul>
-      <li><b>鱼饵：</b>抛竿的重要资源；不足时先查看任务、商店或其他奖励来源。</li>
-      <li><b>金币：</b>用于购买和升级游戏内物品，不是真实货币。</li>
-      <li><b>经验 / 等级：</b>持续钓鱼和完成目标可提升等级，逐步开放更多内容。</li>
-      <li><b>鱼竿：</b>不同鱼竿代表不同成长阶段，建议优先升级常用装备。</li>
-      <li><b>鱼获：</b>可用于收集、出售或烧烤，具体用途以游戏内页面为准。</li>
+      <li><b>鱼饵：</b>每次抛竿的重要资源，可通过游戏内成长与补给获得。</li>
+      <li><b>金币：</b>用于购买鱼饵和升级装备。</li>
+      <li><b>经验 / 等级：</b>持续钓鱼能够累积经验并提升等级。</li>
+      <li><b>鱼竿：</b>代表装备成长阶段，后续可以进一步与不同鱼种的拉力特征联动。</li>
+      <li><b>鱼获：</b>既能收集，也能出售或制作料理。</li>
     </ul>
   </section>
+
   <section>
-    <h2>5. 新手建议</h2>
+    <h2>6. 新手建议</h2>
     <ol>
-      <li>先连续完成几次“抛竿 → 等待 → 咬钩 → 提竿 → 搏鱼 → 上岸”，熟悉完整节奏。</li>
-      <li>咬钩时再提竿；太早不会形成自然的钩鱼过程。</li>
-      <li>留意不同鱼的体型、速度和水层，背景中的鱼并不是都用同一种运动方式。</li>
-      <li>鱼饵不要一次用光，先观察任务和商店的补充方式。</li>
-      <li>钓到新鱼时留意图鉴与烧烤用途，不要只盯着金币。</li>
+      <li>先不用体感连续钓几次，熟悉咬钩与提竿节奏。</li>
+      <li>再开启体感，用小幅度倾斜抵消鱼的拉力，不要大幅甩动手机。</li>
+      <li>看到张力快速升高时，优先调整方向，而不是连续乱动。</li>
+      <li>留意不同鱼的运动速度和搏鱼节奏；后续会继续增强“看动作猜鱼种”的差异。</li>
+      <li>多收集不同鱼类，再尝试烧烤、排行和其他成长内容。</li>
     </ol>
   </section>
-  <section class="note">
-    <h2>6. 中文 Lite 版与原版的区别</h2>
-    <p><b>本版本已经移除钱包入口和 MON / 区块链交易功能。</b>游戏按照普通网页小游戏使用，不需要连接钱包，也不会要求签名或付款。</p>
-    <p>当前进度主要保存在本浏览器的本地存储中。清理浏览器站点数据、使用无痕模式或更换设备，可能导致本地进度无法继续。</p>
-  </section>
-  <footer>MonadFish 上游项目：KaimiEwl/fishing-game（MIT）。本站版本为中文 Lite 适配版。</footer>
+
+  <footer>MonadFish 上游项目：KaimiEwl/fishing-game（MIT）。</footer>
 </main>
 </body>
 </html>
