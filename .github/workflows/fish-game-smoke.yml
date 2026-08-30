@@ -17,16 +17,17 @@ permissions:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Syntax check game scripts
         run: |
           node --check fish/games/dock-pull/game.js
           node --check fish/games/ikutan-fishing/game.js
+          node --check fish/games/monadfish/local-api-shim.js
           node --check fish/app-v8/games.js
       - name: Install browser driver
         run: npm install --no-save playwright-core@1.55.0
@@ -51,7 +52,22 @@ jobs:
             const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
             let errors=[]; page.on('pageerror',e=>errors.push(String(e)));
 
-            // Game 1: Dock & Pull — actually cast.
+            // Game 1: MonadFish Lite — real cast, bite, hook, catch and persistence.
+            await page.goto('http://127.0.0.1:4173/fish/games/monadfish/?smoke=1',{waitUntil:'networkidle',timeout:90000});
+            await page.waitForFunction(()=>window.__MONADFISH_LITE_READY__===true,{timeout:15000});
+            const monadCast=page.getByRole('button',{name:'Cast line'});
+            await monadCast.waitFor({state:'visible',timeout:30000});
+            await monadCast.click();
+            const monadHook=page.getByRole('button',{name:'Hook fish'});
+            await monadHook.waitFor({state:'visible',timeout:10000});
+            await monadHook.click();
+            await page.getByText('Caught!').waitFor({state:'visible',timeout:10000});
+            const monadSaved=await page.evaluate(()=>JSON.parse(localStorage.getItem('zxyh_monadfish_lite_player_v1')||'{}'));
+            if(!(monadSaved.total_catches>=1)) throw new Error('MonadFish Lite catch not persisted');
+            if(errors.some(e=>/guest session|player-actions|Failed to fetch/i.test(e))) throw new Error('MonadFish Lite errors: '+errors.join(' | '));
+
+            // Game 2: Dock & Pull — actually cast.
+            errors=[];
             await page.goto('http://127.0.0.1:4173/fish/games/dock-pull/',{waitUntil:'load'});
             await page.waitForFunction(()=>window.__DOCK_PULL_READY__===true);
             if(!await page.locator('#water-canvas').isVisible()) throw new Error('Dock & Pull canvas not visible');
@@ -60,7 +76,7 @@ jobs:
             await page.waitForFunction(()=>document.querySelector('#water-status')?.textContent.includes('WAITING'));
             if(errors.length) throw new Error('Dock & Pull errors: '+errors.join(' | '));
 
-            // Game 2: ikutan7 MIT mobile adaptation — cast, force bite, reel all buttons, catch.
+            // Game 3: ikutan7 MIT mobile adaptation — cast, force bite, reel all buttons, catch.
             errors=[];
             await page.goto('http://127.0.0.1:4173/fish/games/ikutan-fishing/',{waitUntil:'load'});
             await page.waitForFunction(()=>window.__IKUTAN_FISH_READY__===true);
@@ -75,22 +91,22 @@ jobs:
             if(count<1) throw new Error('Fishing Game catch was not persisted in state');
             if(errors.length) throw new Error('Fishing Game errors: '+errors.join(' | '));
 
-            // Host integration: both entries, hidden FAB/nav, same-origin runtime health checks.
+            // Host integration: all entries open same-origin and hide photo FAB / bottom navigation while playing.
             errors=[];
             await page.goto('http://127.0.0.1:4173/fish/app-v8/',{waitUntil:'load'});
             await page.locator('[data-nav="me"]').click();
             await page.locator('#myGames').click();
-            for(const id of ['dockpull','ikutan']){
+            for(const id of ['monadfish','dockpull','ikutan']){
               await page.locator(`[data-game="${id}"]`).click();
               await page.waitForSelector('#gameFrame');
               await page.waitForFunction(()=>document.querySelector('#fab')?.style.display==='none');
               await page.waitForFunction(()=>document.querySelector('#bottom')?.style.display==='none');
-              await page.waitForFunction(()=>document.querySelector('#gameHint')?.textContent.includes('运行检查通过'));
+              await page.waitForFunction(()=>document.querySelector('#gameHint')?.textContent.includes('运行检查通过'),{timeout:20000});
               await page.locator('#gameBack').click();
               await page.waitForSelector(`[data-game="${id}"]`);
             }
             if(errors.length) throw new Error('Host integration errors: '+errors.join(' | '));
             await browser.close();
-            console.log('PASS: both fishing games start and complete their required smoke interactions; host hides FAB/nav.');
+            console.log('PASS: MonadFish Lite + two fallback games complete smoke interactions; host hides FAB/nav.');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
