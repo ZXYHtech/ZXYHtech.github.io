@@ -1,0 +1,76 @@
+name: Fish game smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'fish/games/**'
+      - 'fish/app-v8/games.js'
+      - 'fish/app-v8/core.js'
+      - 'fish/app-v8/boot.js'
+      - '.github/workflows/fish-game-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check game scripts
+        run: |
+          node --check fish/games/dock-pull/game.js
+          node --check fish/app-v8/games.js
+      - name: Install browser driver
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Start static server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/fish-http.log 2>&1 &
+          echo $! >/tmp/fish-http.pid
+          sleep 1
+      - name: Real browser smoke test
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright-core');
+          const { execSync } = require('child_process');
+          function chromePath(){
+            for (const cmd of ['which google-chrome','which google-chrome-stable','which chromium','which chromium-browser']) {
+              try { const p=execSync(cmd,{encoding:'utf8'}).trim(); if(p) return p; } catch {}
+            }
+            throw new Error('No system Chromium/Chrome found');
+          }
+          (async()=>{
+            const browser=await chromium.launch({headless:true,executablePath:chromePath(),args:['--no-sandbox']});
+            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('http://127.0.0.1:4173/fish/games/dock-pull/',{waitUntil:'load'});
+            await page.waitForFunction(()=>window.__DOCK_PULL_READY__===true);
+            if(!await page.locator('#water-canvas').isVisible()) throw new Error('game canvas not visible');
+            const before=await page.locator('#water-status').innerText();
+            if(!before.includes('TAP')) throw new Error('unexpected initial state: '+before);
+            await page.locator('#water-container').click({position:{x:80,y:220}});
+            await page.waitForFunction(()=>document.querySelector('#water-status')?.textContent.includes('WAITING'));
+            if(errors.length) throw new Error('game page errors: '+errors.join(' | '));
+
+            await page.goto('http://127.0.0.1:4173/fish/app-v8/',{waitUntil:'load'});
+            await page.locator('[data-nav="me"]').click();
+            await page.locator('#myGames').click();
+            await page.locator('[data-game="dockpull"]').click();
+            await page.waitForSelector('#gameFrame');
+            await page.waitForFunction(()=>document.querySelector('#fab')?.style.display==='none');
+            await page.waitForFunction(()=>document.querySelector('#bottom')?.style.display==='none');
+            const frame=page.frameLocator('#gameFrame');
+            await frame.locator('#water-canvas').waitFor({state:'visible'});
+            await page.waitForFunction(()=>document.querySelector('#gameHint')?.textContent.includes('运行检查通过'));
+            if(errors.length) throw new Error('host page errors: '+errors.join(' | '));
+            await browser.close();
+            console.log('PASS: Dock & Pull starts, reacts to cast, and host game mode hides FAB/nav.');
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
