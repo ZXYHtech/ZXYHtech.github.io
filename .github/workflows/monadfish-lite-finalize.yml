@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/monadfish-lite-finalize.yml'
       - '.github/scripts/monadfish_source_lite.py'
+      - '.github/scripts/monadfish_guest_player_bridge.py'
       - '.github/scripts/monadfish_zh_lite.py'
   workflow_dispatch:
 
@@ -36,6 +37,7 @@ jobs:
       - name: Apply source-level Chinese and wallet-free Lite patch
         run: |
           python3 .github/scripts/monadfish_source_lite.py /tmp/monadfish-upstream
+          python3 .github/scripts/monadfish_guest_player_bridge.py /tmp/monadfish-upstream
 
       - name: Build wallet-free MonadFish client
         working-directory: /tmp/monadfish-upstream
