@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+  <meta name="theme-color" content="#2c4a1e">
+  <title>Dock & Pull</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="screen-fishing" class="screen active">
+  <div id="hud-top">
+    <div class="hud-cell" id="hud-money"><span class="hud-icon">💰</span><span id="money-display">0</span></div>
+    <div class="hud-title">DOCK &amp; PULL</div>
+    <button class="hud-icon-btn" id="btn-settings" aria-label="Settings">⚙️</button>
+  </div>
+  <div id="water-container">
+    <canvas id="water-canvas"></canvas><div id="dock-plank"></div><div id="water-status">TAP THE WATER TO CAST</div><div id="bite-flash" class="hidden">🎣 BITE!</div><div id="result-splash" class="hidden"></div>
+  </div>
+  <div id="reel-zone" class="hidden"><div id="reel-hint">TAP FAST TO REEL!</div><button id="reel-btn"><span id="reel-btn-icon">🎣</span></button><div id="reel-progress-wrap"><div id="reel-progress-bar"></div><div id="reel-progress-label">REELING IN...</div></div></div>
+  <div id="bottom-nav"><button class="nav-btn active" data-screen="fishing"><span>🎣</span><span class="nav-label">FISH</span></button><button class="nav-btn" data-screen="shop"><span>🪣</span><span class="nav-label">SHOP</span></button><button class="nav-btn" data-screen="inventory"><span>🎒</span><span class="nav-label">GEAR</span></button></div>
+</div>
+<div id="screen-shop" class="screen"><div class="screen-header"><button class="back-btn" data-screen="fishing">←</button><h2>TACKLE SHOP</h2><div class="header-money">💰 <span class="money-ref">0</span></div></div><div class="screen-scroll"><div class="shop-section"><div class="section-title">🐟 SELL FISH</div><div id="sell-inventory"><div class="empty-msg">No fish to sell yet.</div></div><button id="sell-all-btn" class="btn-primary hidden">SELL ALL FISH</button></div><div class="shop-section" id="goal-section"><div class="section-title">⭐ DAILY QUEST</div><div id="goal-display"><div id="goal-text">Loading quest...</div><div id="goal-progress-text"></div><div class="goal-footer"><span id="goal-reward"></span><button id="goal-reroll-btn" class="btn-small">🔄 Reroll ($10)</button></div></div></div><div class="shop-section"><div class="section-title">🪱 BAIT</div><div id="bait-shop-list" class="shop-item-list"></div></div><div class="shop-section"><div class="section-title">🎨 LURES</div><div id="lure-shop-list" class="shop-item-list"></div></div><div class="shop-section"><div class="section-title">🪵 RODS</div><div id="rod-shop-list" class="shop-item-list"></div></div></div></div>
+<div id="screen-inventory" class="screen"><div class="screen-header"><button class="back-btn" data-screen="fishing">←</button><h2>YOUR GEAR</h2><div class="header-money">💰 <span class="money-ref">0</span></div></div><div class="screen-scroll"><div class="inv-block"><div class="inv-label">ROD</div><div id="inv-rod-name" class="inv-value">Basic Rod</div><div class="inv-sub" id="inv-rod-dur-label">Durability</div><div class="dur-bar-wrap"><div id="inv-dur-bar" class="dur-bar"></div></div><div id="inv-dur-pct" class="inv-small">100%</div></div><div class="inv-block"><div class="inv-label">LURE</div><div id="inv-lure-name" class="inv-value">—</div><div id="inv-lure-swatch" class="lure-swatch"></div></div><div class="inv-block"><div class="inv-label">BAIT STOCK</div><div id="inv-bait-list" class="bait-grid"></div></div><div class="inv-block"><div class="inv-label">FISH CAUGHT LOG</div><div id="inv-fish-log"></div></div><div class="inv-block"><div class="inv-label">STATS</div><div id="inv-stats"></div></div></div></div>
+<div id="screen-settings" class="screen"><div class="screen-header"><button class="back-btn" data-screen="fishing">←</button><h2>SETTINGS</h2><div></div></div><div class="screen-scroll"><div class="settings-block"><div class="settings-row"><span>🔊 Sounds</span><label class="toggle-switch"><input type="checkbox" id="toggle-sounds" checked><span class="toggle-slider"></span></label></div><div class="settings-row"><span>🎵 Music</span><label class="toggle-switch"><input type="checkbox" id="toggle-music"><span class="toggle-slider"></span></label></div></div><div class="settings-block"><div class="section-title">🐟 CATCHABLE FISH &amp; PRICES</div><div id="settings-fish-list"></div></div><div class="settings-block"><div class="section-title">🗑️ JUNK ITEMS</div><div class="junk-grid"><span>👟 Shoe</span><span>🏈 Football</span><span>🫙 Jar</span><span>🩲 Underwear</span><span>🛒 Cart</span><span>🪣 Bucket</span></div></div><div class="settings-block credits"><div>DOCK &amp; PULL v1.0</div><div class="credits-sub">A simple fishing loop game</div></div></div></div>
+<div id="toast" class="hidden"></div><script src="game.js"></script>
+</body></html>
