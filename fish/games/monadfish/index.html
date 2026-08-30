@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hook &amp; Loot</title>
-    <meta name="description" content="Catch fish, cook dishes, spin the cube, and climb the Hook &amp; Loot leaderboard on Monad.">
-    <meta name="author" content="Hook &amp; Loot" />
+    <title>MonadFish 中文版｜钓鱼游戏</title>
+    <meta name="description" content="MonadFish 中文 Lite：抛竿、等鱼咬钩、提竿搏鱼，收集多种鱼类并升级鱼竿。无需钱包，进度保存在本地浏览器。">
+    <meta name="author" content="ZXYHtech / MonadFish Lite" />
     <meta name="theme-color" content="#080914" />
     <link rel="icon" type="image/png" sizes="192x192" href="/fish/games/monadfish/assets/hookloot_app_icon_192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="/fish/games/monadfish/assets/hookloot_app_icon_512.png" />
@@ -13,22 +13,17 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/fish/games/monadfish/apple-touch-icon.png" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.hookloot.xyz/" />
-    <meta property="og:image" content="https://www.hookloot.xyz/assets/social_preview_hookloot.jpg">
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="670" />
-
+    <meta property="og:url" content="https://zxyhtech.github.io/fish/games/monadfish/" />
+    <meta property="og:title" content="MonadFish 中文版" />
+    <meta property="og:description" content="无需钱包的中文钓鱼小游戏：真实咬钩、提竿搏鱼与多鱼种收集。" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://www.hookloot.xyz/assets/social_preview_hookloot.jpg">
+    <meta name="twitter:title" content="MonadFish 中文版" />
+    <meta name="twitter:description" content="无需钱包的中文钓鱼小游戏：真实咬钩、提竿搏鱼与多鱼种收集。" />
 
-  <meta property="og:title" content="Hook &amp; Loot">
-  <meta name="twitter:title" content="Hook &amp; Loot">
-  <meta property="og:description" content="Catch fish, cook dishes, spin the cube, and climb the Hook &amp; Loot leaderboard on Monad.">
-  <meta name="twitter:description" content="Catch fish, cook dishes, spin the cube, and climb the Hook &amp; Loot leaderboard on Monad.">
-  <script src="/fish/games/monadfish/local-api-shim.js"></script>
+    <script src="/fish/games/monadfish/local-api-shim.js?v=20260830-v2"></script>
     <script type="module" crossorigin src="/fish/games/monadfish/assets/index-BS_fjQJr.js"></script>
-  <link rel="stylesheet" crossorigin href="/fish/games/monadfish/assets/index-D2tP9FCW.css">
-    <link rel="stylesheet" href="/fish/games/monadfish/zh-lite.css" />
+    <link rel="stylesheet" crossorigin href="/fish/games/monadfish/assets/index-D2tP9FCW.css">
+    <link rel="stylesheet" href="/fish/games/monadfish/zh-lite.css?v=20260830-v2" />
   </head>
 
   <body>
@@ -57,7 +52,7 @@
         width: min(22rem, calc(100vw - 2rem));
         padding: 1rem 1.25rem 1.5rem;
         text-align: center;
-        font-family: Inter, system-ui, sans-serif;
+        font-family: "Noto Sans SC","Microsoft YaHei","PingFang SC",Inter,system-ui,sans-serif;
       }
 
       .boot-loader__art {
@@ -132,16 +127,15 @@
         text-transform: uppercase;
         color: rgba(186, 230, 253, 0.88);
       }
-
     </style>
 
     <div id="boot-loader" aria-hidden="false">
       <div class="boot-loader__panel">
         <div class="boot-loader__art">
-          <img src="/fish/games/monadfish/assets/loading_art_v3.jpg" alt="Hook and Loot loading art" />
+          <img src="/fish/games/monadfish/assets/loading_art_v3.jpg" alt="MonadFish 中文版加载画面" />
         </div>
-        <img class="boot-loader__title" src="/fish/games/monadfish/assets/title_banner_v2.png" alt="Hook and Loot title banner" />
-        <p class="boot-loader__text" id="boot-loader-text">Preparing the water...</p>
+        <img class="boot-loader__title" src="/fish/games/monadfish/assets/title_banner_v2.png" alt="MonadFish 游戏标题" />
+        <p class="boot-loader__text" id="boot-loader-text">正在准备水域…</p>
         <div class="boot-loader__bar" aria-hidden="true">
           <div class="boot-loader__fill" id="boot-loader-fill"></div>
         </div>
@@ -157,7 +151,13 @@
         var clamped = Math.max(0, Math.min(1, Number(progress || 0)));
         if (fill) fill.style.width = Math.round(clamped * 100) + '%';
         if (percent) percent.textContent = Math.round(clamped * 100) + '%';
-        if (text && label) text.textContent = label;
+        if (text && label) {
+          var translated = String(label)
+            .replace('Loading the lake...', '正在加载水域…')
+            .replace('Ready to fish...', '准备开钓！')
+            .replace('Preparing the water...', '正在准备水域…');
+          text.textContent = translated;
+        }
       };
 
       window.__hideBootLoader = function () {
@@ -171,6 +171,6 @@
     </script>
 
     <div id="root"></div>
-      <script src="/fish/games/monadfish/zh-lite-polish.js"></script>
+    <script src="/fish/games/monadfish/zh-lite-polish.js?v=20260830-v2"></script>
   </body>
 </html>
