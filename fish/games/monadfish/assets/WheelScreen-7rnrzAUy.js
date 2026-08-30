@@ -27,12 +27,12 @@ const WheelScreen = ({ coins = 0, availableRolls = 0, onRequestRoll, onResolveRe
       onSpinStartSound==null?void 0:onSpinStartSound();
       const roll=await(onRequestRoll==null?void 0:onRequestRoll());
       if(!(roll==null?void 0:roll.prize))return;
-      const remaining=Math.max(0,850-(performance.now()-spinStartedAt));
+      const remaining=Math.max(0,2400-(performance.now()-spinStartedAt));
       if(remaining>0)await wait(remaining);
       onRevealSound==null?void 0:onRevealSound();
       const resolved=await(onResolveReward==null?void 0:onResolveReward(roll.prize,roll.id));
       setLastPrize(resolved||roll.prize);
-      await wait(120);
+      await wait(160);
       onRewardSound==null?void 0:onRewardSound();
     }finally{
       spinLockRef.current=false;
