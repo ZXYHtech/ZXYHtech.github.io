@@ -1,0 +1,132 @@
+name: Finalize MonadFish Lite
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/monadfish-lite-finalize.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch pinned MIT upstream
+        run: |
+          rm -rf /tmp/monadfish-upstream
+          git clone --depth 1 https://github.com/KaimiEwl/fishing-game.git /tmp/monadfish-upstream
+          cd /tmp/monadfish-upstream
+          git fetch --depth 1 origin 817708f05b609accb5b8ed39c299e318459044cf
+          git checkout --detach 817708f05b609accb5b8ed39c299e318459044cf
+
+      - name: Build original MonadFish client
+        working-directory: /tmp/monadfish-upstream
+        env:
+          VITE_BASE_PATH: /fish/games/monadfish/
+        run: |
+          npm ci
+          npm run build
+
+      - name: Reuse local API compatibility layer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src=Path('.github/workflows/monadfish-lite.yml').read_text(encoding='utf-8')
+          start="          cat > /tmp/monadfish-upstream/dist/local-api-shim.js <<'SHIM'\n"
+          end="          SHIM\n"
+          if start not in src:
+              raise SystemExit('Could not find local-api-shim start marker')
+          block=src.split(start,1)[1].split(end,1)[0]
+          lines=[]
+          for line in block.splitlines():
+              lines.append(line[10:] if line.startswith('          ') else line)
+          shim='\n'.join(lines)+'\n'
+          # Smoke mode only: deterministic random so the browser test cannot randomly miss a fish.
+          shim=shim.replace("const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';", "const SMOKE = new URLSearchParams(location.search).get('smoke') === '1';\n            if (SMOKE) Math.random = () => 0.01;")
+          Path('/tmp/monadfish-upstream/dist/local-api-shim.js').write_text(shim,encoding='utf-8')
+
+          p=Path('/tmp/monadfish-upstream/dist/index.html')
+          html=p.read_text(encoding='utf-8')
+          marker='<script type="module"'
+          inject='<script src="/fish/games/monadfish/local-api-shim.js"></script>\n    '
+          if 'local-api-shim.js' not in html:
+              html=html.replace(marker,inject+marker,1)
+          p.write_text(html,encoding='utf-8')
+          PY
+          cp /tmp/monadfish-upstream/LICENSE /tmp/monadfish-upstream/dist/LICENSE-MonadFish.txt
+          cat > /tmp/monadfish-upstream/dist/README-LITE.txt <<'TXT'
+          MonadFish Lite integration for ZXYHtech /fish/
+          Upstream: https://github.com/KaimiEwl/fishing-game
+          Pinned source: 817708f05b609accb5b8ed39c299e318459044cf
+          License: MIT (see LICENSE-MonadFish.txt)
+          Adaptation: original static client plus localStorage-backed API compatibility.
+          Wallet/MON transactions and authoritative online leaderboard are disabled in Lite mode.
+          TXT
+
+      - name: Stage same-origin mirror
+        run: |
+          rm -rf fish/games/monadfish
+          mkdir -p fish/games/monadfish
+          cp -a /tmp/monadfish-upstream/dist/. fish/games/monadfish/
+
+      - name: Real mobile Chromium play test
+        run: |
+          npm install --no-save playwright-core@1.55.0
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/monadfish-http.log 2>&1 &
+          sleep 1
+          node <<'NODE'
+          const { chromium } = require('playwright-core');
+          const { execSync } = require('child_process');
+          function chromePath(){
+            for(const cmd of ['which google-chrome','which google-chrome-stable','which chromium','which chromium-browser']){
+              try{const p=execSync(cmd,{encoding:'utf8'}).trim();if(p)return p}catch{}
+            }
+            throw new Error('No Chromium found');
+          }
+          (async()=>{
+            const browser=await chromium.launch({headless:true,executablePath:chromePath(),args:['--no-sandbox']});
+            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('http://127.0.0.1:4173/fish/games/monadfish/?smoke=1',{waitUntil:'networkidle',timeout:90000});
+            await page.waitForFunction(()=>window.__MONADFISH_LITE_READY__===true,{timeout:15000});
+            const cast=page.getByRole('button',{name:'Cast line'});
+            await cast.waitFor({state:'visible',timeout:30000});
+            await cast.click();
+            // The smoke API intentionally uses a very short wait. Test the real actionable state instead of a transient label.
+            const hook=page.getByRole('button',{name:'Hook fish'});
+            await hook.waitFor({state:'visible',timeout:10000});
+            await hook.click();
+            await page.getByText('Caught!').waitFor({state:'visible',timeout:10000});
+            const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('zxyh_monadfish_lite_player_v1')||'{}'));
+            if(!(stored.total_catches>=1)) throw new Error('Catch did not persist locally');
+            const blocking=errors.filter(e=>/guest session|player-actions|Failed to fetch/i.test(e));
+            if(blocking.length) throw new Error('Blocking runtime errors: '+blocking.join(' | '));
+            console.log('PASS: MonadFish Lite cast -> bite -> hook -> catch -> local persistence on 390x844 touch viewport');
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+
+      - name: Commit only after playability passes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fish/games/monadfish
+          if git diff --cached --quiet; then
+            echo 'No mirror changes.'
+          else
+            git commit -m 'fish: publish verified MonadFish Lite mirror'
+            git push
+          fi
