@@ -1,4 +1,4 @@
-const CACHE = 'zya-smart-manual-v1.32.0';
+const CACHE = 'zya-smart-manual-v1.32.1';
 const BASE = new URL('./', self.registration.scope);
 const SHELL = [
   '', 'styles.css?v=1.24.0', 'admin.css?v=1.32.0', 'admin-operations.css?v=1.31.0',
@@ -41,6 +41,13 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== location.origin || !url.href.startsWith(BASE.href)) return;
+
+  // Fishing app is under active development: never serve stale app assets from SW cache.
+  if (url.pathname.startsWith('/fish/')) {
+    event.respondWith(fetch(event.request, {cache:'no-store'}).catch(() => caches.match(event.request)));
+    return;
+  }
+
   if (event.request.mode === 'navigate') {
     event.respondWith(networkFirst(event.request, BASE.href));
     return;
