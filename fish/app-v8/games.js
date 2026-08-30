@@ -1,14 +1,14 @@
 const openGames={
-  monadfish:{title:'MonadFish Lite',icon:'🌌',url:'/fish/games/monadfish/',license:'MIT',repo:'KaimiEwl/fishing-game',note:'画面更精致的完整钓鱼玩法：抛竿、鱼口、鱼种、升级、装备、地图与收集。Lite版使用本地存档，不依赖原站API。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"]'),state:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"]')})},
+  monadfish:{title:'MonadFish 中文版',icon:'🌌',url:'/fish/games/monadfish/',license:'MIT',repo:'KaimiEwl/fishing-game',note:'精致的完整钓鱼玩法：抛竿、鱼口、鱼种、升级、装备、地图与收集。中文版使用本地存档，已移除钱包/MON交易，并提供独立游戏说明页。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]'),state:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]')})},
   dockpull:{title:'Dock & Pull',icon:'🎣',url:'/fish/games/dock-pull/',license:'MIT',repo:'DollarAlchemy/Fish1',note:'触屏抛竿→等咬口→连点收线；鱼获、商店、鱼竿和本地存档。',health:(w,d)=>({ready:w.__DOCK_PULL_READY__===true,ui:!!d.querySelector('#water-canvas'),state:d.querySelector('#water-status')?.textContent?.includes('TAP')})},
   ikutan:{title:'Fishing Game',icon:'🐟',url:'/fish/games/ikutan-fishing/',license:'MIT',repo:'ikutan7/ikutan7.github.io',note:'选饵→抛竿→等鱼口→点完收线按钮；多鱼种、昼夜和鱼获记录。',health:(w,d)=>({ready:w.__IKUTAN_FISH_READY__===true,ui:!!d.querySelector('#castBtn'),state:d.querySelector('#log')?.textContent?.includes('准备好')})}
 };
 function games(){
   if(openGames[S.gameScreen])return externalGame(S.gameScreen);
   S.gameScreen='hub';setGameChrome(false);
-  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">所有游戏都直接在本站打开，不跳转第三方页面。MonadFish Lite 已通过手机 Chromium 的真实抛竿→咬口→提竿→上鱼测试。</div></div>
+  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">所有游戏都直接在本站打开，不跳转第三方页面。MonadFish 中文版已通过手机 Chromium 的真实抛竿→咬口→提竿→上鱼测试，并增加中文游戏说明页。</div></div>
   <div class="gamegrid">${Object.entries(openGames).map(([id,g])=>`<button class="gamecard" data-game="${id}"><span class="gicon">${g.icon}</span><b>${g.title}</b><small>${g.note}</small><span class="badge">${g.license} · 本站镜像</span></button>`).join('')}</div>
-  <section class="card"><span class="eyebrow">验收规则</span><div class="sub">许可证→同源资源→脚本初始化→手机触控→实际完成核心玩法。Pages 只显示构建成功不算验收。MonadFish Lite 的钱包/MON交易与服务器排行榜已关闭，本地进度保存在当前浏览器。</div></section>`,'小游戏');
+  <section class="card"><span class="eyebrow">验收规则</span><div class="sub">许可证→同源资源→脚本初始化→手机触控→实际完成核心玩法。Pages 只显示构建成功不算验收。MonadFish 中文版不显示钱包连接、钱包验证或 MON 交易入口；本地进度保存在当前浏览器。</div></section>`,'小游戏');
   app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;games()});
 }
 function gameBack(){S.gameScreen='hub';setGameChrome(false);games()}
