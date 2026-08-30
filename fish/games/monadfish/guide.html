@@ -16,7 +16,7 @@
     .step{padding:12px 8px;border-radius:14px;background:#0d2137;text-align:center;font-weight:800}.num{display:block;color:#66e8ff;font-size:12px;margin-bottom:6px}
     ul,ol{padding-left:1.25rem;line-height:1.8;margin:8px 0}.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#12304a;color:#a5f3fc;font-size:12px;font-weight:800;margin-right:5px}
     .species{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.fish{padding:7px 10px;border:1px solid #5ee9f52b;border-radius:999px;background:#0b2033;color:#d8fbff;font-size:13px;font-weight:700}
-    .motion{border-color:#86efac4c;background:#071d17cc}.motion h2{color:#a7f3d0}.motion strong{color:#d9f99d}
+    .motion{border-color:#86efac4c;background:#071d17cc}.motion h2{color:#a7f3d0}.motion strong{color:#d9f99d}.economy{border-color:#facc1540;background:#211808cc}.economy h2{color:#fde68a}
     footer{padding:10px 4px;color:#6f93a8;font-size:12px;line-height:1.6;text-align:center}
     @media(max-width:720px){.flow{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){h1{font-size:25px}section{padding:15px}}
   </style>
@@ -25,7 +25,7 @@
 <main>
   <div class="top"><a class="back" href="/fish/games/monadfish/">← 返回游戏</a></div>
   <h1>🎣 MonadFish 游戏说明</h1>
-  <div class="lead">核心体验是完整地经历“抛竿 → 鱼靠近 → 咬钩 → 提竿 → 搏鱼 → 上岸”，而不是点击后立刻结算。手机还可以开启体感模式，用倾斜动作帮助控制鱼线张力。</div>
+  <div class="lead">核心体验是完整经历“抛竿 → 鱼靠近 → 咬钩 → 提竿 → 搏鱼 → 上岸”。手机会自动尝试启用体感，左右倾斜可以帮助控制鱼线张力，人物与船也会随姿态轻微摆动。</div>
 
   <section>
     <h2>1. 最基本的钓鱼流程</h2>
@@ -36,60 +36,63 @@
       <div class="step"><span class="num">第 4 步</span>跟随方向遛鱼</div>
       <div class="step"><span class="num">第 5 步</span>成功拉鱼上岸</div>
     </div>
-    <p>成功提竿后，鱼会继续留在线端附近挣扎，鱼线和鱼的运动保持关联。不同回合可能出现持续发力、短促冲刺、蛇形摆动、沉底重拉或高速横冲。</p>
+    <p>成功提竿后，鱼会继续留在线端附近挣扎。不同回合可能出现持续发力、短促冲刺、蛇形摆动、沉底重拉或高速横冲。</p>
   </section>
 
   <section class="motion">
-    <h2>2. 📱 体感搏鱼怎么玩</h2>
+    <h2>2. 📱 体感搏鱼</h2>
     <ol>
-      <li>手机打开游戏后，点击左上角 <strong>“开启体感”</strong>。部分浏览器会弹出方向与运动传感器权限，允许即可。</li>
-      <li>鱼向右拉时，把手机轻轻向左倾；鱼向左拉时，则向右倾。可以理解为真实钓鱼里的“反方向回杆”。</li>
-      <li>方向抵消正确时，张力会下降；方向做反，张力会上升。张力太高时，支持震动的手机会给出短促提醒。</li>
-      <li>如果拿手机的姿势改变了，再点一次体感按钮即可重新校准当前角度。</li>
-      <li>不支持传感器或不授权也没关系：搏鱼时在屏幕左右移动手指，同样可以提供触控辅助。</li>
+      <li><strong>不再需要单独点击“开启体感”按钮。</strong>支持直接读取传感器的手机进入游戏后自动启用。</li>
+      <li>iPhone / iPad 受系统安全规则限制，浏览器必须在一次真实触摸后才能弹出传感器权限；现在会在你第一次正常点击游戏时自动申请，不占用额外按钮位置。</li>
+      <li>鱼向右拉时，把手机轻轻向左倾；鱼向左拉时，则向右倾，相当于反方向回杆。</li>
+      <li>方向抵消正确时张力下降；方向做反时张力升高。张力过高时，支持震动的手机会给出短促提醒。</li>
+      <li>人物和船会随手机左右姿态轻微倾斜，让画面和操作动作更统一。</li>
+      <li>不支持传感器或拒绝权限时会自动回退为触控辅助，不影响正常钓鱼。</li>
     </ol>
-    <p><strong>当前版本：</strong>体感主要影响搏鱼张力和反馈手感，不会因为不同手机传感器灵敏度直接判定“跑鱼”。先保证公平，再逐步加强体感玩法。</p>
+  </section>
+
+  <section class="economy">
+    <h2>3. 💰 V5 金币、鱼饵与抽奖</h2>
+    <ul>
+      <li><b>每日免费鱼饵：</b>30 个。</li>
+      <li><b>鱼饵价格：</b>统一 12 金币 / 个，不再使用之前过高的价格。</li>
+      <li><b>每日基础抽奖：</b>5 次；每成功钓到 4 条鱼，再奖励 1 次抽奖。</li>
+      <li><b>钓鱼即时收益：</b>鱼上岸后除了进入鱼篓，还会直接获得少量金币。</li>
+      <li><b>出售鱼获：</b>常见鱼价值已明显提高，稀有鱼仍保持更高价值。</li>
+      <li><b>每日补给：</b>跨日刷新时额外补充 180 金币。</li>
+      <li><b>探索奖励：</b>每天首次体验鱼篓、任务、商店、烧烤、魔方、排行榜、地图和游戏说明等功能，会获得一次对应金币奖励；首次体验魔方还会额外送 1 次抽奖。</li>
+    </ul>
+    <p>旧存档首次进入 V5 会自动做一次防破产补给：至少恢复到 300 金币、30 个免费鱼饵和 5 次基础抽奖。</p>
   </section>
 
   <section>
-    <h2>3. 现在有哪些鱼</h2>
-    <p>当前共有 <b>14 种可钓鱼类</b>。游戏会降低近期重复鱼种的出现权重，并适当提高尚未收集鱼种的发现机会，让连续钓鱼时变化更丰富。</p>
+    <h2>4. 现在有哪些鱼</h2>
+    <p>当前共有 <b>14 种可钓鱼类</b>。游戏会降低近期重复鱼种的出现权重，并适当提高尚未收集鱼种的发现机会。</p>
     <div class="species">
       <span class="fish">鲤鱼</span><span class="fish">河鲈</span><span class="fish">罗非鱼</span><span class="fish">虹鳟</span><span class="fish">黑鲈</span><span class="fish">欧鳊</span><span class="fish">锦鲤</span><span class="fish">鳗鱼</span><span class="fish">鲶鱼</span><span class="fish">金鱼</span><span class="fish">金枪鱼</span><span class="fish">变异鱼</span><span class="fish">紫影鱼</span><span class="fish">星海利维坦</span>
     </div>
   </section>
 
   <section>
-    <h2>4. 底部功能</h2>
+    <h2>5. 底部功能</h2>
     <ul>
       <li><span class="tag">钓鱼</span>抛竿、等待咬钩、提竿和搏鱼。</li>
-      <li><span class="tag">任务</span>完成钓鱼与成长目标，达到条件后直接领取奖励。</li>
-      <li><span class="tag">商店</span>补充鱼饵、升级鱼竿。</li>
+      <li><span class="tag">任务</span>完成钓鱼与成长目标，达到条件后领取奖励。</li>
+      <li><span class="tag">商店</span>低价补充鱼饵、升级鱼竿。</li>
       <li><span class="tag">烧烤</span>把鱼获制作成料理并积累烧烤积分。</li>
-      <li><span class="tag">魔方</span>使用获得的次数抽取游戏内奖励。</li>
+      <li><span class="tag">魔方</span>使用每日次数和钓鱼奖励次数抽取金币或鱼饵。</li>
       <li><span class="tag">排行</span>比较烧烤积分，查看自己的料理成长。</li>
-      <li><span class="tag">地图</span>查看后续将逐步开放的钓场。</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>5. 资源与成长</h2>
-    <ul>
-      <li><b>鱼饵：</b>每次抛竿的重要资源，可通过游戏内成长与补给获得。</li>
-      <li><b>金币：</b>用于购买鱼饵和升级装备。</li>
-      <li><b>经验 / 等级：</b>持续钓鱼能够累积经验并提升等级。</li>
-      <li><b>鱼竿：</b>代表装备成长阶段，后续可以进一步与不同鱼种的拉力特征联动。</li>
-      <li><b>鱼获：</b>既能收集，也能出售或制作料理。</li>
+      <li><span class="tag">地图</span>查看后续逐步开放的钓场。</li>
     </ul>
   </section>
 
   <section>
     <h2>6. 新手建议</h2>
     <ol>
-      <li>先不用体感连续钓几次，熟悉咬钩与提竿节奏。</li>
-      <li>再开启体感，用小幅度倾斜抵消鱼的拉力，不要大幅甩动手机。</li>
-      <li>看到张力快速升高时，优先调整方向，而不是连续乱动。</li>
-      <li>留意不同鱼的运动速度和搏鱼节奏；后续会继续增强“看动作猜鱼种”的差异。</li>
+      <li>先连续钓几次，熟悉咬钩、提竿和手机倾斜控制的关系。</li>
+      <li>体感只需要小幅度倾斜，不要大幅甩动手机。</li>
+      <li>普通鱼现在也有可用价值，可以卖鱼补鱼饵，不必只等稀有鱼。</li>
+      <li>每天把不同功能点一遍，可以顺便领取探索奖励和额外抽奖机会。</li>
       <li>多收集不同鱼类，再尝试烧烤、排行和其他成长内容。</li>
     </ol>
   </section>
