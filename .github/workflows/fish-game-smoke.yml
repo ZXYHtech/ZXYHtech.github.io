@@ -26,6 +26,7 @@ jobs:
       - name: Syntax check game scripts
         run: |
           node --check fish/games/dock-pull/game.js
+          node --check fish/games/ikutan-fishing/game.js
           node --check fish/app-v8/games.js
       - name: Install browser driver
         run: npm install --no-save playwright-core@1.55.0
@@ -48,29 +49,48 @@ jobs:
           (async()=>{
             const browser=await chromium.launch({headless:true,executablePath:chromePath(),args:['--no-sandbox']});
             const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-            const errors=[];
-            page.on('pageerror',e=>errors.push(String(e)));
+            let errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+
+            // Game 1: Dock & Pull — actually cast.
             await page.goto('http://127.0.0.1:4173/fish/games/dock-pull/',{waitUntil:'load'});
             await page.waitForFunction(()=>window.__DOCK_PULL_READY__===true);
-            if(!await page.locator('#water-canvas').isVisible()) throw new Error('game canvas not visible');
-            const before=await page.locator('#water-status').innerText();
-            if(!before.includes('TAP')) throw new Error('unexpected initial state: '+before);
+            if(!await page.locator('#water-canvas').isVisible()) throw new Error('Dock & Pull canvas not visible');
+            if(!(await page.locator('#water-status').innerText()).includes('TAP')) throw new Error('Dock & Pull bad initial state');
             await page.locator('#water-container').click({position:{x:80,y:220}});
             await page.waitForFunction(()=>document.querySelector('#water-status')?.textContent.includes('WAITING'));
-            if(errors.length) throw new Error('game page errors: '+errors.join(' | '));
+            if(errors.length) throw new Error('Dock & Pull errors: '+errors.join(' | '));
 
+            // Game 2: ikutan7 MIT mobile adaptation — cast, force bite, reel all buttons, catch.
+            errors=[];
+            await page.goto('http://127.0.0.1:4173/fish/games/ikutan-fishing/',{waitUntil:'load'});
+            await page.waitForFunction(()=>window.__IKUTAN_FISH_READY__===true);
+            if(!await page.locator('#castBtn').isVisible()) throw new Error('Fishing Game cast button not visible');
+            await page.locator('#castBtn').click();
+            await page.waitForFunction(()=>document.querySelector('#log')?.textContent.includes('Waiting for bite'));
+            await page.evaluate(()=>onBite());
+            await page.waitForSelector('.reel-btn');
+            await page.evaluate(()=>document.querySelectorAll('.reel-btn').forEach(b=>b.click()));
+            await page.waitForFunction(()=>document.querySelector('#log')?.textContent.includes('Caught'));
+            const count=await page.evaluate(()=>state.catchHistory.length);
+            if(count<1) throw new Error('Fishing Game catch was not persisted in state');
+            if(errors.length) throw new Error('Fishing Game errors: '+errors.join(' | '));
+
+            // Host integration: both entries, hidden FAB/nav, same-origin runtime health checks.
+            errors=[];
             await page.goto('http://127.0.0.1:4173/fish/app-v8/',{waitUntil:'load'});
             await page.locator('[data-nav="me"]').click();
             await page.locator('#myGames').click();
-            await page.locator('[data-game="dockpull"]').click();
-            await page.waitForSelector('#gameFrame');
-            await page.waitForFunction(()=>document.querySelector('#fab')?.style.display==='none');
-            await page.waitForFunction(()=>document.querySelector('#bottom')?.style.display==='none');
-            const frame=page.frameLocator('#gameFrame');
-            await frame.locator('#water-canvas').waitFor({state:'visible'});
-            await page.waitForFunction(()=>document.querySelector('#gameHint')?.textContent.includes('运行检查通过'));
-            if(errors.length) throw new Error('host page errors: '+errors.join(' | '));
+            for(const id of ['dockpull','ikutan']){
+              await page.locator(`[data-game="${id}"]`).click();
+              await page.waitForSelector('#gameFrame');
+              await page.waitForFunction(()=>document.querySelector('#fab')?.style.display==='none');
+              await page.waitForFunction(()=>document.querySelector('#bottom')?.style.display==='none');
+              await page.waitForFunction(()=>document.querySelector('#gameHint')?.textContent.includes('运行检查通过'));
+              await page.locator('#gameBack').click();
+              await page.waitForSelector(`[data-game="${id}"]`);
+            }
+            if(errors.length) throw new Error('Host integration errors: '+errors.join(' | '));
             await browser.close();
-            console.log('PASS: Dock & Pull starts, reacts to cast, and host game mode hides FAB/nav.');
+            console.log('PASS: both fishing games start and complete their required smoke interactions; host hides FAB/nav.');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
