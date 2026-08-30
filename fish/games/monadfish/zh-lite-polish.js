@@ -98,15 +98,23 @@
   }
   document.addEventListener('click',e=>{const el=e.target?.closest?.('[data-zxyh-instant-reward="1"]');if(!el)return;e.preventDefault();e.stopImmediatePropagation();grantInstant(el.dataset.zxyhRewardSource||el.textContent||'');},true);
 
+  function activeTabIsFish(){
+    const active=document.querySelector('nav button[aria-current="page"],button[aria-current="page"]');
+    if(active){const label=String(active.getAttribute('aria-label')||active.textContent||'').trim();return /^(Fish|Fishing|钓鱼)$/i.test(label);}
+    return Boolean(document.querySelector('canvas'));
+  }
+
   function ensureGuideLink(){
-    if(location.pathname.endsWith('/guide.html')||document.getElementById('zxyh-game-guide-link'))return;
-    const link=document.createElement('a');link.id='zxyh-game-guide-link';link.href='/fish/games/monadfish/guide.html';link.textContent='？ 游戏说明';link.setAttribute('aria-label','打开游戏说明');document.body?.appendChild(link);
+    if(location.pathname.endsWith('/guide.html'))return;
+    let link=document.getElementById('zxyh-game-guide-link');
+    if(!link){link=document.createElement('a');link.id='zxyh-game-guide-link';link.href='/fish/games/monadfish/guide.html';link.textContent='？ 游戏说明';link.setAttribute('aria-label','打开游戏说明');document.body?.appendChild(link);}
+    link.style.display=activeTabIsFish()?'inline-flex':'none';
   }
 
   let scheduled=false;function apply(){scheduled=false;translate(document.body);cleanLegacyMessaging(document.body);ensureGuideLink();}function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(apply);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
-  new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','class','id']});
+  new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','aria-current','title','class','id']});
   const runtimeStyle=document.createElement('style');runtimeStyle.textContent='#zxyh-lite-badge,[data-zxyh-wallet-hidden="1"],[data-zxyh-ad-hidden="1"]{display:none!important}';document.head.appendChild(runtimeStyle);
   window.__MONADFISH_GRANT_INSTANT_REWARD__=grantInstant;
-  window.__MONADFISH_ZH_V4__=true;
+  window.__MONADFISH_ZH_V6__=true;
 })();
