@@ -1,0 +1,11 @@
+html { font-family: "Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif; }
+#zxyh-game-guide-link{
+  position:fixed;right:12px;top:max(12px,env(safe-area-inset-top));z-index:2147483000;
+  display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;
+  border:1px solid rgba(103,232,249,.55);border-radius:999px;background:rgba(3,7,18,.82);
+  color:#cffafe;font-size:13px;font-weight:800;text-decoration:none;letter-spacing:.02em;
+  box-shadow:0 8px 26px rgba(0,0,0,.35),0 0 18px rgba(34,211,238,.16);backdrop-filter:blur(10px)
+}
+#zxyh-game-guide-link:active{transform:scale(.97)}
+[data-rk],w3m-modal,wcm-modal,[class*="rainbowkit"],[class*="wallet-connect"]{display:none!important}
+[data-zxyh-wallet-hidden="1"]{display:none!important}
