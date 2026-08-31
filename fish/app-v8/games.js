@@ -1,12 +1,12 @@
 const openGames={
-  monadfish:{title:'MonadFish 中文版',icon:'🌌',url:'/fish/games/monadfish/play-v12-clean.html',license:'MIT',repo:'KaimiEwl/fishing-game',note:'V12 透明精灵修复版：真正替换主画布旧人物与 fish_sheet 旧鱼，缩小鱼群避开主按钮，图片内英文用中文遮罩。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true&&w.__MONADFISH_RELEASE__==='V12-CLEAN'&&w.__MONADFISH_V12_CLEAN__===true&&!!w.__MONADFISH_GAMEPLAY_V8__,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]'),state:!!d.querySelector('#mf-v12-angler')})},
+  monadfish:{title:'MonadFish 中文版',icon:'🌌',url:'/fish/games/monadfish/play-v13-person.html',license:'MIT',repo:'KaimiEwl/fishing-game',note:'V13 人物必显示版：生成钓鱼人物进入钓鱼页即固定可见，搏鱼切换动作；旧人物和旧 fish_sheet 鱼继续替换，导航只保留中文。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true&&w.__MONADFISH_RELEASE__==='V13-PERSON'&&w.__MONADFISH_V13_PERSON__===true&&!!w.__MONADFISH_GAMEPLAY_V8__,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]'),state:!!d.querySelector('#mf-v13-angler')&&w.__MONADFISH_V13_CHECK__?.().personVisible===true})},
   dockpull:{title:'Dock & Pull',icon:'🎣',url:'/fish/games/dock-pull/',license:'MIT',repo:'DollarAlchemy/Fish1',note:'触屏抛竿→等咬口→连点收线；鱼获、商店、鱼竿和本地存档。',health:(w,d)=>({ready:w.__DOCK_PULL_READY__===true,ui:!!d.querySelector('#water-canvas'),state:d.querySelector('#water-status')?.textContent?.includes('TAP')})},
   ikutan:{title:'Fishing Game',icon:'🐟',url:'/fish/games/ikutan-fishing/',license:'MIT',repo:'ikutan7/ikutan7.github.io',note:'选饵→抛竿→等鱼口→点完收线按钮；多鱼种、昼夜和鱼获记录。',health:(w,d)=>({ready:w.__IKUTAN_FISH_READY__===true,ui:!!d.querySelector('#castBtn'),state:d.querySelector('#log')?.textContent?.includes('准备好')})}
 };
 function games(){
   if(openGames[S.gameScreen])return externalGame(S.gameScreen);
   S.gameScreen='hub';setGameChrome(false);
-  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">MonadFish V12 直接替换主画布里的旧人物和 fish_sheet 旧鱼精灵，使用透明生成角色/鱼图集；鱼群更小、更清晰，并用中文遮罩覆盖图片内英文。</div></div>
+  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">MonadFish V13 优先保证人物实际可见：不再用“Fish/钓鱼必须完全相等”的脆弱判断，而是根据抛竿/提竿控件和当前页面状态显示生成角色；底部导航遮罩也加高，只保留中文。</div></div>
   <div class="gamegrid">${Object.entries(openGames).map(([id,g])=>`<button class="gamecard" data-game="${id}"><span class="gicon">${g.icon}</span><b>${g.title}</b><small>${g.note}</small><span class="badge">${g.license} · 本站镜像</span></button>`).join('')}</div>
   <section class="card"><span class="eyebrow">验收规则</span><div class="sub">许可证→同源资源→脚本初始化→手机触控→实际完成核心玩法。Pages 只显示构建成功不算验收。</div></section>`,'小游戏');
   app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;games()});
@@ -14,7 +14,7 @@ function games(){
 function gameBack(){S.gameScreen='hub';setGameChrome(false);games()}
 function externalGame(id){
   const g=openGames[id];stopCam();setGameChrome(true);
-  const release=id==='monadfish'?'MFV12-CLEAN':'PLAYFIX4';
+  const release=id==='monadfish'?'MFV13-PERSON':'PLAYFIX4';
   app.innerHTML=`<div class="game-stage"><div class="game-topbar"><button id="gameBack" class="game-back">← 换游戏</button><div class="game-name"><b>${g.icon} ${g.title}</b><small>${g.license} · ${g.repo}</small></div><button id="gameReload" class="game-reload">↻</button></div><div class="game-viewport"><div id="gameLoading" class="game-loading">正在载入并检查 ${g.title}…</div><iframe id="gameFrame" class="gameframe-full" src="${g.url}?hostbuild=${release}" title="${g.title}" allow="fullscreen; autoplay; gamepad; accelerometer; gyroscope" loading="eager"></iframe></div><div id="gameHint" class="game-hint">等待运行检查…</div></div>`;
   const frame=document.querySelector('#gameFrame'),loading=document.querySelector('#gameLoading'),hint=document.querySelector('#gameHint');
   document.querySelector('#gameBack').onclick=gameBack;
@@ -23,9 +23,9 @@ function externalGame(id){
   const checkRuntime=(attempt=0)=>{
     try{
       const w=frame.contentWindow,d=frame.contentDocument,okOrigin=w.location.origin===location.origin,h=g.health(w,d),ok=okOrigin&&h.ready&&h.ui&&h.state;
-      if(ok){loading.style.display='none';hint.textContent='✅ V12 运行检查通过：透明角色、主画布鱼替换与中文遮罩已加载。';hint.className='game-hint loaded pass';return}
+      if(ok){loading.style.display='none';hint.textContent='✅ V13 运行检查通过：生成角色当前可见，中文导航和新鱼替换已加载。';hint.className='game-hint loaded pass';return}
       if(attempt<80){setTimeout(()=>checkRuntime(attempt+1),250);return}
-      loading.style.display='none';hint.textContent=`⚠️ 运行检查未通过：origin ${okOrigin?'✓':'×'} / script ${h.ready?'✓':'×'} / ui ${h.ui?'✓':'×'} / character ${h.state?'✓':'×'}`;hint.className='game-hint warn';
+      loading.style.display='none';hint.textContent=`⚠️ 运行检查未通过：origin ${okOrigin?'✓':'×'} / script ${h.ready?'✓':'×'} / ui ${h.ui?'✓':'×'} / person-visible ${h.state?'✓':'×'}`;hint.className='game-hint warn';
     }catch(err){
       if(attempt<80){setTimeout(()=>checkRuntime(attempt+1),250);return}
       loading.style.display='none';hint.textContent='⚠️ 无法完成运行检查：'+err.message;hint.className='game-hint warn';
