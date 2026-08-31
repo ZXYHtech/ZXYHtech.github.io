@@ -130,7 +130,9 @@ function drawUnified(ctx,dw,dh,now){
   if(spec.mirror){ctx.translate(ox+p.w*scale,oy);ctx.scale(-1,1);previous.call(ctx,p.canvas,0,0,p.w*scale,p.h*scale);}else previous.call(ctx,p.canvas,ox,oy,p.w*scale,p.h*scale);
   ctx.restore();
   const localTip=spec.mirror?{x:ox+(p.w-p.ax)*scale,y:oy+p.ay*scale}:{x:ox+p.ax*scale,y:oy+p.ay*scale};
-  const m=ctx.getTransform();lastTip={x:m.a*localTip.x+m.c*localTip.y+m.e,y:m.b*localTip.x+m.d*localTip.y+m.f,canvas:ctx.canvas,at:performance.now(),state};lastSceneDrawAt=performance.now();
+  const m=ctx.getTransform(),baseX=ctx.canvas.clientWidth?ctx.canvas.width/ctx.canvas.clientWidth:1,baseY=ctx.canvas.clientHeight?ctx.canvas.height/ctx.canvas.clientHeight:1;
+  const deviceX=m.a*localTip.x+m.c*localTip.y+m.e,deviceY=m.b*localTip.x+m.d*localTip.y+m.f;
+  lastTip={x:deviceX/baseX,y:deviceY/baseY,canvas:ctx.canvas,at:performance.now(),state};lastSceneDrawAt=performance.now();
   return true;
 }
 
