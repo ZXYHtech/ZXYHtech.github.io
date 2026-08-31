@@ -1,103 +1,26 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#06101f" />
-  <title>MonadFish 中文版｜游戏说明</title>
-  <style>
-    *{box-sizing:border-box}html{background:#06101f;color:#e6f7ff;font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif}
-    body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#123b63 0,#07111f 42%,#030711 100%);padding:env(safe-area-inset-top) 16px calc(28px + env(safe-area-inset-bottom))}
-    main{max-width:820px;margin:auto}.top{position:sticky;top:0;padding:12px 0 10px;background:linear-gradient(#06101ff2,#06101fc9 75%,transparent);backdrop-filter:blur(8px);z-index:3}
-    .back{display:inline-flex;min-height:42px;align-items:center;padding:0 14px;border:1px solid #3ddbf080;border-radius:999px;color:#cffafe;background:#07111fcc;text-decoration:none;font-weight:800}
-    h1{font-size:30px;line-height:1.16;margin:20px 0 8px}.lead{color:#a7c8dc;line-height:1.75;margin-bottom:18px}
-    section{margin:14px 0;padding:18px;border:1px solid #4dd8ed2f;border-radius:18px;background:#07101bc9;box-shadow:0 14px 40px #0006}
-    h2{font-size:18px;margin:0 0 12px;color:#8cf3ff}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-    .step{padding:12px 8px;border-radius:14px;background:#0d2137;text-align:center;font-weight:800}.num{display:block;color:#66e8ff;font-size:12px;margin-bottom:6px}
-    ul,ol{padding-left:1.25rem;line-height:1.8;margin:8px 0}.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#12304a;color:#a5f3fc;font-size:12px;font-weight:800;margin-right:5px}
-    .species{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.fish{padding:7px 10px;border:1px solid #5ee9f52b;border-radius:999px;background:#0b2033;color:#d8fbff;font-size:13px;font-weight:700}
-    .motion{border-color:#86efac4c;background:#071d17cc}.motion h2{color:#a7f3d0}.motion strong{color:#d9f99d}.economy{border-color:#facc1540;background:#211808cc}.economy h2{color:#fde68a}
-    footer{padding:10px 4px;color:#6f93a8;font-size:12px;line-height:1.6;text-align:center}
-    @media(max-width:720px){.flow{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){h1{font-size:25px}section{padding:15px}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#06101f" />
+<title>MonadFish 中文版｜游戏说明</title>
+<style>
+*{box-sizing:border-box}html{background:#06101f;color:#e6f7ff;font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#123b63 0,#07111f 42%,#030711 100%);padding:env(safe-area-inset-top) 16px calc(28px + env(safe-area-inset-bottom))}main{max-width:820px;margin:auto}.top{position:sticky;top:0;padding:12px 0 10px;background:linear-gradient(#06101ff2,#06101fc9 75%,transparent);backdrop-filter:blur(8px);z-index:3}.back{display:inline-flex;min-height:42px;align-items:center;padding:0 14px;border:1px solid #3ddbf080;border-radius:999px;color:#cffafe;background:#07111fcc;text-decoration:none;font-weight:800}h1{font-size:30px;line-height:1.16;margin:20px 0 8px}.lead{color:#a7c8dc;line-height:1.75;margin-bottom:18px}section{margin:14px 0;padding:18px;border:1px solid #4dd8ed2f;border-radius:18px;background:#07101bc9;box-shadow:0 14px 40px #0006}h2{font-size:18px;margin:0 0 12px;color:#8cf3ff}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.step{padding:12px 8px;border-radius:14px;background:#0d2137;text-align:center;font-weight:800}.num{display:block;color:#66e8ff;font-size:12px;margin-bottom:6px}ul,ol{padding-left:1.25rem;line-height:1.8;margin:8px 0}.tip{border-color:#86efac4c;background:#071d17cc}.tip h2{color:#a7f3d0}.tip strong{color:#d9f99d}.warn{border-color:#facc1540;background:#211808cc}.warn h2{color:#fde68a}.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#12304a;color:#a5f3fc;font-size:12px;font-weight:800;margin-right:5px}footer{padding:10px 4px;color:#6f93a8;font-size:12px;line-height:1.6;text-align:center}@media(max-width:720px){.flow{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){h1{font-size:25px}section{padding:15px}}
+</style>
 </head>
-<body>
-<main>
-  <div class="top"><a class="back" href="/fish/games/monadfish/">← 返回游戏</a></div>
-  <h1>🎣 MonadFish 游戏说明</h1>
-  <div class="lead">核心体验是完整经历“抛竿 → 鱼靠近 → 咬钩 → 提竿 → 搏鱼 → 上岸”。手机会自动尝试启用体感，左右倾斜可以帮助控制鱼线张力，人物与船也会随姿态轻微摆动。</div>
-
-  <section>
-    <h2>1. 最基本的钓鱼流程</h2>
-    <div class="flow">
-      <div class="step"><span class="num">第 1 步</span>点击“抛竿”</div>
-      <div class="step"><span class="num">第 2 步</span>观察鱼靠近鱼饵</div>
-      <div class="step"><span class="num">第 3 步</span>咬钩后点击“提竿”</div>
-      <div class="step"><span class="num">第 4 步</span>跟随方向遛鱼</div>
-      <div class="step"><span class="num">第 5 步</span>成功拉鱼上岸</div>
-    </div>
-    <p>成功提竿后，鱼会继续留在线端附近挣扎。不同回合可能出现持续发力、短促冲刺、蛇形摆动、沉底重拉或高速横冲。</p>
-  </section>
-
-  <section class="motion">
-    <h2>2. 📱 体感搏鱼</h2>
-    <ol>
-      <li><strong>不再需要单独点击“开启体感”按钮。</strong>支持直接读取传感器的手机进入游戏后自动启用。</li>
-      <li>iPhone / iPad 受系统安全规则限制，浏览器必须在一次真实触摸后才能弹出传感器权限；现在会在你第一次正常点击游戏时自动申请，不占用额外按钮位置。</li>
-      <li>鱼向右拉时，把手机轻轻向左倾；鱼向左拉时，则向右倾，相当于反方向回杆。</li>
-      <li>方向抵消正确时张力下降；方向做反时张力升高。张力过高时，支持震动的手机会给出短促提醒。</li>
-      <li>人物和船会随手机左右姿态轻微倾斜，让画面和操作动作更统一。</li>
-      <li>不支持传感器或拒绝权限时会自动回退为触控辅助，不影响正常钓鱼。</li>
-    </ol>
-  </section>
-
-  <section class="economy">
-    <h2>3. 💰 V5 金币、鱼饵与抽奖</h2>
-    <ul>
-      <li><b>每日免费鱼饵：</b>30 个。</li>
-      <li><b>鱼饵价格：</b>统一 12 金币 / 个，不再使用之前过高的价格。</li>
-      <li><b>每日基础抽奖：</b>5 次；每成功钓到 4 条鱼，再奖励 1 次抽奖。</li>
-      <li><b>钓鱼即时收益：</b>鱼上岸后除了进入鱼篓，还会直接获得少量金币。</li>
-      <li><b>出售鱼获：</b>常见鱼价值已明显提高，稀有鱼仍保持更高价值。</li>
-      <li><b>每日补给：</b>跨日刷新时额外补充 180 金币。</li>
-      <li><b>探索奖励：</b>每天首次体验鱼篓、任务、商店、烧烤、魔方、排行榜、地图和游戏说明等功能，会获得一次对应金币奖励；首次体验魔方还会额外送 1 次抽奖。</li>
-    </ul>
-    <p>旧存档首次进入 V5 会自动做一次防破产补给：至少恢复到 300 金币、30 个免费鱼饵和 5 次基础抽奖。</p>
-  </section>
-
-  <section>
-    <h2>4. 现在有哪些鱼</h2>
-    <p>当前共有 <b>14 种可钓鱼类</b>。游戏会降低近期重复鱼种的出现权重，并适当提高尚未收集鱼种的发现机会。</p>
-    <div class="species">
-      <span class="fish">鲤鱼</span><span class="fish">河鲈</span><span class="fish">罗非鱼</span><span class="fish">虹鳟</span><span class="fish">黑鲈</span><span class="fish">欧鳊</span><span class="fish">锦鲤</span><span class="fish">鳗鱼</span><span class="fish">鲶鱼</span><span class="fish">金鱼</span><span class="fish">金枪鱼</span><span class="fish">变异鱼</span><span class="fish">紫影鱼</span><span class="fish">星海利维坦</span>
-    </div>
-  </section>
-
-  <section>
-    <h2>5. 底部功能</h2>
-    <ul>
-      <li><span class="tag">钓鱼</span>抛竿、等待咬钩、提竿和搏鱼。</li>
-      <li><span class="tag">任务</span>完成钓鱼与成长目标，达到条件后领取奖励。</li>
-      <li><span class="tag">商店</span>低价补充鱼饵、升级鱼竿。</li>
-      <li><span class="tag">烧烤</span>把鱼获制作成料理并积累烧烤积分。</li>
-      <li><span class="tag">魔方</span>使用每日次数和钓鱼奖励次数抽取金币或鱼饵。</li>
-      <li><span class="tag">排行</span>比较烧烤积分，查看自己的料理成长。</li>
-      <li><span class="tag">地图</span>查看后续逐步开放的钓场。</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>6. 新手建议</h2>
-    <ol>
-      <li>先连续钓几次，熟悉咬钩、提竿和手机倾斜控制的关系。</li>
-      <li>体感只需要小幅度倾斜，不要大幅甩动手机。</li>
-      <li>普通鱼现在也有可用价值，可以卖鱼补鱼饵，不必只等稀有鱼。</li>
-      <li>每天把不同功能点一遍，可以顺便领取探索奖励和额外抽奖机会。</li>
-      <li>多收集不同鱼类，再尝试烧烤、排行和其他成长内容。</li>
-    </ol>
-  </section>
-
-  <footer>MonadFish 上游项目：KaimiEwl/fishing-game（MIT）。</footer>
-</main>
-</body>
-</html>
+<body><main>
+<div class="top"><a class="back" href="/fish/games/monadfish/">← 返回游戏</a></div>
+<h1>🎣 MonadFish 游戏说明</h1>
+<div class="lead">V11 把操作说明统一放到这里，不再额外增加“操作”按钮。主界面保留原来的“游戏说明”，需要时从那里进入即可。</div>
+<section>
+<h2>1. 一次完整钓鱼怎么操作</h2>
+<div class="flow"><div class="step"><span class="num">第 1 步</span>点“抛竿”</div><div class="step"><span class="num">第 2 步</span>等鱼靠近鱼饵</div><div class="step"><span class="num">第 3 步</span>出现“提竿”马上点</div><div class="step"><span class="num">第 4 步</span>反方向控竿</div><div class="step"><span class="num">第 5 步</span>等待鱼上岸</div></div>
+<ol><li><b>抛竿：</b>点击主按钮“抛竿”。</li><li><b>等待：</b>不用连续点击，等鱼咬钩。</li><li><b>提竿：</b>按钮变成“提竿”后立刻点一次。</li><li><b>遛鱼：</b>鱼向左冲时向右倾手机或向右滑；鱼向右冲时反过来。</li><li><b>结束：</b>鱼获会进入“背包”，可以查看或出售。</li></ol>
+</section>
+<section class="tip"><h2>2. 📱 遛鱼与人物动作</h2><ul><li>咬钩后，自研少年角色会从等待姿态切换为起身、拉竿、后仰发力和庆祝姿态。</li><li><strong>鱼往哪边冲，就往反方向控竿。</strong>支持手机左右倾斜；没有传感器时也可以左右滑动。</li><li>搏鱼时画面会显示实时方向提示，不再另放一个“操作”按钮。</li><li>当前版本的左右控竿主要用于人物动作、方向反馈与张力演出；真正的提竿判定仍由“提竿”时机决定，避免隐藏规则影响成功率。</li></ul></section>
+<section><h2>3. 主界面中文对应</h2><ul><li><span class="tag">抛竿</span>原 CAST LINE</li><li><span class="tag">提竿</span>原 HOOK IT</li><li><span class="tag">加速</span>原 BOOST</li><li><span class="tag">背包</span>原 Inventory</li><li><span class="tag">出行</span>原 Travel</li><li><span class="tag">钓鱼 / 任务 / 商店 / 烧烤 / 魔方 / 排行</span>底部导航已统一中文化。</li></ul></section>
+<section class="warn"><h2>4. 鱼群显示</h2><ul><li>V11 关闭了额外叠加的低清大鱼群，优先恢复原游戏高分辨率鱼图。</li><li>水下过大的鱼会自动缩小，主“抛竿 / 提竿”按钮保持在更高层级，避免被鱼挡住。</li><li>鱼种与经济规则不因这次视觉修复而改变。</li></ul></section>
+<section><h2>5. 常用功能</h2><ul><li><span class="tag">钓鱼</span>核心钓鱼流程。</li><li><span class="tag">任务</span>完成目标并领取奖励。</li><li><span class="tag">商店</span>补充鱼饵、升级鱼竿。</li><li><span class="tag">烧烤</span>把鱼获制作成料理。</li><li><span class="tag">魔方</span>抽取金币或鱼饵。</li><li><span class="tag">排行</span>查看成长与积分。</li><li><span class="tag">背包</span>查看、出售鱼获。</li><li><span class="tag">出行</span>进入地图与其他区域。</li></ul></section>
+<footer>MonadFish 上游项目：KaimiEwl/fishing-game（MIT）。V11 为 ZXYH 中文化与玩法视觉改造版本。</footer>
+</main></body></html>
