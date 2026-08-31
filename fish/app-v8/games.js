@@ -1,12 +1,12 @@
 const openGames={
-  monadfish:{title:'MonadFish 中文版',icon:'🌌',url:'/fish/games/monadfish/play-v9-generated2.html',license:'MIT',repo:'KaimiEwl/fishing-game',note:'V9.2 角色修复版：新钓鱼角色始终可见，咬钩后站立遛鱼、左右拉竿、后仰发力并在上鱼后庆祝。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true&&w.__MONADFISH_RELEASE__==='V9-GENERATED2'&&w.__MONADFISH_GENERATED_ANGLER_V9__==='V9-GENERATED2'&&w.__MONADFISH_GENERATED_ANGLER_FIX2__===true&&!!w.__MONADFISH_GAMEPLAY_V8__,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]'),state:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]')})},
+  monadfish:{title:'MonadFish 中文版',icon:'🌌',url:'/fish/games/monadfish/play-v10-guide.html',license:'MIT',repo:'KaimiEwl/fishing-game',note:'V10 操作引导版：钓鱼人物固定可见；等待、HOOK IT 提竿、左右遛鱼、上岸都有实时中文提示。',health:(w,d)=>({ready:w.__MONADFISH_LITE_READY__===true&&w.__MONADFISH_RELEASE__==='V10-GUIDE'&&w.__MONADFISH_CHARACTER_V10__===true&&w.__MONADFISH_TUTORIAL_V10__===true&&!!w.__MONADFISH_GAMEPLAY_V8__,ui:!!d.querySelector('button[aria-label="Cast line"],button[aria-label="Hook fish"],button[aria-label="抛竿"],button[aria-label="提竿"]'),state:!!d.querySelector('#mf-v10-angler')})},
   dockpull:{title:'Dock & Pull',icon:'🎣',url:'/fish/games/dock-pull/',license:'MIT',repo:'DollarAlchemy/Fish1',note:'触屏抛竿→等咬口→连点收线；鱼获、商店、鱼竿和本地存档。',health:(w,d)=>({ready:w.__DOCK_PULL_READY__===true,ui:!!d.querySelector('#water-canvas'),state:d.querySelector('#water-status')?.textContent?.includes('TAP')})},
   ikutan:{title:'Fishing Game',icon:'🐟',url:'/fish/games/ikutan-fishing/',license:'MIT',repo:'ikutan7/ikutan7.github.io',note:'选饵→抛竿→等鱼口→点完收线按钮；多鱼种、昼夜和鱼获记录。',health:(w,d)=>({ready:w.__IKUTAN_FISH_READY__===true,ui:!!d.querySelector('#castBtn'),state:d.querySelector('#log')?.textContent?.includes('准备好')})}
 };
 function games(){
   if(openGames[S.gameScreen])return externalGame(S.gameScreen);
   S.gameScreen='hub';setGameChrome(false);
-  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">所有游戏都直接在本站打开，不跳转第三方页面。MonadFish V9.2 修复角色消失问题，并保留站立遛鱼、体感人物联动、新鱼群和传奇巨物。</div></div>
+  shell(`<div class="hero"><span class="eyebrow">开源小游戏 · 同源镜像</span><h1>只上经过实玩检查的游戏。</h1><div class="lead">MonadFish V10 直接固定显示新钓鱼角色，并加入完整中文操作引导：等鱼口 → HOOK IT 提竿 → 左右遛鱼 → 上岸。</div></div>
   <div class="gamegrid">${Object.entries(openGames).map(([id,g])=>`<button class="gamecard" data-game="${id}"><span class="gicon">${g.icon}</span><b>${g.title}</b><small>${g.note}</small><span class="badge">${g.license} · 本站镜像</span></button>`).join('')}</div>
   <section class="card"><span class="eyebrow">验收规则</span><div class="sub">许可证→同源资源→脚本初始化→手机触控→实际完成核心玩法。Pages 只显示构建成功不算验收。</div></section>`,'小游戏');
   app.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{S.gameScreen=b.dataset.game;games()});
@@ -14,7 +14,7 @@ function games(){
 function gameBack(){S.gameScreen='hub';setGameChrome(false);games()}
 function externalGame(id){
   const g=openGames[id];stopCam();setGameChrome(true);
-  const release=id==='monadfish'?'MFV9-GENERATED2':'PLAYFIX4';
+  const release=id==='monadfish'?'MFV10-GUIDE':'PLAYFIX4';
   app.innerHTML=`<div class="game-stage"><div class="game-topbar"><button id="gameBack" class="game-back">← 换游戏</button><div class="game-name"><b>${g.icon} ${g.title}</b><small>${g.license} · ${g.repo}</small></div><button id="gameReload" class="game-reload">↻</button></div><div class="game-viewport"><div id="gameLoading" class="game-loading">正在载入并检查 ${g.title}…</div><iframe id="gameFrame" class="gameframe-full" src="${g.url}?hostbuild=${release}" title="${g.title}" allow="fullscreen; autoplay; gamepad; accelerometer; gyroscope" loading="eager"></iframe></div><div id="gameHint" class="game-hint">等待运行检查…</div></div>`;
   const frame=document.querySelector('#gameFrame'),loading=document.querySelector('#gameLoading'),hint=document.querySelector('#gameHint');
   document.querySelector('#gameBack').onclick=gameBack;
@@ -23,9 +23,9 @@ function externalGame(id){
   const checkRuntime=(attempt=0)=>{
     try{
       const w=frame.contentWindow,d=frame.contentDocument,okOrigin=w.location.origin===location.origin,h=g.health(w,d),ok=okOrigin&&h.ready&&h.ui&&h.state;
-      if(ok){loading.style.display='none';hint.textContent='✅ V9.2 运行检查通过。人物显示修复已加载。';hint.className='game-hint loaded pass';return}
+      if(ok){loading.style.display='none';hint.textContent='✅ V10 运行检查通过：人物与操作教程已加载。';hint.className='game-hint loaded pass';return}
       if(attempt<80){setTimeout(()=>checkRuntime(attempt+1),250);return}
-      loading.style.display='none';hint.textContent=`⚠️ 运行检查未通过：origin ${okOrigin?'✓':'×'} / script ${h.ready?'✓':'×'} / ui ${h.ui?'✓':'×'} / state ${h.state?'✓':'×'}`;hint.className='game-hint warn';
+      loading.style.display='none';hint.textContent=`⚠️ 运行检查未通过：origin ${okOrigin?'✓':'×'} / script ${h.ready?'✓':'×'} / ui ${h.ui?'✓':'×'} / character ${h.state?'✓':'×'}`;hint.className='game-hint warn';
     }catch(err){
       if(attempt<80){setTimeout(()=>checkRuntime(attempt+1),250);return}
       loading.style.display='none';hint.textContent='⚠️ 无法完成运行检查：'+err.message;hint.className='game-hint warn';
