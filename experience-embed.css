@@ -1,0 +1,3 @@
+.zyc100-experience iframe{height:760px;max-width:100%;background:#f1f4f7}
+iframe[data-zya-compact]{height:340px;max-width:100%}
+@media(max-width:650px){.zyc100-experience iframe{height:1020px}iframe[data-zya-compact]{height:400px}}

@@ -1,0 +1,9 @@
+html.compact-console-root,body.compact-console{height:auto;min-height:0}
+body.compact-console .app-shell{height:auto;min-height:0}
+body.compact-console .workspace-empty{min-height:280px;padding:24px 12px}
+body.compact-console .workspace-empty h1{font-size:clamp(20px,4vw,28px)}
+body.compact-console .workspace-empty p,body.compact-console .workspace-empty small{max-width:100%;overflow-wrap:anywhere}
+body.compact-console .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.compact-console .control-card,body.compact-console .workspace-actions{min-width:0}
+body.compact-console .log-card footer{flex-wrap:wrap}
+@media(max-width:760px){body.compact-console .control-grid{grid-template-columns:minmax(0,1fr)}body.compact-console .workspace-empty{min-height:310px}}

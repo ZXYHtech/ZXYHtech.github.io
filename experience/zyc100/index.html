@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'">
+<title>ZYC100 在线体验</title><link rel="stylesheet" href="./style.css"></head><body class="public-demo">
+<main><section class="stage" aria-label="仿真实物"><canvas id="device" width="914" height="1200" aria-label="ZYC100 屏幕与底部拨杆"></canvas><button id="cable" class="cable">拔出 Type-C ↟</button><div class="power"><i id="powerDot"></i><span id="powerText">加载中…</span></div></section>
+<aside><h2>上手试一试</h2><p class="muted">点击机身底部拨杆：左右倾转调节，按下确认；也可使用下方按钮或键盘。</p><button id="battery" class="battery">无电池款 · 点击切换</button><div class="keys">
+<button data-key="0"><kbd>←</kbd><span>减少 / RF1<small>D 或方向键 ←</small></span></button>
+<button data-key="1"><kbd>C</kbd><span>菜单 / 确认<small>C、Enter 或空格；长按进入设置</small></span></button>
+<button data-key="2"><kbd>→</kbd><span>增加 / RF2<small>B 或方向键 →</small></span></button></div>
+<p class="muted">长按可连续调节。F5 重置 · F6 切换电池款 · F7 插拔线缆。</p><p id="notice" class="muted" role="status">正在载入体验程序…</p>
+<p class="muted">本区仅用于操作体验，不连接实体设备或电脑串口。实际设备控制请使用下方上位机。</p></aside></main><script type="module" src="./app.js"></script></body></html>

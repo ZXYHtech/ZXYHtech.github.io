@@ -36,7 +36,7 @@ const productDisplayImage = product => PRODUCT_DISPLAY_IMAGES[product?.slug]
   : resolveContentUrl(product?.image_url || '');
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.32.0'),{updateViaCache:'none'}).catch(()=>{}));
+addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.33.0'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -365,6 +365,10 @@ function controllerEntryHub(product){
     <div class="controller-start-flow"><b>快速开始</b><ol><li>断电连接 ZYE660 等兼容模块</li><li>用 USB 数据线连接电脑</li><li>打开网页版上位机并授权串口</li><li>确认设备状态后开始控制</li></ol><a href="#product/zya-dat-63">查看配套 ZYE660 →</a></div>
   </section>`;
 }
+function controllerSimulatorEmbed(product){
+  if(product.slug!=='zyc100-controller')return '';
+  return `<section class="zya-embedded-console zyc100-experience" data-review-id="product.zyc100-controller.simulator"><div class="section-head"><div><span class="eyebrow">TRY ZYC100</span><h2>先体验，再连接</h2><p>直接操作机身拨杆、菜单和 Type-C 插拔；本体验不连接电脑串口。</p></div><a class="button secondary" href="${sitePath('experience/zyc100/')}" target="_blank" rel="noopener">独立窗口体验 →</a></div><iframe data-zyc100-demo src="${sitePath('experience/zyc100/')}" title="ZYC100 在线操作体验" allow="serial 'none'" loading="lazy"></iframe></section>`;
+}
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
   return `<section class="controller-console-inline" data-review-id="product.zyc100.web-console">
@@ -393,6 +397,7 @@ async function renderProduct(slug) {
       <div class="tab-row"><button class="active">关键参数</button><button onclick="document.querySelector('#tutorial-section').scrollIntoView()">快速指导</button>${publicResources.length?`<button onclick="document.querySelector('#document-section').scrollIntoView()">资料</button>`:''}</div>
       <table class="spec-table" data-review-id="product.${product.slug}.specs">${Object.entries(product.specs).map(([k,v])=>`<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join('')}</table>
     </section></div>
+    ${controllerSimulatorEmbed(product)}
     ${controllerConsoleEmbed(product)}
     ${controllerEntryHub(product)}
     ${product.attenuator ? attenuatorCalculator(product) : ''}
@@ -931,4 +936,9 @@ $('#review-toggle').onclick=()=>toggleReview();$('#review-exit').onclick=()=>tog
 $$('[data-review-export]').forEach(button=>button.onclick=()=>protectedDownload(`/api/annotations/export.${button.dataset.reviewExport}`,`agent-change-request.${button.dataset.reviewExport}`));
 addEventListener('resize',()=>state.review&&drawAnnotationMarks());addEventListener('scroll',()=>state.review&&drawAnnotationMarks(),{passive:true});
 addEventListener('hashchange',route);syncRoleUI();saveCart(); route();
-addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='zya1000-compact-height')return;const frame=$('iframe[data-zya-compact]');if(frame)frame.style.height=`${Math.max(250,Math.min(760,Number(event.data.height)||320))}px`});
+addEventListener('message',event=>{
+  if(event.origin!==location.origin)return;
+  const selector=event.data?.type==='zya1000-compact-height'?'iframe[data-zya-compact]':event.data?.type==='zyc100-demo-height'?'iframe[data-zyc100-demo]':null;
+  const height=Number(event.data?.height);if(!selector||!Number.isFinite(height)||height<=0)return;
+  document.querySelectorAll(selector).forEach(frame=>{if(event.source===frame.contentWindow)frame.style.height=`${Math.max(180,Math.min(4096,Math.ceil(height)+2))}px`;});
+});

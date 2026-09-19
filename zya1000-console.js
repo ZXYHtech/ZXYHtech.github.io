@@ -6,6 +6,7 @@
   const storeKey='zya1000.web-console.v1';
   const consoleParams=new URLSearchParams(location.search),compactMode=consoleParams.get('embed')==='compact';
   document.body.classList.toggle('compact-console',compactMode);
+  document.documentElement.classList.toggle('compact-console-root',compactMode);
   const state={devices:[],activeId:null,view:'device',sync:false,automationStop:false,timeline:[],compensation:{type:'csv',points:[]},cardOrder:[]};
   const attenuationQueue={timer:null,pending:null,inFlight:false};
   const multiRealtimeTimers=new Map();
@@ -188,4 +189,10 @@
   }
   restore();bind();applyCardOrder();bindCardDragging();renderAll();const requestedView=consoleParams.get('view');switchView(compactMode?'device':['device','multi','automation'].includes(requestedView)?requestedView:'device');
   if(!window.isSecureContext||!navigator.serial){toast(!window.isSecureContext?'请通过 HTTPS 或 localhost 访问':'请使用 Chrome 或 Edge 桌面版浏览器');$$('[data-connect-device],#add-device,#mobile-connect').forEach(button=>button.disabled=true)}
+  if(compactMode && parent!==window){
+    let lastHeight=0;
+    const reportHeight=()=>{const height=Math.ceil($('.app-shell').getBoundingClientRect().height);if(height!==lastHeight){lastHeight=height;parent.postMessage({type:'zya1000-compact-height',height},location.origin);}};
+    new ResizeObserver(reportHeight).observe($('.app-shell'));
+    document.fonts?.ready.then(reportHeight);addEventListener('resize',reportHeight);reportHeight();
+  }
 })();
