@@ -36,7 +36,7 @@ const productDisplayImage = product => PRODUCT_DISPLAY_IMAGES[product?.slug]
   : resolveContentUrl(product?.image_url || '');
 if (launchParams.get('embed') === 'zya1000') document.body.classList.add('embed-mode');
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.33.0'),{updateViaCache:'none'}).catch(()=>{}));
+addEventListener('load',()=>navigator.serviceWorker.register(sitePath('service-worker.js?v=1.36.1'),{updateViaCache:'none'}).catch(()=>{}));
 }
 function updateOnlineState(){document.body.classList.toggle('is-offline',!navigator.onLine)}
 addEventListener('online',updateOnlineState);addEventListener('offline',updateOnlineState);updateOnlineState();
@@ -353,7 +353,7 @@ function controllerEntryHub(product){
   if(product.slug!=='zyc100-controller')return '';
   const serialReady='serial' in navigator;
   return `<section class="controller-entry-hub" data-review-id="product.zyc100.controller-center">
-    <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 控制与资料入口</h2><p>控制器相关操作集中在产品页，不再占用网站顶部导航。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
+    <div class="controller-entry-head"><div><span class="eyebrow">CONTROLLER WORKSPACE</span><h2>ZYC100 使用与资料入口</h2><p>从购买前体验、真实设备控制到说明书、固件与离线软件，都可以从这里进入。</p></div><span class="serial-ready ${serialReady?'on':''}">${serialReady?'● 当前浏览器支持串口直连':'○ 当前浏览器不支持 Web Serial'}</span></div>
     <div class="controller-entry-grid">
 <a class="primary-entry" href="${sitePath('zya1000-console.html?v=1.30.1')}" target="_blank" rel="noopener"><span>WEB APP</span><b>打开网页版上位机</b><p>连接 USB CDC，控制衰减、多设备同步并执行自动化时间线。</p><i>进入全功能控制台 →</i></a>
 <a href="${sitePath('zya1000-console.html?v=1.30.1&embed=compact')}" target="_blank" rel="noopener"><span>QUICK CONTROL</span><b>快速衰减控制</b><p>只保留衰减值和实时通信日志，适合现场快速调整。</p><i>打开紧凑模式 →</i></a>
@@ -367,7 +367,7 @@ function controllerEntryHub(product){
 }
 function controllerSimulatorEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
-  return `<section class="zya-embedded-console zyc100-experience" data-review-id="product.zyc100-controller.simulator"><div class="section-head"><div><span class="eyebrow">TRY ZYC100</span><h2>先体验，再连接</h2><p>直接操作机身拨杆、菜单和 Type-C 插拔；本体验不连接电脑串口。</p></div><a class="button secondary" href="${sitePath('experience/zyc100/?v=1.36.0')}" target="_blank" rel="noopener">独立窗口体验 →</a></div><iframe data-zyc100-demo src="${sitePath('experience/zyc100/?v=1.36.0')}" title="ZYC100 在线操作体验" allow="serial 'none'" loading="lazy"></iframe></section>`;
+  return `<section id="zyc100-experience" class="zya-embedded-console zyc100-experience" data-review-id="product.zyc100-controller.simulator"><div class="section-head"><div><span class="eyebrow">TRY BEFORE YOU BUY</span><h2>先体验，后购买</h2><p>购买前先操作机身拨杆、菜单和 Type-C 插拔，确认交互方式是否符合使用习惯；这里是仿真体验，不连接真实设备或电脑串口。</p></div><a class="button secondary" href="${sitePath('experience/zyc100/?v=1.36.1')}" target="_blank" rel="noopener">打开独立体验 →</a></div><iframe data-zyc100-demo src="${sitePath('experience/zyc100/?v=1.36.1')}" title="ZYC100 购买前在线体验" allow="serial 'none'" loading="lazy"></iframe></section>`;
 }
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
@@ -393,7 +393,7 @@ async function renderProduct(slug) {
     <div class="model-panel">${productVisual(product, true)}</div>
     <section class="detail-copy" data-review-id="product.${product.slug}.summary"><span class="eyebrow">${escapeHtml(product.model)}</span><h1>${escapeHtml(product.name)}</h1><p class="subtitle">${escapeHtml(product.subtitle)}</p><p class="description">${escapeHtml(product.description)}</p>
       <div class="capabilities">${product.capabilities.map(x=>`<span>${escapeHtml(x)}</span>`).join('')}</div>
-      <div class="detail-buy"><div><small class="stock">${a.available ? '● 当前可售' : '○ 请询价'} · ${escapeHtml(a.mode)}库存 ${escapeHtml(a.quantity)}</small><div class="price">${priceLabel(product.price)}</div></div><button class="button ghost favorite-detail ${state.favorites.includes(product.id)?'active':''}" data-favorite="${product.id}" aria-pressed="${state.favorites.includes(product.id)}"><span>♥</span><span data-favorite-label>${state.favorites.includes(product.id)?'已收藏':'收藏'}</span></button><button class="button primary" data-add-cart="${product.id}">加入购买清单</button></div>
+      <div class="detail-buy"><div><small class="stock">${a.available ? '● 当前可售' : '○ 请询价'} · ${escapeHtml(a.mode)}库存 ${escapeHtml(a.quantity)}</small><div class="price">${priceLabel(product.price)}</div></div>${product.slug==='zyc100-controller'?'<button class="button secondary" type="button" data-try-zyc100>先体验</button>':''}<button class="button ghost favorite-detail ${state.favorites.includes(product.id)?'active':''}" data-favorite="${product.id}" aria-pressed="${state.favorites.includes(product.id)}"><span>♥</span><span data-favorite-label>${state.favorites.includes(product.id)?'已收藏':'收藏'}</span></button><button class="button primary" data-add-cart="${product.id}">加入购买清单</button></div>
       <div class="tab-row"><button class="active">关键参数</button><button onclick="document.querySelector('#tutorial-section').scrollIntoView()">快速指导</button>${publicResources.length?`<button onclick="document.querySelector('#document-section').scrollIntoView()">资料</button>`:''}</div>
       <table class="spec-table" data-review-id="product.${product.slug}.specs">${Object.entries(product.specs).map(([k,v])=>`<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join('')}</table>
     </section></div>
@@ -849,6 +849,7 @@ document.addEventListener('click', e => {
   const copyOrder=e.target.closest('[data-copy-order]');if(copyOrder){navigator.clipboard?.writeText(copyOrder.dataset.copyOrder);toast('订单号已复制')}
   const copyTracking=e.target.closest('[data-copy-tracking]');if(copyTracking){navigator.clipboard?.writeText(copyTracking.dataset.copyTracking);toast('物流单号已复制')}
   if(e.target.closest('[data-repeat-order]')&&state.currentOrder){state.cart=state.currentOrder.items.map(item=>({product_id:item.product_id,material_code:item.material_code,model:item.model||item.material_code,name:item.product_name,price:item.unit_price,quantity:item.quantity}));saveCart();openCart();toast('商品已重新加入购买清单')}
+  const tryZyc=e.target.closest('[data-try-zyc100]');if(tryZyc){document.querySelector('#zyc100-experience')?.scrollIntoView({behavior:'smooth',block:'start'});}
   const action=e.target.closest('[data-zya-action]'); if(action)runZyaAction(action.dataset.zyaAction);
   if(e.target.matches('[data-cart-minus]')){const item=state.cart.find(x=>x.product_id===Number(e.target.dataset.cartMinus));if(item){item.quantity--;if(item.quantity<=0)state.cart=state.cart.filter(x=>x!==item);saveCart()}}
   if(e.target.matches('[data-cart-plus]')){const item=state.cart.find(x=>x.product_id===Number(e.target.dataset.cartPlus));if(item){item.quantity++;saveCart()}}
