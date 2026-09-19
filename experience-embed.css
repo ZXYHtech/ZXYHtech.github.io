@@ -18,4 +18,12 @@ iframe[data-zya-compact]{display:block;width:100%;height:340px;max-width:100%;bo
 .controller-start-flow ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 36px;padding-left:24px;margin:18px 0}
 @media(max-width:900px){.controller-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.controller-entry-grid{grid-template-columns:1fr}.controller-start-flow ol{grid-template-columns:1fr}.controller-console-inline,.controller-entry-hub{margin-top:44px}}
+.controller-entry-grid>a,.controller-start-flow{background:var(--panel);color:var(--text);border:1px solid var(--line)}
+.controller-entry-grid b,.controller-start-flow b,.controller-start-flow li{color:var(--text)}
+.controller-entry-grid p{color:var(--muted)}
+.controller-entry-grid span,.controller-entry-grid i,.controller-start-flow a,.serial-ready.on{color:var(--mint)}
+.controller-entry-grid>a:hover{border-color:var(--mint)}
+html:is([data-theme="cosy"],[data-theme="lab-light"]) .controller-entry-grid>a,
+html:is([data-theme="cosy"],[data-theme="lab-light"]) .controller-start-flow{background:#fff;box-shadow:0 8px 28px #17251e0a}
+html:is([data-theme="cosy"],[data-theme="lab-light"]) .controller-entry-grid p{color:#515764}
 @media(max-width:650px){.zyc100-experience iframe{height:1020px}iframe[data-zya-compact]{height:400px}}
