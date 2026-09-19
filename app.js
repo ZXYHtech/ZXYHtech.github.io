@@ -367,7 +367,7 @@ function controllerEntryHub(product){
 }
 function controllerSimulatorEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
-  return `<section class="zya-embedded-console zyc100-experience" data-review-id="product.zyc100-controller.simulator"><div class="section-head"><div><span class="eyebrow">TRY ZYC100</span><h2>先体验，再连接</h2><p>直接操作机身拨杆、菜单和 Type-C 插拔；本体验不连接电脑串口。</p></div><a class="button secondary" href="${sitePath('experience/zyc100/')}" target="_blank" rel="noopener">独立窗口体验 →</a></div><iframe data-zyc100-demo src="${sitePath('experience/zyc100/')}" title="ZYC100 在线操作体验" allow="serial 'none'" loading="lazy"></iframe></section>`;
+  return `<section class="zya-embedded-console zyc100-experience" data-review-id="product.zyc100-controller.simulator"><div class="section-head"><div><span class="eyebrow">TRY ZYC100</span><h2>先体验，再连接</h2><p>直接操作机身拨杆、菜单和 Type-C 插拔；本体验不连接电脑串口。</p></div><a class="button secondary" href="${sitePath('experience/zyc100/?v=1.36.0')}" target="_blank" rel="noopener">独立窗口体验 →</a></div><iframe data-zyc100-demo src="${sitePath('experience/zyc100/?v=1.36.0')}" title="ZYC100 在线操作体验" allow="serial 'none'" loading="lazy"></iframe></section>`;
 }
 function controllerConsoleEmbed(product){
   if(product.slug!=='zyc100-controller')return '';
