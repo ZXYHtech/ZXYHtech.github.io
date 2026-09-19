@@ -397,6 +397,7 @@ async function renderProduct(slug) {
       <div class="tab-row"><button class="active">关键参数</button><button onclick="document.querySelector('#tutorial-section').scrollIntoView()">快速指导</button>${publicResources.length?`<button onclick="document.querySelector('#document-section').scrollIntoView()">资料</button>`:''}</div>
       <table class="spec-table" data-review-id="product.${product.slug}.specs">${Object.entries(product.specs).map(([k,v])=>`<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join('')}</table>
     </section></div>
+    ${product.slug==='zyc100-controller' && window.zyc100Story ? window.zyc100Story() : ''}
     ${controllerSimulatorEmbed(product)}
     ${controllerConsoleEmbed(product)}
     ${controllerEntryHub(product)}

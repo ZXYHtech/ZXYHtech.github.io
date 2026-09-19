@@ -6,4 +6,8 @@ body.compact-console .workspace-empty p,body.compact-console .workspace-empty sm
 body.compact-console .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 body.compact-console .control-card,body.compact-console .workspace-actions{min-width:0}
 body.compact-console .log-card footer{flex-wrap:wrap}
+body.compact-console .workspace-empty p{max-width:48ch;font-size:15px;line-height:1.8}
+body.compact-console .workspace-empty small{max-width:56ch;font-size:13px;line-height:1.7}
+body.compact-console .log-card output span:has(>time+code:last-child){grid-template-columns:64px minmax(0,1fr)}
+body.compact-console .log-card output code{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
 @media(max-width:760px){body.compact-console .control-grid{grid-template-columns:minmax(0,1fr)}body.compact-console .workspace-empty{min-height:310px}}
