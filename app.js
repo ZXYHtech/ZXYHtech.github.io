@@ -849,7 +849,7 @@ document.addEventListener('click', e => {
   const copyOrder=e.target.closest('[data-copy-order]');if(copyOrder){navigator.clipboard?.writeText(copyOrder.dataset.copyOrder);toast('订单号已复制')}
   const copyTracking=e.target.closest('[data-copy-tracking]');if(copyTracking){navigator.clipboard?.writeText(copyTracking.dataset.copyTracking);toast('物流单号已复制')}
   if(e.target.closest('[data-repeat-order]')&&state.currentOrder){state.cart=state.currentOrder.items.map(item=>({product_id:item.product_id,material_code:item.material_code,model:item.model||item.material_code,name:item.product_name,price:item.unit_price,quantity:item.quantity}));saveCart();openCart();toast('商品已重新加入购买清单')}
-  const tryZyc=e.target.closest('[data-try-zyc100]');if(tryZyc){document.querySelector('#zyc100-experience')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  const tryZyc=e.target.closest('[data-try-zyc100]');if(tryZyc){e.preventDefault();document.querySelector('#zyc100-experience')?.scrollIntoView({behavior:'smooth',block:'start'});}
   const action=e.target.closest('[data-zya-action]'); if(action)runZyaAction(action.dataset.zyaAction);
   if(e.target.matches('[data-cart-minus]')){const item=state.cart.find(x=>x.product_id===Number(e.target.dataset.cartMinus));if(item){item.quantity--;if(item.quantity<=0)state.cart=state.cart.filter(x=>x!==item);saveCart()}}
   if(e.target.matches('[data-cart-plus]')){const item=state.cart.find(x=>x.product_id===Number(e.target.dataset.cartPlus));if(item){item.quantity++;saveCart()}}
